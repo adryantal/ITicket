@@ -1,8 +1,14 @@
 {
     "/js/app.js": "/js/app.js",
-    "/js/login.js": "/js/login.js",
+    "/js/Ajax.js": "/js/Ajax.js",
+    "/js/frameView.js": "/js/frameView.js",
+    "/js/ticketListController.js": "/js/ticketListController.js",
+    "/js/ticketListView.js": "/js/ticketListView.js",
+    "/js/ticketListMain.js": "/js/ticketListMain.js",
+    "/css/frame.css": "/css/frame.css",
     "/css/notauthorized.css": "/css/notauthorized.css",
     "/css/loggedout.css": "/css/loggedout.css",
     "/css/switchboard.css": "/css/switchboard.css",
+    "/css/ticketlist.css": "/css/ticketlist.css",
     "/css/app.css": "/css/app.css"
 }

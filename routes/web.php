@@ -27,7 +27,7 @@ Route::get('/login', function () { return view('auth.login');}); //login oldal
 Route::get('/logout', [LogoutController::class, 'perform']); //bejelentkezett user kijelentkeztetése
 Route::get('/notauthorized', function () {return view('it.notauthorized');});
 
-
+Route::get('/alltickets', function () {return view('it.ticketlist');});
 
 Route::middleware(['auth'])->group(function () {    
 

@@ -12,7 +12,7 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-.js('resources/js/login.js', 'public/js')
+
 
 .postCss('resources/css/app.css', 'public/css', [
     require('postcss-import'),
@@ -21,4 +21,6 @@ mix.js('resources/js/app.js', 'public/js')
 ])
 .postCss('resources/css/switchboard.css','public/css', [])
 .postCss('resources/css/loggedout.css','public/css', [])
-.postCss('resources/css/notauthorized.css','public/css', []) ; 
+.postCss('resources/css/notauthorized.css','public/css', [])
+.postCss('resources/css/frame.css','public/css', []) 
+.postCss('resources/css/ticketlist.css','public/css', [])  ; 
