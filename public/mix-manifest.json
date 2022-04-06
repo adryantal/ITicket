@@ -1,3 +1,11 @@
 {
-    "/main.js": "/main.js"
+    "/js/app.js": "/js/app.js",
+    "/it/css/frame.css": "/it/css/frame.css",
+    "/it/css/notauthorized.css": "/it/css/notauthorized.css",
+    "/it/css/loggedout.css": "/it/css/loggedout.css",
+    "/it/css/switchboard.css": "/it/css/switchboard.css",
+    "/it/css/newticket.css": "/it/css/newticket.css",
+    "/it/css/modifyticket.css": "/it/css/modifyticket.css",
+    "/it/css/ticketlist.css": "/it/css/ticketlist.css",
+    "/css/app.css": "/css/app.css"
 }

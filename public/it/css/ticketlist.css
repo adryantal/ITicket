@@ -35,7 +35,7 @@ article {
   display: grid;
   grid-template-rows: 35px 35px /*45px*/ auto 35px; 
   padding-top: 50px;
-  height: 100vh;
+  
 }
 
 #ticket-container,
