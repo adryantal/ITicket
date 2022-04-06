@@ -19,8 +19,8 @@ mix.js('resources/js/app.js', 'public/js')
     require('tailwindcss'),
     require('autoprefixer'),
 ])
-.postCss('resources/css/switchboard.css','public/css', [])
-.postCss('resources/css/loggedout.css','public/css', [])
-.postCss('resources/css/notauthorized.css','public/css', [])
-.postCss('resources/css/frame.css','public/css', []) 
-.postCss('resources/css/ticketlist.css','public/css', [])  ; 
+.postCss('resources/css/switchboard.css','public/it/css', [])
+.postCss('resources/css/loggedout.css','public/it/css', [])
+.postCss('resources/css/notauthorized.css','public/it/css', [])
+.postCss('resources/css/frame.css','public/it/css', []) 
+.postCss('resources/css/ticketlist.css','public/it/css', [])  ; 

@@ -9,6 +9,7 @@ class UserController extends Controller
 
 {
 
+ 
 
     //adott user megkeresése id alapján
     public function getUser($user_id) {

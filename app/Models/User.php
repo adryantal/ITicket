@@ -53,6 +53,7 @@ class User extends Authenticatable
         return $this->hasMany(Ticket::class);
     }
 
+   
 
     //a megolcsócsop., amelyhez a user tartozik (amennyiben megoldó)
     public function resolver()

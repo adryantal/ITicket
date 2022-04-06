@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -36,6 +37,8 @@ return new class extends Migration
             $table->tinyInteger('sla');  //trigger írja be, h. inc. esetén 3, req. esetén 5 nap az SLA
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE tickets AUTO_INCREMENT = 1000000;"); //auto increment seed from 1000000
     }
 
     /**

@@ -3,17 +3,59 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Models\Ticket;
+use App\Models\User;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+  
     //összes ticket
     public function getAllTickets()
-    {
-        return response()->json(Ticket::all());
+        {
+       $response=array();
+        $alltickets = Ticket::all();
+        foreach ($alltickets as $ticket) {
+            $caller=User::find($ticket->caller);
+            $subjperson=User::find($ticket->subjperson);
+            $assigned_to=User::find($ticket->assigned_to);
+            $created_by=User::find($ticket->created_by);
+            $updated_by=User::find($ticket->updated_by);
+            $category=Category::find($ticket->category);
+            $service=Category::where('id','=',$category->main_cat_id)->first();
+            
+            if($ticket->type=="Request"){
+                $prefix='REQ';
+            };
+            if($ticket->type=="Incident"){
+                $prefix='INC';
+            };
+
+            $data = array(
+                'id'=> $prefix.$ticket->id,
+                'caller_name' => $caller->name, 
+                'subjperson_name' => $subjperson->name, 
+                'assigned_to_name' => $assigned_to->name, 
+                'created_by_name'=>$created_by->name, 
+                'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+                'title' => $ticket->title,
+                'type' => $ticket->type,              
+                'category_name' => $category->cat_name,
+                'service_name' => $service->cat_name,
+                'status' => $ticket->status, 
+                'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
+                'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
+                        
+                );
+                array_push($response,$data);
+            }
+
+       
+        return response()->json($response);
     }
 
     //adott ticket megkeresése id alapján
@@ -150,6 +192,95 @@ class TicketController extends Controller
 
         return Ticket::find($ticket->id);
     }
+
+    
+    public function generalSearch(Request $request)    {
+
+
+        // $query=Ticket::query();
+
+        // if($s = $request->input(key:'q')){
+
+        //     $query->whereRaw(sql:"id LIKE '%" .$s."%'")            
+        //     ->orWhereRaw(sql:"created_on LIKE '%" .$s."%'") 
+        //     ->orWhereRaw(sql:"updated LIKE '%" .$s."%'")
+        //     ->orWhereRaw(sql:"description LIKE '%" .$s."%'")
+        //     ->orWhereRaw(sql:"title LIKE '%" .$s."%'")
+        //     ;
+        // }
+
+        // return $query->get();
+
+
+        //-------------
+
+        $searchTerm=$request->query('q');
+      
+        $results=  Ticket::join('users', function($builder) {
+            $builder->on('users.id', '=', 'tickets.caller');
+            // here you can add more conditions on users table.
+        })->join('categories', function($builder) {
+            $builder->on('categories.id', '=', 'tickets.category');
+            // here you can add more conditions on categories table.
+        })->       
+        
+         where('tickets.id', 'LIKE', "%{$searchTerm}%") 
+        ->orWhere('tickets.title', 'LIKE', "%{$searchTerm}%") 
+        ->orWhere('tickets.description', 'LIKE', "%{$searchTerm}%") 
+        ->orWhere('tickets.created_on', 'LIKE', "%{$searchTerm}%") 
+        ->orWhere('tickets.updated', 'LIKE', "%{$searchTerm}%")       
+        ->orWhere('categories.cat_name', 'LIKE', "%{$searchTerm}%")                   
+        ->orWhere('tickets.status', 'LIKE', "%{$searchTerm}%")
+        ->get();
+
+        $response=array();
+       
+        foreach ($results as $ticket) {            
+            $caller=User::find($ticket->caller);
+            $subjperson=User::find($ticket->subjperson);
+            $assigned_to=User::find($ticket->assigned_to);
+            $created_by=User::find($ticket->created_by);
+            $updated_by=User::find($ticket->updated_by);
+            $category=Category::find($ticket->category);
+            $service=Category::where('id','=',$category->main_cat_id)->first();
+            
+            if($ticket->type=="Request"){
+                $prefix='REQ';
+            };
+            if($ticket->type=="Incident"){
+                $prefix='INC';
+            };
+
+            $data = array(
+                'id'=> $prefix.$ticket->id,
+                'caller_name' => $caller->name, 
+                'subjperson_name' => $subjperson->name, 
+                'assigned_to_name' => $assigned_to->name, 
+                'created_by_name'=>$created_by->name, 
+                'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+                'title' => $ticket->title,
+                'type' => $ticket->type,              
+                'category_name' => $category->cat_name,
+                'service_name' => $service->cat_name,
+                'status' => $ticket->status, 
+                'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
+                'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
+                        
+                );
+                array_push($response,$data);          
+            }
+
+       
+        return response()->json($response);
+
+       // https://stackoverflow.com/questions/14463921/select-from-multiple-tables-with-laravel-fluent-query-builder --> ???
+       //https://stackoverflow.com/questions/48406444/laravel-eloquent-search-inside-related-table
+
+  
+       
+    }
+
+
 
     /**
      * Display the specified resource.
