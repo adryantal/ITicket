@@ -20,11 +20,11 @@ class FrameView {
     new NavDropDown();
 
 //normal page - navigation
-this.loadPage($('#ticketmanagement .menuitem'),0,'ticketlist.html');
-this.loadPage($('#ticketmanagement .menuitem'),3,'newticket.html'); 
+this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets');
+this.loadPage($('#ticketmanagement .menuitem'),3,'/newticket'); 
 //dropdown menu - navigation
-this.loadPage($('#nd-ticketmanagement .menuitem'),0,'ticketlist.html');
-this.loadPage($('#nd-ticketmanagement .menuitem'),3,'newticket.html'); 
+this.loadPage($('#nd-ticketmanagement .menuitem'),0,'/alltickets');
+this.loadPage($('#nd-ticketmanagement .menuitem'),3,'/newticket'); 
 
 
 

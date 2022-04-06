@@ -119,7 +119,7 @@ class TicketFilter {
       if (e.keyCode == 13) {
         //set the search status bar to the default state, in case there are results of a previous filtering shown...
         $("#search-status-bar").empty();
-        this.searchTrigger("genealSearch", $(".custom-input").val());
+        this.searchTrigger("generalSearch", $(".custom-input").val());
         if (this.customSearchField.val() == "") {
           $("#search-status-bar").append("Filter | All tickets");
         } else {
@@ -133,7 +133,7 @@ class TicketFilter {
   }
 }
 
-let counter = 0;
+
 class Pagination {
   constructor() {
     const ticketContainer = $("#ticket-container");
@@ -147,28 +147,18 @@ class Pagination {
     let limitPerPage;
     //set limit per page based on browser height --> refresh needed
     //location.reload() refreshes the page on each resize event
-      $(window).on('resize', function(){
-        location.reload();
-    });
-
-
-    
-    let itemContainerHeight =  $("main").height() -  $("#attr-bar").height() - $("#search-status-bar").height();
-    limitPerPage = 0;
-    $(".ticket-data-line").each(function () {
-      if (
-        $(this).position().top + $(this).height() /*+ MARGIN*/ >  itemContainerHeight
-      ) {
-        return;
-      } else {
-        limitPerPage++;
-      }
-    });
+    let counter = 0;
+      $(window).on('resize', function(){ 
+        countlimitPerPage();  
+        counter++;
+    }); 
+     
     if (counter === 0) {
-      pageIntervalBar.append("1-" + limitPerPage);
+      countlimitPerPage(); 
+      pageIntervalBar.append("1-" + (limitPerPage-1));
     }
-
-    counter++;
+    
+  
 
     paginationBar.append(
       "<li id='previous-page'><a href='javascript:void(0)' aria-label='Previous'><span aria-hidden=true>&laquo;</span></a></li>"
@@ -298,6 +288,20 @@ class Pagination {
           limitPerPage * currentPage
       );
     });
+
+    function countlimitPerPage(){
+      let itemContainerHeight =  $("main").height() -  $("#attr-bar").height() - $("#search-status-bar").height();
+          limitPerPage = 0;
+          $(".ticket-data-line").each(function () {
+            if (
+              $(this).position().top + $(this).height() /*+ MARGIN*/ >  itemContainerHeight
+            ) {
+              return;
+            } else {
+              limitPerPage++;
+            }
+          });   
+        }  
   }
 }
 
@@ -315,19 +319,19 @@ class TicketListHeader {
   }
   createAttributeHeaders() {
     const AttrHeaderTitlesArray = [
-      { title: "Ticket ID", sortBy: "id" },
-      { title: "Caller", sortBy: "caller" },
-      { title: "Created for", sortBy: "subjperson" },
+      { title: "Ticket ID", sortBy: "id" }, 
+      { title: "Caller", sortBy: "caller_name" },
+      { title: "Created for", sortBy: "subjperson_name" },
       { title: "Title", sortBy: "title" },
       { title: "Type", sortBy: "type" },
-      { title: "Service", sortBy: "service" },
-      { title: "Category", sortBy: "category" },
+      { title: "Service", sortBy: "service_name" },
+      { title: "Category", sortBy: "category_name" },
       { title: "Status", sortBy: "status" },
-      { title: "Assigned to", sortBy: "assigned_to" },
+      { title: "Assigned to", sortBy: "assigned_to_name" },
       { title: "Created on", sortBy: "created_on" },
-      { title: "Created by", sortBy: "created_by" },
+      { title: "Created by", sortBy: "created_by_name" },
       { title: "Updated", sortBy: "updated" },
-      { title: "Updated by", sortBy: "updated_by" },
+      { title: "Updated by", sortBy: "updated_by_name" },
     ];
 
     new AttributeHeader($("#attr-bar"), AttrHeaderTitlesArray);
@@ -407,12 +411,11 @@ class AttributeHeader {
 
   sortTicketsByAttribute(){
     let attribute;
-    this.sortIcon.on("click", (e) => {
+    this.sortIcon.on("click", (e) => {      
       attribute = $(e.target).attr("sortBy");
       if (!(typeof attribute === "undefined")) {
         this.sortTrigger("sortByAttribute", attribute);
-      }
-      console.log(attribute);
+      }      
     });
   }
 }
@@ -434,6 +437,7 @@ class AttributeFilterBar {
 
   toggleAttributeFilterBar(){
     this.attrFilterBtn.on("click", () => {
+      
       if (this.attrFilterBar.is(":hidden")) {
         this.attrFilterBar.show();
         $("article").css("grid-template-rows", "35px 35px 45px auto 30px");

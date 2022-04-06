@@ -11,7 +11,7 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="\..\css\switchboard.css" rel="stylesheet">
+    <link href="\..\it\css\switchboard.css" rel="stylesheet">
 </head>
 
 <body>
@@ -45,7 +45,7 @@
 
                     <div class="col-sm-5 border rounded">
                         <h2>Ticket Management Platform</h2>
-                        <a href="{{ URL::to('/it/tickets/all') }}">
+                        <a href="{{ URL::to('/alltickets') }}">
 
                             <div class="square"> <i class="fa fa-ticket " style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
 

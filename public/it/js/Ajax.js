@@ -1,8 +1,6 @@
 
 class MyAjax{
-    constructor(){
-       }       
-             
+  constructor(token){this.token=token;}                  
 
 
 
@@ -27,7 +25,9 @@ class MyAjax{
 
      /*POST - új adat felvitele az AB-ba API végponton keresztül*/
      postAjax(apiEndPoint,newData) {
+    
         $.ajax({
+          headers: {'X-CSRF-TOKEN': this.token},
           url: apiEndPoint,
           type: "POST",
           data: newData,
@@ -42,6 +42,7 @@ class MyAjax{
       /*DELETE - adott id-jú adat törlése az AB-ból API végponton keresztül*/
       deleteAjax(apiEndPoint,id) {
         $.ajax({
+          headers: {'X-CSRF-TOKEN': this.token},
           url: apiEndPoint+"/"+id,
           type: "DELETE",    
           success: function (result) {
@@ -53,6 +54,7 @@ class MyAjax{
       /*PUT - dott id-jú adat módosítása az AB-ban API végponton keresztül*/
       putAjax(apiEndPoint,newData,id) {
         $.ajax({
+          headers: {'X-CSRF-TOKEN': this.token},
           url: apiEndPoint+"/"+id,
           type: "PUT",  
           data: newData,  

@@ -1,11 +1,11 @@
 class TicketListController {
   constructor() {
-    new FrameView();
-    
+    new FrameView();    
     const ticketDataArray = [];
-    const myAjax = new MyAjax();
-    let apiEndPoint = "http://localhost:3000/tickets";
-    myAjax.getAjax(apiEndPoint, ticketDataArray, ticketList);
+    const token=$('meta[name="csrf-token"]').attr('content');
+    const myAjax = new MyAjax(token);
+    let apiAllTickets = "http://localhost:8000/api/ticket/all/";
+    myAjax.getAjax(apiAllTickets, ticketDataArray, ticketList);
     new TicketListHeader();
 
     /*DISPLAY TICKET LIST */
@@ -20,6 +20,7 @@ class TicketListController {
         const obj = new TicketListItem(node, data);
 
       });
+      $("#pageinterval-bar").empty(); //ne duplikálódjon a pageintervalbar tartalma, mikor újra példányosítódik a Pagination osztály
       new Pagination();
       // array.splice(0, array.length); //ez az összetett keresés miatt kell(select/option + keresőmező együttes használata), ha az én megoldásomat nézzük
       // //templateItem.remove() //templateItem eltávolítása
@@ -37,8 +38,9 @@ class TicketListController {
 
 
     /*GENERAL SEARCH*/
-    $(window).on("genealSearch", (event) => {
-      let filter = apiEndPoint + "?q=" + event.detail; //szűrési feltétel hozzáadása az API végpont útvonalához
+    $(window).on("generalSearch", (event) => {
+     // console.log('event detail '+event.detail )
+      let filter = apiAllTickets + "search?q=" + event.detail; //szűrési feltétel hozzáadása az API végpont útvonalához
       myAjax.getAjax(filter, ticketDataArray, ticketList); //szűrt adatok lekérése, megjelenítése
     });
 
@@ -46,44 +48,57 @@ class TicketListController {
 
     new TicketFilter();
     $(window).on("filterTicketData", (event) => {
-      let filterInputValueChain = "?";
+ 
+
+      let filterInputValueChain = "search?";
       event.detail.forEach((filterInput) => {
         filterInputValueChain +=
-          filterInput.id.substring(7, filterInput.id.length) +
+          filterInput.id.substring(7, filterInput.id.length) +  //key
           "_like=" +
-          filterInput.value +
+          filterInput.value + //value
           "&";
       });
-      filterInputValueChain = filterInputValueChain.substring(
-        0,
-        filterInputValueChain.length - 1
-      );
-      let filter = apiEndPoint + filterInputValueChain; ///szűrési feltétel hozzáadása az API végpont útvonalához
+      filterInputValueChain = filterInputValueChain.substring(0,filterInputValueChain.length - 1);
+      let filter = apiAllTickets + filterInputValueChain; ///szűrési feltétel hozzáadása az API végpont útvonalához
       console.log(filter)
-      myAjax.getAjax(filter, ticketDataArray, ticketList); //szűrt adatok lekérése, megjelenítése
+  
+     // myAjax.getAjax(filter, ticketDataArray, ticketList); //szűrt adatok lekérése, megjelenítése
     });
 
 
-    
+       
+     
     /*ATTRIBUTE HEADER - sorting tickets by attributes*/   
-    let previousOrder="";       
+    
+
+    let asc=true;
     $(window).on("sortByAttribute", (event) => {
       let attribute = event.detail;  
-      let order;  
-      let asc= "?_sort=" + attribute + "&_order=ASC";
-      let desc= "?_sort=" + attribute + "&_order=DESC";       
-      if(previousOrder===asc){
-        order=desc;
-      }else if (!previousOrder===asc){
-        order=asc;
-      }else{
-        order=asc;
-      }
-      let filter = apiEndPoint + order;
-      myAjax.getAjax(filter, ticketDataArray, ticketList);
-      previousOrder=order;
+      myAjax.getAjax(apiAllTickets,ticketDataArray, function(){ //újra lekérjük a listát
+        asc ? sortByKeyAsc(ticketDataArray,attribute) : sortByKeyDesc(ticketDataArray,attribute);
+        ticketList(ticketDataArray);
+      })   
+      asc=!asc;
     });
+
+    function sortByKeyDesc(array, key) {
+      return array.sort(function (a, b) {         
+          return ((a[key]> b[key]) ? -1 : ((a[key] < b[key]) ? 1 : 0));
+      });
   }
+    function sortByKeyAsc(array, key) {
+      return array.sort(function (a, b) {          
+          return ((a[key]< b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0));
+      });
+  }
+
+
+  
+
+  }
+
+  
+  
 
   
 }

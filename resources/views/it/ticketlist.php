@@ -1,20 +1,20 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Home</title>
+    <title>ITicket - All tickets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" media="screen" href="\..\css\frame.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="\..\css\ticketlist.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\ticketlist.css" />
     <link rel="icon" type="image/x-icon" href="../images/logo_mini.PNG" />
     <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
-    <script src="\js\Ajax.js"></script>    
-    <script src="\js\frameView.js"></script>   
-    <script src="\js\ticketListController.js"></script>
-    <script src="\js\ticketListView.js"></script>
-    <script src="\js\ticketListMain.js"></script>
+    <script src="it\js\Ajax.js"></script>    
+    <script src="it\js\frameView.js"></script>   
+    <script src="it\js\ticketListController.js"></script>
+    <script src="it\js\ticketListView.js"></script>
+    <script src="it\js\ticketListMain.js"></script>
     <meta name="csrf-token" content=<?php $token=csrf_token(); echo $token;?>>
       
 
@@ -49,10 +49,10 @@
       <div class="profile-dropdown">
         <button class="pr-dropbtn" id="avatar"><img src="<?php echo asset('storage/icons/avatar_default.png') ?>" alt="" class="avatar-img">        
         </button>
-        <div id="username">Logged-in User's Name</div>
+        <div id="username"><?php echo auth()->user()->name ?></div>
         <div class="prdropdown-content">
           <a href="#">Profile</a>
-          <a href="#">Logout</a>        
+          <a href="/logout">Logout</a>        
         </div>
       </div>
       
@@ -83,24 +83,7 @@
 
           <div id="ticket-container">
 
-            <!-- <div class="ticket-data-line">
-              <div class="ticket-data"></div>
-              <div class="ticket-data"><span class="ticketID"><a>10927656</a></span></div>
-              <div class="ticket-data"><span class="caller"><a>John Brown</a></span></div>
-              <div class="ticket-data"><span class="subjperson"><a>Christine White</a></span></div>
-              <div class="ticket-data"><span class="title">Unable to log in to user account</span></div>
-              <div class="ticket-data"><span class="type">Incident</span></div>
-              <div class="ticket-data"><span class="service">Network</span></div>
-              <div class="ticket-data"><span class="category">Account</span></div>
-              <div class="ticket-data"><span class="status">In Progress</span></div>
-              <div class="ticket-data"><span class="assignedTo"><a>Kevin George</a></span></div>
-              <div class="ticket-data"><span class="createdOn">12-02-2022</span></div>
-              <div class="ticket-data"><span class="createdBy"><a>Kevin George</a></span></div>
-              <div class="ticket-data"><span class="updated">15-02-2022</span></div>
-              <div class="ticket-data"><span class="updatedBy"><a>Kevin George</a></span></div>  
-            </div> -->
-
-
+            
           </div>
 
             <div id="footer-bar">

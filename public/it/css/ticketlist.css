@@ -1,5 +1,5 @@
+@import url(https://fonts.googleapis.com/css2?family=PT+Sans&display=swap);
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
 
 .ticket-container {
   display: flex;
@@ -35,7 +35,7 @@ article {
   display: grid;
   grid-template-rows: 35px 35px /*45px*/ auto 35px; 
   padding-top: 50px;
-  
+  height: 100vh;
 }
 
 #ticket-container,
@@ -145,6 +145,18 @@ article {
   cursor: pointer;
 }
 
+input::-moz-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightsteelblue;
+  opacity: 1; /* Firefox */
+}
+
+input:-ms-input-placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: lightsteelblue;
+  opacity: 1; /* Firefox */
+}
+
 input::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: lightsteelblue;
@@ -223,3 +235,4 @@ input::placeholder {
     position: static;
   }
 }
+
