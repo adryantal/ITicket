@@ -27,12 +27,9 @@ Route::get('/login', function () { return view('auth.login');}); //login oldal
 Route::get('/logout', [LogoutController::class, 'perform']); //bejelentkezett user kijelentkeztetése
 Route::get('/notauthorized', function () {return view('it.notauthorized');});
 
-
-
 Route::middleware(['auth'])->group(function () {    
 
 });
-
 
 Route::middleware(['auth', IsResolver::class])->group(function () {
    
@@ -40,13 +37,14 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     //oldalak útvonalai
     Route::get('/switchboard', function () {return view('switchboard');});   
     Route::get('/switchboard/db', function () {return view('it.switchboardfordb');}); //ez majd csak a db-eseknek lesz elérhető https://stackoverflow.com/questions/65835538/laravel-8-register-user-while-logged-in
-    Route::get('/alltickets', function () {return view('it.ticketlist');});
-   
+    Route::get('/alltickets', function () {return view('it.ticketlist');}); //ticketek kilistázása
+    Route::get('/newticket',  function () {return view('it.newticket');}); //új ticket rögzítése - form
 
     /*Útvonalak ticketekre*/
-    Route::get('/api/ticket/all', [TicketController::class, 'getAllTickets']);  //összes ticket  
+    Route::get('/api/ticket/all', [TicketController::class, 'getAllTickets']);  //összes ticket kilistázása 
     Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //általános keresés (összes attribútumon értékein belül keres) 
-    Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés
+    Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés 
+    
     Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése 
    
     Route::get('/api/ticket/{id}', [TicketController::class, 'getTicket']);  //adott ticket megkeresése id alapján
@@ -60,16 +58,22 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     Route::get('/api/category/all/extended', [CategoryController::class, 'allCategories_ext']); //adott service + az alá tart. kategóriák
     Route::get('/api/service/{id}', [CategoryController::class, 'getService']);//adott főkategória (service) megkeresése id alapján
     Route::get('/api/category/{id}', [CategoryController::class, 'getCategory']);  //adott alkategória (category) megkeresése id alapján
+    Route::get('/api/category/all/filter', [CategoryController::class, 'filterCategories']);  //alkategóriák szűrése megadott attr. alapján
+    Route::get('/api/service/{id}/categories/filter', [CategoryController::class, 'filterCategoriesPerService']); //adott service alá tart. kategóriák v2.
+    Route::get('/api/service/all/filter', [CategoryController::class, 'filterServices']);  //alkategóriák szűrése megadott attr. alapján
 
     /*Útvonalak a csatolmányokhoz kapcsolódóan*/
     Route::get('/api/attachment/all', [AttachmentController::class, 'getAllAttachments']);  //összes csatolmány
     Route::get('/api/ticket/{id}/attachments', [TicketController::class, 'getAttachmentsPerTicket']); //adott tickethez tart. csatolmányok
     Route::get('/api/attachment/{id}/ticket', [AttachmentController::class, 'getTicketPerAttachment']); //adott csatolmány mely tickethez tart. 
     Route::get('/api/attachment/{id}', [AttachmentController::class, 'getAttachment']);//adott csatolmány megkeresése id alapján
+    Route::post('/api/attachment', [AttachmentController::class, 'store']); //új csatolmány rögzítése 
 
     /*Útvonalak userekhez --> ez a felület majd csak a database-eseknek lesz engedélyezett*/
     Route::get('/api/user/all', [UserController::class, 'getAllUsers']);  //összes user
     Route::get('/api/user/{id}', [UserController::class, 'getUser']);  //adott user megkeresése id alapján
+
+    Route::get('/api/user/all/filter', [UserController::class, 'filter']);  //userek szűrése adott attr. alapján
 
     Route::get('/newuser', function () { return view('newuser');});  //új user hozzáadása - még nincs kész; egyelőre SOS megoldásnak a newuser.blade.php használandó
 });

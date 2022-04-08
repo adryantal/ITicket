@@ -8,70 +8,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-  <link rel="stylesheet" type="text/css" media="screen" href="./frame.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="./newticket.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\newticket.css" />
   <link rel="icon" type="image/x-icon" href="../images/logo_mini.PNG" />
   <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
   <script
   src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"
   integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY="
   crossorigin="anonymous"></script>
-  <script src='view/frameView.js'></script>  
-  <script src='../it/view/newTicketView.js'></script>
-  <script src='../it/model/Ajax.js'></script>
-  <script src='../it/controller/newTicketController.js'></script>
-  <script src='newTicketMain.js'></script>
+  <script src='it\js\frameView.js'></script>  
+  <script src='it\js\newTicketView.js'></script>
+  <script src='it\js\Ajax.js'></script>
+  <script src='it\js\newTicketController.js'></script>
+  <script src='it\js\newTicketMain.js'></script>
+  <meta name="csrf-token" content=<?php $token=csrf_token(); echo $token;?>>
 
 
 </head>
  <body>
   <main>
-    <section id="panel-top">
-      <div id="logocontainer">
-        <img id="iticket-logo" src="../images/logo_mini.PNG" alt="">
-        <div class="nav-dropdown">
-          <button id="hamburger-icon"><img src="../images/icons/hamburger_icon.png" alt="" class="h-icon">
-          </button>
-          <div class="navdropd-content">
-
-          </div>
-        </div>
-      </div>
-
-      <div id="infobar">
-        <!-- Search bar -->
-
-        <!-- Dropdown list - avatar -->
-        <div class="profile-dropdown">
-          <button class="pr-dropbtn" id="avatar"><img src="../images/icons/avatar_default.png" alt=""
-              class="avatar-img">
-          </button>
-          <div id="username">Logged-in User's Name</div>
-          <div class="prdropdown-content">
-            <a href="#">Profile</a>
-            <a href="#">Logout</a>
-          </div>
-        </div>
-
-
-    </section>
-
-    <section id="container-main">
-      <nav>
-
-      </nav>
-
+  <?php include 'firstpart.php';?>
       <article>      
 
         <div id="newticketform-header">Create new ticket</div>
 
-        <form action="" method="post" enctype="multipart/form-data">        
+        <form action="" method="POST" enctype="multipart/form-data">        
 
           <div class="row-top"> 
-            <div><label for="ticketID">Ticket ID</label></div>
-            <div> <input type="other" name="ticketID" id="ticketID"></div>
-            <div><label for="status" >Status</label></div>
-            <div> <input type="other" name="status" id="status" value="New" disabled></div>
+            <div>Ticket number:</div>
+            <div id='ticket-number'> 123</div>
+            <div></div>
+            <div> </div>
           </div>
 
           <div class="row-top"> 
@@ -124,8 +91,8 @@
           <div class="row-top">  
             <div><label for="assignmentGroup">Assignment group</label></div>
             <div> <input type="text" name="assignmentGroup" id="assignmentGroup" value="IT Helpdesk" disabled></div>           
-                <div><label for="assignedTo">Assigned to</label></div>
-                <div> <input type="text" id="assignedTo" name="assignedTo">
+                <div><label for="assignedTo" >Assigned to</label></div>
+                <div> <input type="text" id="assignedTo" name="assignedTo" value= <?php echo auth()->user()->name ?> disabled>
                 </div>
                 
           </div>

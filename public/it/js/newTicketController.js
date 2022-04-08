@@ -5,10 +5,11 @@ class NewTicketController {
     
     new FrameView();
     const nTicketView = new NewTicketView();
-    const myAjax = new MyAjax();
+    const token=$('meta[name="csrf-token"]').attr('content');
+    const myAjax = new MyAjax(token);
     const attachmentsArray = [];
-    let apiEndPointTicket = "http://localhost:3000/tickets";
-    let apiEndPointAttachments = "http://localhost:3000/attachments";
+    let apiEndPointCreateTicket = "http://localhost:8000/api/ticket";
+    let apiEndPointAttachments = "http://localhost:8000/api/attachment/";
     
     
     $(window).on("transferAttachments", (event) => {
@@ -18,37 +19,7 @@ class NewTicketController {
       });     
     });
 
-/*!!!!!!!!!!!!!!!!!!*/
-   //generate new ticket nr. depending on ticket type
-    const ticketType=nTicketView.typeField.val(); 
-    newTicketIDGenerator(ticketType);  
-    nTicketView.typeField.on("change",()=>{
-      newTicketIDGenerator(nTicketView.typeField.val()); 
-    })          
-    function newTicketIDGenerator(type){    
-      const getLastTicketArray=[];  
-      let API = "http://localhost:3000/tickets?type="+type+"&_sort=id&_order=DESC";
-       myAjax.getAjax(API, getLastTicketArray, function(){ 
-         if(getLastTicketArray.length>0){
-         let lastTicketNr =  Number(getLastTicketArray[0].id.substring(3,getLastTicketArray[0].id.length));         
-         console.log(lastTicketNr)
-         let prefix;
-         if(type=="Incident"){
-          prefix="INC"
-         }else{
-           prefix="REQ"         }           
-          $("#ticketID").val(prefix+(lastTicketNr+1));          
-        }else{
-          if(type=="Incident"){
-            $("#ticketID").val("INC1000001");
-           }else{
-            $("#ticketID").val("REQ1000001");
-           }      
-        }
-        $("#ticketID").attr("disabled","disabled");
-      });     
-      
-    }
+
   
 //validate ticket data and submit ticket data
     $("#submit").on("click", (evt) => {
@@ -67,52 +38,50 @@ class NewTicketController {
   });
   
   function addNewTicket(){
-      /*insert value of the input fields to the Tickets table*/  
-    let now = new Date(Date.now());
-    let dateTimeNow = $.datepicker.formatDate('yy-mm-dd', now)+" "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-    let newTicketData = { 
-      id: nTicketView.ticketIDField.val(),        
+      /*insert value of the input fields to the Tickets table*/    
+    let newTicketData = {             
       caller_name: nTicketView.callerField.val(),
       subjperson_name: nTicketView.subjpersonField.val(),
       title: nTicketView.titleField.val(),
       type : nTicketView.typeField.val(),
       service_name: nTicketView.serviceField.val(),
       category_name: nTicketView.categoryField.val(),
-      status : nTicketView.statusField.val(),      
+      status : "New",      
       impact: nTicketView.impactField.val(),
       priority: nTicketView.priorityField.val(),      
       urgency: nTicketView.urgencyField.val(),
       assigned_to_name : nTicketView.assignedToField.val(),
-      assignment_group_name : nTicketView.assignmentGroupField.val(),
-      created_on : dateTimeNow,
-      created_by_name : nTicketView.createdByField.val(),
-      updated : "",
+      assignment_group_name : nTicketView.assignmentGroupField.val(),         
       updated_by_name: "",
       description: nTicketView.descriptionField.val(),
       contact_type: nTicketView.contactTypeField.val(),      
       parent_ticket: nTicketView.parentTicketField.val(),
-      //attachments: attachmentsArray
+      attachments: attachmentsArray,
       
       //reading data from hidden input fields
       caller_id: $("#callerID").val(),
       subjperson_id: $("#subjpersonID").val(),
       service_id: $("#serviceID").val(),
-      category_id: $("#categoryID").val(),
-      assigned_to_id: $("#assignedToID").val(),
-      assignment_group_id: 106,
+      category_id: $("#categoryID").val(),    
+      assignment_group_id: 101,
       
     };
-    myAjax.postAjax(apiEndPointTicket, newTicketData);     
+    console.log(newTicketData);
+    debugger;
+    myAjax.postAjax(apiEndPointCreateTicket, newTicketData);  
+    
+    //should get the ticket ID here!
+
      /*insert attachments to the Attachments table*/   
-    attachmentsArray.forEach(element => {     
-        let newAttData ={
-            // id: 1234,         
-            date : dateTimeNow,
-            ticket_id: nTicketView.ticketIDField.val(), 
-            file_name: element
-        };
-        myAjax.postAjax(apiEndPointAttachments, newAttData);
-    }); 
+    // attachmentsArray.forEach(element => {     
+    //     let newAttData ={
+    //         // id: 1234,         
+    //         date : dateTimeNow,
+    //         ticket_id: nTicketView.ticketIDField.val(), //should obtain the ticket ID somehow!!
+    //         file_name: element
+    //     };
+    //     myAjax.postAjax(apiEndPointAttachments, newAttData);
+    // }); 
 
     }  
 

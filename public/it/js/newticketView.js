@@ -2,8 +2,7 @@ class NewTicketView {
   constructor() {
     this.attachments = [];    
     this.ticketIDField = $("#ticketID");
-    this.callerField = $("#caller");
-    this.statusField = $("#status");
+    this.callerField = $("#caller");    
     this.impactField = $("#impact");
     this.urgencyField = $("#urgency");
     this.priorityField = $("#priority");
@@ -21,10 +20,10 @@ class NewTicketView {
     this.attachmentList = $("#attachment-list");
     this.addAttachmentFileInput = $("#attachment");    
     this.ResetFormBtn = $("#reset");    
-
+    this.serviceID="";
  
 
-    
+    this.categoryField.attr('disabled', 'disabled'); 
    this.setRequiredInputFields();
     this.setAutocompInputFields();
 
@@ -39,13 +38,14 @@ class NewTicketView {
       this.removeAttachment(event);
       this.eventTrigger('transferAttachments',this.attachments);   
     });  
-
     
    //reset form
     this.resetForm(); 
 
+
   }
 
+ 
   eventTrigger(eventName, eventDetail) {
     let ev = new CustomEvent(eventName, {
       detail: eventDetail,
@@ -140,14 +140,17 @@ class NewTicketView {
     });  
   }
 
-  autoComp(selector, attributeName,apiEndPoint) {    
+  
+
+
+  autoComp(selector, attributeName,apiEndPoint) {       
     selector.autocomplete({
-        source: function (request, response) {
+        source: function (request, response) {           
           $.ajax({
-            url:  apiEndPoint+"?" + attributeName + "_like=" + request.term,
+            url:  apiEndPoint,
             dataType: "json",
             data: {
-              q: request.term,
+              name_like : request.term,              
             },
             success: function (data) {
               if (data.length > 0) {             
@@ -170,24 +173,27 @@ class NewTicketView {
             select:  (e, u) =>{
                 //If the No match found" item is selected, clear the TextBox.
                 if (u.item.value == 'No results found.') {                  
-                  selector.val("");                                
+                  selector.val("");                 
                     return false;
                 }else{ 
                   //if results are found, create a new hidden input field to store the ID                                
-                  this.addHiddenInputField(selector.attr("id"),u.item.label);                 
+                  this.addHiddenInputField(selector.attr("id"),u.item.label); 
+                  if(selector.attr("id")==='service') {               
+                    this.serviceID=u.item.label;  //if a service has been seleted, get the selected service's ID (needed in order to determine the related categories)   
+                    this.categoryField.removeAttr('disabled');
+                  }          
                 }                                    
             },
-            change: function (e, u) { 
-              console.log(u)
+            change: function (e, u) {        
               if(!(u.item === null || u.item===undefined)){
-               selector.val(u.item.value); // take from attribute and insert as value
+               selector.val(u.item.value); // take from attribute and insert as value              
               }else{
                 selector.val(""); 
               }
           }
       })
       .data("uiAutocomplete")._renderItem = function (ul, item) {
-      //get position of the selector being clicked onto  
+      //get position of the selector being clicked on  
       let inputFieldPosition = selector.position();          
         $(ul).addClass("ac-template");
       //set position of the autocomplete based on the selector's position 
@@ -197,7 +203,8 @@ class NewTicketView {
           position: "absolute",
         });   
         const showNameAndID = ["caller", "subjperson", "assignedTo"]; //show both name and ID in autocomplete dropdown for these selectors
-        let html;
+        let html;   
+       
         if (jQuery.inArray(selector.attr("id"), showNameAndID) > -1) {
              html = "<a>" + item.value + (item.label === "No results found." ? "" : " (" + item.label + ")") + "</a>";
       } else {
@@ -223,12 +230,13 @@ class NewTicketView {
   } 
 
   setAutocompInputFields(){    
-    const apiEndPointUsers = "http://localhost:3000/users";
-    const apiEndPointCategories = "http://localhost:3000/categories";    
-    const apiEndPointResolvers = "http://localhost:3000/resolvers";  
+    const apiEndPointUsers = "http://localhost:8000/api/user/all/filter";       
+    const apiEndPointServices = "http://localhost:8000/api/service/all/filter";    
+    const apiEndPointResolvers = "http://localhost:8000/api/resolver/all/filter";  
+    
         
     $(window).on( {
-      click: (event) => {   
+      mouseenter: (event) => {           
        let selectorName = $(event.target).attr("id");          
       switch (selectorName) {        
         case "caller":                         
@@ -241,22 +249,21 @@ class NewTicketView {
           this.autoComp($("#assignedTo"), "name",apiEndPointUsers);
           break;
         case "service":               
-          this.autoComp($("#service"), "cat_name",apiEndPointCategories); //
+          this.autoComp($("#service"), "name",apiEndPointServices);         
           break;
-        case "category":                       
-          this.autoComp($("#category"), "cat_name",apiEndPointCategories); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra
-           break;
-        case "assignmentGroup":                   
-           this.autoComp($("#assignmentGroup"), "name",apiEndPointResolvers); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra
-           break;         
-        default: ;
-        
-      };     
+        case "category": 
+          if(!this.serviceField.val()==""){                                  
+          this.autoComp($("#category"), "name","http://localhost:8000/api/service/"+this.serviceID+"/categories/filter"); 
+          }
+           break;                
+        default: ;        
+      };  
            
-    } 
-
-    
-   
+    } , keyup:()=> {
+        if(this.serviceField.val()==='') {  
+            this.categoryField.attr('disabled', 'disabled'); 
+        } 
+      }
     });
 
   }

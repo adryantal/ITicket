@@ -275,10 +275,10 @@ class ModifyTicketView {
           this.autoComp($("#assignedTo"), "name",apiEndPointUsers);
           break;
         case "service":               
-          this.autoComp($("#service"), "cat_name",apiEndPointCategories); //
+          this.autoComp($("#service"), "name",apiEndPointCategories); //
           break;
         case "category":                
-          this.autoComp($("#category"), "cat_name",apiEndPointCategories); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra
+          this.autoComp($("#category"), "name",apiEndPointCategories); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra
            break;
         case "assignmentGroup":                   
            this.autoComp($("#assignmentGroup"), "name",apiEndPointResolvers); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra

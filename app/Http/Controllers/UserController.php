@@ -40,6 +40,19 @@ class UserController extends Controller
       }
 
 
+      public function filter(Request $request)
+      {
+          $queryString = $request->query();
+          foreach ($queryString as $key => $value) {
+              $explodedKey=explode('_',$key);
+              $column=$explodedKey[0];
+              $expression=$explodedKey[1];
+              $results=User::where($column, $expression, '%' . $value . '%')->get();
+          }
+          return $results;
+      }
+
+
       //adott resolverhez tart. ticketek (lehet csak a nyitott ticketeket...)
 
 

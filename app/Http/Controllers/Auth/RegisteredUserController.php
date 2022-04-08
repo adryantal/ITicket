@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Resolver;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+
+
 
 class RegisteredUserController extends Controller
 {
@@ -20,7 +23,9 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return view('auth.newuser');
+        $resolvers = Resolver::all(); 
+        return view('auth.newuser', ['resolvers' => $resolvers]); 
+        
     }
 
     /**
@@ -36,7 +41,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             //'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+           // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
         $domain = '@fantasy-comp.com';
         $user = User::create([
@@ -45,17 +50,20 @@ class RegisteredUserController extends Controller
             'ad_id' =>  $request->ad_id, 
             'email' => $request->ad_id.$domain,
             //'password' => Hash::needsRehash($request ->password) ? Hash::make($request ->password) : $request ->password,
-            'password' => '12345678', //default; lehetne egy random generátort beállítani security okok miatt, és első belépéskor a Helpdesk reseteli a usernek a pw-öt
+            'password' =>  Hash::make('12345678'), //default; lehetne egy random generátort beállítani security okok miatt, és első belépéskor a Helpdesk reseteli a usernek a pw-öt
             'active' =>  $request->active, //kezdetben lehetne akár aktív, és a DB Teammel lehet aktiváltatni 
             'phone_number' =>  $request->phone_number, 
             'department' =>  $request->department, 
-            'resolver_id' =>  $request->resolver_id, 
+            'resolver_id' =>  $request->resolver, 
         ]);
 
         event(new Registered($user));
 
         //Auth::login($user);
+        
 
         return redirect(RouteServiceProvider::HOME);
     }
+
+
 }

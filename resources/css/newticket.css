@@ -69,17 +69,21 @@ form textarea {
   
 }
 
+
+
 form input[type="text"],
 form input[type="number"],
 form input[type="other"],
 form select {
-  height: 23px;
+  height: 25px;
   font-size: 90%;
 }
 
 form select option{
   background-color: rgba(186, 172, 221, 0.9); 
   color: black;
+  height: 25px;
+ 
   
 }
 
@@ -104,7 +108,9 @@ select:focus {
   box-shadow: 0 0 10px #7a9abd;
 }
 
-
+#ticket-number{
+  color: crimson;
+}
 
 #newticketform-header {
   background-color: #719ece;
@@ -221,6 +227,10 @@ input::-webkit-file-upload-button:hover, #attachment:hover{
   position: absolute;
   width: 1px;
   
+}
+
+.single-search{
+  visibility: hidden;
 }
 
 /*Responsivity*/

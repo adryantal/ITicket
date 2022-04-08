@@ -73,13 +73,14 @@ form input[type="text"],
 form input[type="number"],
 form input[type="other"],
 form select {
-  height: 23px;
+  height: 25px;
   font-size: 90%;
 }
 
 form select option {
   background-color: rgba(186, 172, 221, 0.9);
   color: black;
+  height: 25px;
 }
 
 form textarea {

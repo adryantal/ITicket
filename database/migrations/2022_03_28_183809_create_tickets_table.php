@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();  
-            $table->string('ticket_number')->nullable();  //a rekor AB-ben való létrejöttekor mindig NULL, majd trigger updateli        
+            $table->string('ticket_number')->nullable();  //az AB-ben való létrejöttekor mindig NULL, majd a végleges érték store metódus végén íródik be, mikor már a ticket obj. létrejött       
             $table->foreignId('caller')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); ///bejelentő
             $table->foreignId('subjperson')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //érintett
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //nyitotta
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->dateTime('created_on', $precision = 0); //jegy létrejöttének dátuma
             $table->dateTime('updated', $precision = 0)->nullable(); //utolsó módosítás dátuma          
             $table->tinyInteger('time_left')->nullable(); //created_on + sla - mai dátum (órában megadva)
-            $table->tinyInteger('sla');  //trigger írja be, h. inc. esetén 3, req. esetén 5 nap az SLA
+            $table->tinyInteger('sla');  //trigger írja be, h. inc. esetén 3(3*24 h), req. esetén 5(5*24) nap az SLA
             $table->timestamps();
         });
 

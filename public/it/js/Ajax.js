@@ -1,8 +1,8 @@
 
 class MyAjax{
-  constructor(token){this.token=token;}                  
-
-
+  constructor(token){
+    this.token=token;
+  }                  
 
        /*GET - ADATOK LEKÉRÉSE*/
       //apiEndPoint: ahol megkapja a szervertől (ill. azon keresztül az adatbázistól) a (frissített ill. adott esetben szűrt) adatokat

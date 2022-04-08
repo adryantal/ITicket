@@ -44,8 +44,8 @@ class TicketController extends Controller
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
                 'type' => $ticket->type,              
-                'category_name' => $category->cat_name,
-                'service_name' => $service->cat_name,
+                'category_name' => $category->name,
+                'service_name' => $service->name,
                 'status' => $ticket->status, 
                 'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
                 'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
@@ -161,15 +161,15 @@ class TicketController extends Controller
     public function store(Request $request)    {
 
         $ticket = new Ticket();
-        $ticket->subjperson = $request->subjperson;
-        $ticket->caller = $request->caller;      
+        $ticket->subjperson = $request->subjperson_id;
+        $ticket->caller = $request->caller_id;      
         $ticket->contact_type = $request->contact_type;
         $ticket->status = $request->status;
         $ticket->type = $request->type;
-        $ticket->service = $request->service;
-        $ticket->category = $request->category;
+        $ticket->service = $request->service_id;
+        $ticket->category = $request->category_id;
         $ticket->created_on = Carbon::now()->format('d-m-Y');        
-        $ticket->updated_by = $request->updated_by;
+        $ticket->updated_by = $request->updated_by_id;
         $ticket->created_by = Auth::user()->id; //a belogolt user
         $ticket->assigned_to = Auth::user()->id; //első körben ahhoz a helpdeskeshez legyen assignolva, aki nyitotta
         $ticket->title = $request->title;
@@ -191,6 +191,7 @@ class TicketController extends Controller
         }   
 
         $ticket->save();  
+
        //ticket number mező kitöltése
         $t=Ticket::find($ticket->id);
         $ticket_number = $prefix.$t->ticket_id;
@@ -257,10 +258,10 @@ class TicketController extends Controller
                     $attribute='tickets.status';
                   break; 
                   case 'category_name':
-                    $attribute='CS.cat_name';
+                    $attribute='CS.name';
                   break;  
                   case 'service_name':
-                    $attribute='CM.cat_name';
+                    $attribute='CM.name';
                   break;       
                           
                 
@@ -302,8 +303,8 @@ class TicketController extends Controller
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
                 'type' => $ticket->type,              
-                'category_name' => $category->cat_name,
-                'service_name' => $service->cat_name,
+                'category_name' => $category->name,
+                'service_name' => $service->name,
                 'status' => $ticket->status, 
                 'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
                 'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
@@ -344,8 +345,8 @@ class TicketController extends Controller
                          ->orWhere('assigned_to_user.name', 'LIKE', "%{$searchTerm}%") 
                           ->orWhere('updated_by_user.name', 'LIKE', "%{$searchTerm}%")     
                           ->orWhere('created_by_user.name', 'LIKE', "%{$searchTerm}%")    
-                          ->orWhere('CS.cat_name', 'LIKE', "%{$searchTerm}%")                                           
-                          ->orWhere('CM.cat_name', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('CS.name', 'LIKE', "%{$searchTerm}%")                                           
+                          ->orWhere('CM.name', 'LIKE', "%{$searchTerm}%")
                           ->orWhere('description', 'LIKE', "%{$searchTerm}%")
                           ->orWhere('title', 'LIKE', "%{$searchTerm}%")
                           ->orWhere('updated', 'LIKE', "%{$searchTerm}%")
@@ -383,8 +384,8 @@ class TicketController extends Controller
                                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                                 'title' => $ticket->title,
                                 'type' => $ticket->type,              
-                                'category_name' => $category->cat_name,
-                                'service_name' => $service->cat_name,
+                                'category_name' => $category->name,
+                                'service_name' => $service->name,
                                 'status' => $ticket->status, 
                                 'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
                                 'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   

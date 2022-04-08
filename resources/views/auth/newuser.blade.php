@@ -12,6 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="\..\it\css\newuser.css" rel="stylesheet">
+
+   
 </head>
 
 <body>
@@ -80,26 +82,29 @@
                                 <x-input id="department" class="block mt-1 w-full" type="text" name="department" :value="old('department')" required />
                             </div>
 
+                          
                             <!-- Resolver team -->
-                            <div class="mt-4">
-                                <x-label for="resolver_id" :value="__('Resolver')" />
+                            <div class="mt-4"  >
+                                <x-label for="resolver_id" :value="__('*Resolver (to be filled only if user is part of the IT Department)')" />
 
-                                <x-input id="resolver_id" class="block mt-1 w-full" type="text" name="resolver_id" :value="old('resolver_id')"  />
+                                  
+                         
+                        <select id="resolver" class="form-select form-select-sm" name="resolver" placeholder="Resolver" >
+                                <option >-- Select Resolver --</option>
+                             @foreach ($resolvers as $resolver)                   
+                                <option value="{{ $resolver->id }}">{{ $resolver->name }}</option>
+                                 @endforeach
+
+  
+
+                             </select>  
+
+                                <x-input id="resolver_id" class="block mt-1 w-full" type="text" name="resolver_id" :value="old('resolver_id')"  hidden/>
+
+                                
                             </div>
 
-                            <!-- Password
-                            <div class="mt-4">
-                                <x-label for="password" :value="__('Password')" />
-
-                                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-                            </div>
-                            -->
-                           <!-- Confirm Password
-                            <div class="mt-4">
-                                <x-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required />
-                            </div> --> 
+                           
 
                             <div class="flex items-center justify-end mt-4">                            
 
