@@ -15,7 +15,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tickets', function (Blueprint $table) {
-            $table->id();          
+            $table->id();  
+            $table->string('ticket_number')->nullable();  //a rekor AB-ben való létrejöttekor mindig NULL, majd trigger updateli        
             $table->foreignId('caller')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); ///bejelentő
             $table->foreignId('subjperson')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //érintett
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //nyitotta

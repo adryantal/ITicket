@@ -39,15 +39,15 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
 
     //oldalak útvonalai
     Route::get('/switchboard', function () {return view('switchboard');});   
-    Route::get('/switchboardfordb', function () {return view('it.switchboardfordb');}); //ez majd csak a db-eseknek lesz elérhető
+    Route::get('/switchboard/db', function () {return view('it.switchboardfordb');}); //ez majd csak a db-eseknek lesz elérhető https://stackoverflow.com/questions/65835538/laravel-8-register-user-while-logged-in
     Route::get('/alltickets', function () {return view('it.ticketlist');});
    
 
     /*Útvonalak ticketekre*/
-    Route::get('/api/ticket/all', [TicketController::class, 'getAllTickets']);  //összes ticket
-  
-    Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //ticketek rendezése 
-    Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése
+    Route::get('/api/ticket/all', [TicketController::class, 'getAllTickets']);  //összes ticket  
+    Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //általános keresés (összes attribútumon értékein belül keres) 
+    Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés
+    Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése 
    
     Route::get('/api/ticket/{id}', [TicketController::class, 'getTicket']);  //adott ticket megkeresése id alapján
 
@@ -71,7 +71,7 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     Route::get('/api/user/all', [UserController::class, 'getAllUsers']);  //összes user
     Route::get('/api/user/{id}', [UserController::class, 'getUser']);  //adott user megkeresése id alapján
 
-    Route::get('/newuser', function () { return view('newuser');});  //új user hozzáadása - még nincs kész
+    Route::get('/newuser', function () { return view('newuser');});  //új user hozzáadása - még nincs kész; egyelőre SOS megoldásnak a newuser.blade.php használandó
 });
 
 

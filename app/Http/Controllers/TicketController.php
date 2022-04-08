@@ -182,57 +182,99 @@ class TicketController extends Controller
         if($request->type =="Request"){
             $ticket->sla=120; //5*24
             $ticket->time_left= 120;
+            $prefix='REQ';
         } 
         if($request->type =="Incident"){
             $ticket->sla=72;  //3*24
             $ticket->time_left= 72;
-        }        
+            $prefix='INC';
+        }   
 
         $ticket->save();  
+       //ticket number mező kitöltése
+        $t=Ticket::find($ticket->id);
+        $ticket_number = $prefix.$t->ticket_id;
+        Ticket::where('id', $t->id)->update(['ticket_number' => $ticket_number]); //https://stackoverflow.com/questions/35279933/update-table-using-laravel-model
 
         return Ticket::find($ticket->id);
     }
 
-    
-    public function generalSearch(Request $request)    {
 
+    public function filter(Request $request)    {
+        $queryString = $request->query();
+        $results = Ticket::leftJoin('users AS subjperson_user', 'subjperson', '=', 'subjperson_user.id') //a tickets összekapcs. a users táblával a subjperson attr. keresztül
+                         ->leftJoin('users AS caller_user', 'caller', '=', 'caller_user.id')
+                         ->leftJoin('users AS created_by_user', 'created_by', '=', 'created_by_user.id')
+                         ->leftJoin('users AS updated_by_user', 'updated_by', '=', 'updated_by_user.id')
+                         ->leftJoin('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')
+                         ->leftJoin('categories AS CS', function($leftJoin)
+                         {
+                             $leftJoin->on('CS.id', '=', 'tickets.category')  //a CS tábla (Category-Sub) az alkategóriákat reprezentálja
+                                 ->whereNotNull('CS.main_cat_id' );
+                         })
+                        ->leftJoin('categories AS CM', function($leftJoin)        {  //a CM tábla (Category-Main) a főkategórákat reprezentálja
+                             $leftJoin->on('CM.id', '=', 'CS.main_cat_id')       //a főkat. tábla összekapcs. az alkat. táblával, ahol a "főkategóriája" mező NULL
+                                 ->whereNull('CM.main_cat_id');
+                         })
+                          ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'created_by' ,'updated_by' ,'category','title' ,'type' ,'status' ,'created_on' ,'updated');
+                          
+        foreach ($queryString as $key => $value) {
+            $explodedKey=explode('?',$key); //példa: key: 'id_like', expression: '101'
+            $attribute=$explodedKey[0];
+            $expression=$explodedKey[1];
+            switch ($attribute) {
+                case 'id':
+                    $attribute='tickets.id';
+                  break;
+                case 'caller_name':
+                    $attribute='caller_user.name';
+                  break;   
+                  case 'subjperson_name':
+                    $attribute='subjperson_user.name';
+                  break;  
+                  case 'created_by_name':
+                    $attribute='created_by_user.name';
+                  break;  
+                  case 'updated_by_name':
+                    $attribute='updated_by_user.name';
+                  break;     
+                  case 'assigned_to_name':
+                    $attribute='assigned_to_user.name';
+                  break; 
+                  case 'title':
+                    $attribute='tickets.title';
+                  break;  
+                  case 'created_on':
+                    $attribute='tickets.created_on';
+                  break;  
+                  case 'updated':
+                    $attribute='tickets.updated';
+                  break;
+                  case 'type':
+                    $attribute='tickets.type';
+                  break;  
+                  case 'status':
+                    $attribute='tickets.status';
+                  break; 
+                  case 'category_name':
+                    $attribute='CS.cat_name';
+                  break;  
+                  case 'service_name':
+                    $attribute='CM.cat_name';
+                  break;       
+                          
+                
+                default:
+                    ;
+                 
+              }
 
-        // $query=Ticket::query();
+            $results=$results->where($attribute, $expression, '%' . $value . '%');           
+        }
+        $results=$results->get();
 
-        // if($s = $request->input(key:'q')){
-
-        //     $query->whereRaw(sql:"id LIKE '%" .$s."%'")            
-        //     ->orWhereRaw(sql:"created_on LIKE '%" .$s."%'") 
-        //     ->orWhereRaw(sql:"updated LIKE '%" .$s."%'")
-        //     ->orWhereRaw(sql:"description LIKE '%" .$s."%'")
-        //     ->orWhereRaw(sql:"title LIKE '%" .$s."%'")
-        //     ;
-        // }
-
-        // return $query->get();
-
-
-        //-------------
-
-        $searchTerm=$request->query('q');
       
-        $results=  Ticket::join('users', function($builder) {
-            $builder->on('users.id', '=', 'tickets.caller');
-            // here you can add more conditions on users table.
-        })->join('categories', function($builder) {
-            $builder->on('categories.id', '=', 'tickets.category');
-            // here you can add more conditions on categories table.
-        })->       
         
-         where('tickets.id', 'LIKE', "%{$searchTerm}%") 
-        ->orWhere('tickets.title', 'LIKE', "%{$searchTerm}%") 
-        ->orWhere('tickets.description', 'LIKE', "%{$searchTerm}%") 
-        ->orWhere('tickets.created_on', 'LIKE', "%{$searchTerm}%") 
-        ->orWhere('tickets.updated', 'LIKE', "%{$searchTerm}%")       
-        ->orWhere('categories.cat_name', 'LIKE', "%{$searchTerm}%")                   
-        ->orWhere('tickets.status', 'LIKE', "%{$searchTerm}%")
-        ->get();
-
         $response=array();
        
         foreach ($results as $ticket) {            
@@ -273,8 +315,88 @@ class TicketController extends Controller
        
         return response()->json($response);
 
-       // https://stackoverflow.com/questions/14463921/select-from-multiple-tables-with-laravel-fluent-query-builder --> ???
-       //https://stackoverflow.com/questions/48406444/laravel-eloquent-search-inside-related-table
+    }
+
+    
+    public function generalSearch(Request $request)    {
+
+        $searchTerm=$request->query('q');
+      
+        //alias nélkül nem működik, tehát pl. users AS subjperson_user!!!
+        $results = Ticket::leftJoin('users AS subjperson_user', 'subjperson', '=', 'subjperson_user.id') //a tickets összekapcs. a users táblával a subjperson attr. keresztül
+                         ->leftJoin('users AS caller_user', 'caller', '=', 'caller_user.id')
+                         ->leftJoin('users AS created_by_user', 'created_by', '=', 'created_by_user.id')
+                         ->leftJoin('users AS updated_by_user', 'updated_by', '=', 'updated_by_user.id')
+                         ->leftJoin('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')
+                         ->leftJoin('categories AS CS', function($leftJoin)
+                         {
+                             $leftJoin->on('CS.id', '=', 'tickets.category')  //a CS tábla (Category-Sub) az alkategóriákat reprezentálja
+                                 ->whereNotNull('CS.main_cat_id' );
+                         })
+                        ->leftJoin('categories AS CM', function($leftJoin)        {  //a CM tábla (Category-Main) a főkategórákat reprezentálja
+                             $leftJoin->on('CM.id', '=', 'CS.main_cat_id')       //a főkat. tábla összekapcs. az alkat. táblával, ahol a "főkategóriája" mező NULL
+                                 ->whereNull('CM.main_cat_id');
+                         })
+                          ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'created_by' ,'updated_by' ,'category'   ,'title' ,'type' ,'status' ,'created_on' ,'updated')
+                          ->where('subjperson_user.name', 'LIKE', "%{$searchTerm}%") 
+                          ->orWhere('caller_user.name', 'LIKE', "%{$searchTerm}%") 
+                          ->orWhere('updated_by_user.name', 'LIKE', "%{$searchTerm}%") 
+                         ->orWhere('assigned_to_user.name', 'LIKE', "%{$searchTerm}%") 
+                          ->orWhere('updated_by_user.name', 'LIKE', "%{$searchTerm}%")     
+                          ->orWhere('created_by_user.name', 'LIKE', "%{$searchTerm}%")    
+                          ->orWhere('CS.cat_name', 'LIKE', "%{$searchTerm}%")                                           
+                          ->orWhere('CM.cat_name', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('title', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('updated', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('created_on', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('status', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('type', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('tickets.id', 'LIKE', "%{$searchTerm}%")
+                        ->get();
+
+
+                        $response=array();
+       
+                        foreach ($results as $ticket) {            
+                            $caller=User::find($ticket->caller);
+                            $subjperson=User::find($ticket->subjperson);
+                            $assigned_to=User::find($ticket->assigned_to);
+                            $created_by=User::find($ticket->created_by);
+                            $updated_by=User::find($ticket->updated_by);
+                            $category=Category::find($ticket->category);
+                            $service=Category::where('id','=',$category->main_cat_id)->first();
+                            
+                            if($ticket->type=="Request"){
+                                $prefix='REQ';
+                            };
+                            if($ticket->type=="Incident"){
+                                $prefix='INC';
+                            };
+                
+                            $data = array(
+                                'id'=> $prefix.$ticket->id,
+                                'caller_name' => $caller->name, 
+                                'subjperson_name' => $subjperson->name, 
+                                'assigned_to_name' => $assigned_to->name, 
+                                'created_by_name'=>$created_by->name, 
+                                'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+                                'title' => $ticket->title,
+                                'type' => $ticket->type,              
+                                'category_name' => $category->cat_name,
+                                'service_name' => $service->cat_name,
+                                'status' => $ticket->status, 
+                                'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
+                                'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
+                                        
+                                );
+                                array_push($response,$data);          
+                            }
+                
+                       
+                        return response()->json($response);
+                
+
 
   
        

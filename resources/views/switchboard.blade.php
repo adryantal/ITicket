@@ -26,7 +26,7 @@
                     <div> <a href="{{ URL::to('/logout') }}">Log out</a> </div>
                 </div>
             </nav>
-         <article>
+         <article >
 
             <div class="container-fluid bg-3 text-center">
 

@@ -13,24 +13,10 @@ class Ticket extends Model
 {
     use HasFactory;
 
-  
-    /*DÁTUMKONVERZIÓS LEHETŐSÉGEK*/
-
-     // custom timestamp column names
-   // const CREATED_AT = 'created_on';
-    //const UPDATED_AT = 'updated';
-
-   // dátum formátum testreszabása attribútumonként
     protected $casts = [
-        'created_on' => 'datetime:d-m-Y', // Change your format
-        'updated' => 'datetime:d-m-Y',
+        'created_on' => 'datetime:d-m-Y H:i:s',
+        'updated' => 'datetime:d-m-Y H:i:s',
     ];
-
-    // public function getCreatedOntAttribute($date) {
-    //     return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('H:i:s'); //https://stackoverflow.com/questions/42071525/how-to-extract-the-time-from-created-at-with-carbon
-    // }
-
-
 
     //adott tickethez tart. bejelentő
     public function caller()

@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return view('auth.register');
+        return view('auth.newuser');
     }
 
     /**
@@ -35,16 +35,18 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            //'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+        $domain = '@fantasy-comp.com';
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            
+            'name' => $request->name,            
             'ad_id' =>  $request->ad_id, 
-            'password' => Hash::needsRehash($request ->password) ? Hash::make($request ->password) : $request ->password,
-            'active' =>  $request->active, 
+            'email' => $request->ad_id.$domain,
+            //'password' => Hash::needsRehash($request ->password) ? Hash::make($request ->password) : $request ->password,
+            'password' => '12345678', //default; lehetne egy random generátort beállítani security okok miatt, és első belépéskor a Helpdesk reseteli a usernek a pw-öt
+            'active' =>  $request->active, //kezdetben lehetne akár aktív, és a DB Teammel lehet aktiváltatni 
             'phone_number' =>  $request->phone_number, 
             'department' =>  $request->department, 
             'resolver_id' =>  $request->resolver_id, 
@@ -52,7 +54,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        //Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
     }

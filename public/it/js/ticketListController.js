@@ -4,7 +4,7 @@ class TicketListController {
     const ticketDataArray = [];
     const token=$('meta[name="csrf-token"]').attr('content');
     const myAjax = new MyAjax(token);
-    let apiAllTickets = "http://localhost:8000/api/ticket/all/";
+    let apiAllTickets = "http://localhost:8000/api/ticket/all/";    
     myAjax.getAjax(apiAllTickets, ticketDataArray, ticketList);
     new TicketListHeader();
 
@@ -47,29 +47,28 @@ class TicketListController {
     /*FILTER BAR - filtering tickets by attributes*/
 
     new TicketFilter();
-    $(window).on("filterTicketData", (event) => {
- 
-
-      let filterInputValueChain = "search?";
+    $(window).on("filterTicketData", (event) => { 
+      let filterInputValueChain = "filter?";
       event.detail.forEach((filterInput) => {
         filterInputValueChain +=
           filterInput.id.substring(7, filterInput.id.length) +  //key
-          "_like=" +
+          "?like=" +
           filterInput.value + //value
           "&";
       });
       filterInputValueChain = filterInputValueChain.substring(0,filterInputValueChain.length - 1);
       let filter = apiAllTickets + filterInputValueChain; ///szűrési feltétel hozzáadása az API végpont útvonalához
       console.log(filter)
+     
+       myAjax.getAjax(filter, ticketDataArray, ticketList); //szűrt adatok lekérése, megjelenítése
+    
   
-     // myAjax.getAjax(filter, ticketDataArray, ticketList); //szűrt adatok lekérése, megjelenítése
     });
 
 
        
      
-    /*ATTRIBUTE HEADER - sorting tickets by attributes*/   
-    
+    /*ATTRIBUTE HEADER - sorting tickets by attributes*/    
 
     let asc=true;
     $(window).on("sortByAttribute", (event) => {

@@ -22927,6 +22927,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/css/newuser.css":
+/*!***********************************!*\
+  !*** ./resources/css/newuser.css ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./resources/css/app.css":
 /*!*******************************!*\
   !*** ./resources/css/app.css ***!
@@ -23313,6 +23326,7 @@ process.umask = function() { return 0; };
 /******/ 			"it/css/notauthorized": 0,
 /******/ 			"it/css/loggedout": 0,
 /******/ 			"it/css/switchboard": 0,
+/******/ 			"it/css/newuser": 0,
 /******/ 			"it/css/newticket": 0,
 /******/ 			"it/css/modifyticket": 0,
 /******/ 			"it/css/ticketlist": 0,
@@ -23366,15 +23380,16 @@ process.umask = function() { return 0; };
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/js/app.js")))
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/app.css")))
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/switchboard.css")))
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/loggedout.css")))
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/notauthorized.css")))
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/frame.css")))
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/ticketlist.css")))
-/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/modifyticket.css")))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/newticket.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/js/app.js")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/app.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/switchboard.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/loggedout.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/notauthorized.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/frame.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/ticketlist.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/modifyticket.css")))
+/******/ 	__webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/newticket.css")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["it/css/frame","it/css/notauthorized","it/css/loggedout","it/css/switchboard","it/css/newuser","it/css/newticket","it/css/modifyticket","it/css/ticketlist","css/app"], () => (__webpack_require__("./resources/css/newuser.css")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
