@@ -34,7 +34,7 @@ class TicketController extends Controller
             if($ticket->type=="Incident"){
                 $prefix='INC';
             };
-            Carbon::resetToStringFormat();
+            //Carbon::resetToStringFormat();
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => $caller->name, 
@@ -48,7 +48,7 @@ class TicketController extends Controller
                 'service_name' => $service->name,
                 'status' => $ticket->status, 
                 'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),  // !!!
-                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   //!!!
+                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   //!!!                
                         
                 );
                 array_push($response,$data);
@@ -59,48 +59,48 @@ class TicketController extends Controller
     }
 
     //adott ticket megkeresése id alapján
-    public function getTicket($ticket_id)
+    public function getTicket($ticketid)
     {
-        $attachment = Ticket::find($ticket_id);
+        $attachment = Ticket::find($ticketid);
         return $attachment;
     }
 
     //adott tickethez tart. csatolmányok
-    public function getAttachmentsPerTicket($ticket_id)
+    public function getAttachmentsPerTicket($ticketid)
     {
-        $ticket = Ticket::find($ticket_id);
+        $ticket = Ticket::find($ticketid);
         $attachments = $ticket->attachments;
         return $attachments;
     }
 
     //adott ticket bejelentője
-    public function getCaller($ticket_id)
+    public function getCaller($ticketid)
     {
-        $ticket = Ticket::find($ticket_id);
+        $ticket = Ticket::find($ticketid);
         $caller = $ticket->caller;
         return $caller;
     }
 
     //adott ticket érintett személye
-    public function getAffectedUser($ticket_id)
+    public function getAffectedUser($ticketid)
     {
-        $ticket = Ticket::find($ticket_id);
+        $ticket = Ticket::find($ticketid);
         $affected_user = $ticket->affected_user;
         return $affected_user;
     }
 
     //adott ticket rögzítője
-    public function getCreatedBy($ticket_id)
+    public function getCreatedBy($ticketid)
     {
-        $ticket = Ticket::find($ticket_id);
+        $ticket = Ticket::find($ticketid);
         $created_by = $ticket->created_by;
         return $created_by;
     }
 
     //adott ticket kezelője
-    public function getAssignedTo($ticket_id)
+    public function getAssignedTo($ticketid)
     {
-        $ticket = Ticket::find($ticket_id);
+        $ticket = Ticket::find($ticketid);
         $assigned_to = $ticket->assigned_to;
         return $assigned_to;
     }
@@ -108,17 +108,17 @@ class TicketController extends Controller
 
     //aki egy adott ticketet utoljára módosított
     //adott ticket kezelője
-    public function getUpdatedBy($ticket_id)
+    public function getUpdatedBy($ticketid)
     {
-        $ticket = Ticket::find($ticket_id);
+        $ticket = Ticket::find($ticketid);
         $updated_by = $ticket->updated_by;
         return $updated_by;
     }
 
 
       //adott ticket. alá tart. child ticketek
-      public function getAllChildTickets($ticket_id){
-        $$child_tickets = Ticket::where('parent_ticket','=',$ticket_id)
+      public function getAllChildTickets($ticketid){
+        $$child_tickets = Ticket::where('parent_ticket','=',$ticketid)
         ->orderBy('parent_ticket')       
         ->get();
         return response()->json($child_tickets);
@@ -171,12 +171,13 @@ class TicketController extends Controller
         $ticket->updated_by = $request->updated_by_id;
         $ticket->created_by = Auth::user()->id; //a belogolt user
         $ticket->assigned_to = Auth::user()->id; //első körben ahhoz a helpdeskeshez legyen assignolva, aki nyitotta
-        $ticket->title = $request->title;
-        $ticket->description = $request->description;
+        $ticket->title = ucfirst($request->title); //első betű nagy betű --> rendezés miatt fontos
+        $ticket->description = ucfirst($request->description);
         $ticket->priority = $request->priority;
         $ticket->urgency = $request->urgency;
         $ticket->impact = $request->impact;
         $ticket->parent_ticket = $request->parent_ticket;
+        $ticket->updated=Carbon::now()->format('Y-m-d H:i:s');;
        //sla && time left
         if($request->type =="Request"){
             $ticket->sla=120; //5*24
@@ -192,14 +193,26 @@ class TicketController extends Controller
         $ticket->save();  
 
        //ticket number mező kitöltése
-        $t=Ticket::find($ticket->id);      
-        Ticket::where('id', $t->id)->update(['ticket_number' => $prefix.$t->id]); //https://stackoverflow.com/questions/35279933/update-table-using-laravel-model
-        return Ticket::find($ticket->id);
+        $newticket=Ticket::find($ticket->id);      
+        Ticket::where('id', $newticket->id)->update(['ticketnr' => $prefix.$newticket->id]); //https://stackoverflow.com/questions/35279933/update-table-using-laravel-model
+        return Ticket::find($ticket->id); 
+    }
+
+    public function getLastTicketSubmittedByAuthUser(){
+   
+     $ticket = Ticket::where('created_by','=', Auth::user()->id)->orderBy('created_on', 'DESC')->firstOrFail();
+
+     return response()->json ($ticket);
     }
 
 
+
+
+
+//a megadott attribútumok értékei között keres
     public function filter(Request $request)    {
         $queryString = $request->query();
+
         $results = Ticket::leftJoin('users AS subjperson_user', 'subjperson', '=', 'subjperson_user.id') //a tickets összekapcs. a users táblával a subjperson attr. keresztül
                          ->leftJoin('users AS caller_user', 'caller', '=', 'caller_user.id')
                          ->leftJoin('users AS created_by_user', 'created_by', '=', 'created_by_user.id')
@@ -217,12 +230,12 @@ class TicketController extends Controller
                           ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'created_by' ,'updated_by' ,'category','title' ,'type' ,'status' ,'created_on' ,'updated');
                           
         foreach ($queryString as $key => $value) {
-            $explodedKey=explode('?',$key); //példa: key: 'id_like', expression: '101'
+            $explodedKey=explode('?',$key); //példa: key: 'id?like', expression: '101'; explode using separator '?'
             $attribute=$explodedKey[0];
             $expression=$explodedKey[1];
             switch ($attribute) {
                 case 'id':
-                    $attribute='tickets.id';
+                    $attribute='tickets.ticketnr'; //kivételesen itt a ticket number-ban keressen, ne az id-k között
                   break;
                 case 'caller_name':
                     $attribute='caller_user.name';
@@ -259,19 +272,15 @@ class TicketController extends Controller
                   break;  
                   case 'service_name':
                     $attribute='CM.name';
-                  break;       
-                          
+                  break;      
                 
                 default:
-                    ;
-                 
+                    ;                 
               }
 
             $results=$results->where($attribute, $expression, '%' . $value . '%');           
         }
         $results=$results->get();
-
-      
         
         $response=array();
        
@@ -290,7 +299,6 @@ class TicketController extends Controller
             if($ticket->type=="Incident"){
                 $prefix='INC';
             };
-
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => $caller->name, 
@@ -303,8 +311,8 @@ class TicketController extends Controller
                 'category_name' => $category->name,
                 'service_name' => $service->name,
                 'status' => $ticket->status, 
-                'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
-                'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
+                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
+                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   
                         
                 );
                 array_push($response,$data);          
@@ -315,7 +323,26 @@ class TicketController extends Controller
 
     }
 
+
+
+
+    //a csak a ticket táblában keres megadott attribútumra (nincs join a többi táblával)
+    public function search(Request $request)
+    {
+        $queryString = $request->query();
+        foreach ($queryString as $key => $value) {
+            $explodedKey=explode('_',$key); //explode using separator '_'
+            $attribute=$explodedKey[0];
+            $expression=$explodedKey[1];
+            $results=Ticket::where($attribute, $expression, '%' . $value . '%')->get();
+        }
+        return $results;
+    }
+
+
     
+
+  //az összes attr. értékei között keres
     public function generalSearch(Request $request)    {
 
         $searchTerm=$request->query('q');
@@ -350,7 +377,7 @@ class TicketController extends Controller
                           ->orWhere('created_on', 'LIKE', "%{$searchTerm}%")
                           ->orWhere('status', 'LIKE', "%{$searchTerm}%")
                           ->orWhere('type', 'LIKE', "%{$searchTerm}%")
-                          ->orWhere('tickets.id', 'LIKE', "%{$searchTerm}%")
+                          ->orWhere('tickets.ticketnr', 'LIKE', "%{$searchTerm}%") //a ticket numberek között keressen, ne az id-k között!
                         ->get();
 
 
@@ -384,8 +411,8 @@ class TicketController extends Controller
                                 'category_name' => $category->name,
                                 'service_name' => $service->name,
                                 'status' => $ticket->status, 
-                                'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
-                                'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
+                                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
+                                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   
                                         
                                 );
                                 array_push($response,$data);          

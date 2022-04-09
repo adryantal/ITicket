@@ -108,13 +108,13 @@ class ModifyTicketController {
     function loadAttachments(){
       //loading attachments
       let apiEndPointAttachmentsPerTicket =
-        "http://localhost:3000/attachments?ticket_id=" + ticketID;
+        "http://localhost:3000/attachments?ticketid=" + ticketID;
       myAjax.getAjax(
         apiEndPointAttachmentsPerTicket,
         mTicketView.existingAttachments,
         function () {
           mTicketView.existingAttachments.forEach((element, index) => {
-            mTicketView.attachments.push(element.file_name);
+            mTicketView.attachments.push(element.filename);
             mTicketView.displayAttachmentList();
           });
         }
@@ -123,7 +123,7 @@ class ModifyTicketController {
 
     function loadComments(){
       //loading comments   
-      let apiEndPointJournalsPerTicket = 'http://localhost:3000/journals?ticket_id=' + ticketID+'&_sort=id&_order=DESC';
+      let apiEndPointJournalsPerTicket = 'http://localhost:3000/journals?ticketid=' + ticketID+'&_sort=id&_order=DESC';
       const commentContainer = $("#comment-history");
         myAjax.getAjax(
          apiEndPointJournalsPerTicket,
@@ -196,8 +196,8 @@ class ModifyTicketController {
       attachmentsToBeAdded.forEach((element) => {
         let newAttData = {
           date: dateTimeNow,
-          ticket_id: mTicketView.ticketIDField.val(),
-          file_name: element,
+          ticketid: mTicketView.ticketIDField.val(),
+          filename: element,
         };
         myAjax.postAjax(apiEndPointAttachments, newAttData);
       });
@@ -219,7 +219,7 @@ class ModifyTicketController {
        commentsToBeInserted.forEach((element) => {
         let newCommentData = {
           description: element,
-          ticket_id: mTicketView.ticketIDField.val(),
+          ticketid: mTicketView.ticketIDField.val(),
         };
         myAjax.postAjax(apiendPointJournals, newCommentData);
       });

@@ -139,7 +139,7 @@ class ModifyTicketView {
       let i;  
       if(this.existingAttachments.length>0){   
       this.existingAttachments.forEach((element, index) => {
-        if(element.file_name===filename){      
+        if(element.filename===filename){      
           i=index;    
           this.eventTrigger("deleteExistingAttachment",element);
         }

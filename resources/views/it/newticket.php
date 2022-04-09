@@ -32,14 +32,12 @@
 
         <div id="newticketform-header">Create new ticket</div>
 
-        <form action="" method="POST" enctype="multipart/form-data">        
+        <div id='submission-confirmation'>
+          <div> Successful ticket submission! Ticket #: <span id="ticket-number" ></span></div>
+          <div> <input type="button" id="confirmation-close-btn" value="OK"></div>
+        </div>
 
-          <div class="row-top"> 
-            <div>Ticket number:</div>
-            <div id='ticket-number'> 123</div>
-            <div></div>
-            <div> </div>
-          </div>
+        <form action="" method="POST" enctype="multipart/form-data"> 
 
           <div class="row-top"> 
             <div><label for="caller">Caller</label></div>

@@ -112,6 +112,22 @@ select:focus {
   color: crimson;
 }
 
+#submission-confirmation{
+  position: absolute;
+  left: 40%;
+  top: 30%;
+  z-index: 15;
+  border: 1px solid lightskyblue;
+  box-shadow: 0 0 10px #7a9abd;
+  background-color: rgba(186, 172, 221, 0.9); 
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+
 #newticketform-header {
   background-color: #719ece;
   height: 30px;
@@ -129,7 +145,7 @@ select:focus {
 
 #attachment-btn,
 #newticketform-buttons input,
-input::-webkit-file-upload-button {
+input::-webkit-file-upload-button,  #confirmation-close-btn {
   border: 2px solid rgb(125, 163, 163, 0.6);
   color: rgb(125, 163, 163);
   background-color: white;
@@ -142,10 +158,11 @@ input::-webkit-file-upload-button {
 
 #attachment-btn:hover,
 #newticketform-buttons input:hover,
-input::-webkit-file-upload-button:hover, #attachment:hover{
+input::-webkit-file-upload-button:hover, #attachment:hover, #confirmation-close-btn:hover{
   border: 2px solid lightslategray;
   box-shadow: 0 1px 3px #4370a0;
   cursor: pointer;
+  
 
 }
 
@@ -285,6 +302,11 @@ input::-webkit-file-upload-button:hover, #attachment:hover{
   
   #attachment-list {
     width: 250px;
+  }
+
+  #submission-confirmation{
+    left: 20%;
+    top: 30%;
   }
 
 }

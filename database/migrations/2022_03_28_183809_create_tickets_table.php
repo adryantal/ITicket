@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();  
-            $table->string('ticket_number')->nullable();  //az AB-ben való létrejöttekor mindig NULL, majd a végleges érték store metódus végén íródik be, mikor már a ticket obj. létrejött       
+            $table->string('ticketnr')->nullable();  //az AB-ben való létrejöttekor mindig NULL, majd a végleges érték store metódus végén íródik be, mikor már a ticket obj. létrejött       
             $table->foreignId('caller')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); ///bejelentő
             $table->foreignId('subjperson')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //érintett
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //nyitotta

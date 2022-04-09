@@ -148,14 +148,19 @@ class Pagination {
     //set limit per page based on browser height --> refresh needed
     //location.reload() refreshes the page on each resize event
     let counter = 0;
-      $(window).on('resize', function(){ 
+      $(window).on('resize', ()=>{ 
+        location.reload();
         countlimitPerPage();  
         counter++;
     }); 
      
     if (counter === 0) {
+      if($(".ticket-data-line").length==1){ //when only the template instance of .ticket-data-line exists
+        pageIntervalBar.append("0");
+      }else{
       countlimitPerPage(); 
       pageIntervalBar.append("1-" + (limitPerPage-1));
+      }
     }
     
   
@@ -312,9 +317,7 @@ class TicketListHeader {
     /*Creating the filter bar*/
     this.createAttrFilterBar();
     /*Automatization of the Search Status bar*/
-    this.automateSearchStatusBar();
-
-   
+    this.automateSearchStatusBar();   
 
   }
   createAttributeHeaders() {

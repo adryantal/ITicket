@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('ticketid')->constrained('tickets')->onDelete('cascade')->onUpdate('cascade'); //ha van ticketnr, akkor lehet, nem is kell az id?           
+            $table->bigInteger('caller');
+            $table->bigInteger('subjperson');           
+            $table->bigInteger('updatedby');
+            $table->bigInteger('assignedto');
+            $table->string('status');
+            $table->dateTime('updated');
             $table->timestamps();
             $table->text('comment'); //nem nullable; minden módosításnál kötelező a komment
         });

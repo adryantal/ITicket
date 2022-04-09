@@ -39,14 +39,14 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     Route::get('/switchboard/db', function () {return view('it.switchboardfordb');}); //ez majd csak a db-eseknek lesz elérhető https://stackoverflow.com/questions/65835538/laravel-8-register-user-while-logged-in
     Route::get('/alltickets', function () {return view('it.ticketlist');}); //ticketek kilistázása
     Route::get('/newticket',  function () {return view('it.newticket');}); //új ticket rögzítése - form
+    Route::get('/api/ticket/new/number', [TicketController::class, 'getLastTicketSubmittedByAuthUser']); //sikeres rögz. után a ticketszám/ticket adatok lekérése
 
     /*Útvonalak ticketekre*/
     Route::get('/api/ticket/all', [TicketController::class, 'getAllTickets']);  //összes ticket kilistázása 
     Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //általános keresés (összes attribútumon értékein belül keres) 
-    Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés 
-    
-    Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése 
-   
+    Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés ticketekre    
+    Route::get('/api/ticket/all/searchtickets', [TicketController::class, 'search']); //egy adott- vagy több attribútum szerinti szűrés ticketekre (csak a ticket táblán belül)   
+    Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése   
     Route::get('/api/ticket/{id}', [TicketController::class, 'getTicket']);  //adott ticket megkeresése id alapján
 
     /*Útvonalak kategóriákra*/

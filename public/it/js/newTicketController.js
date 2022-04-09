@@ -9,6 +9,7 @@ class NewTicketController {
     const myAjax = new MyAjax(token);
     const attachmentsArray = [];
     let apiEndPointCreateTicket = "http://localhost:8000/api/ticket";
+    let apiEndPointTicketNumber="http://localhost:8000/api/ticket/new/number";
     let apiEndPointAttachments = "http://localhost:8000/api/attachment/";
     
     
@@ -66,8 +67,7 @@ class NewTicketController {
       assignment_group_id: 101,
       
     };
-    console.log(newTicketData);
-    debugger;
+    //console.log(newTicketData);    
     myAjax.postAjax(apiEndPointCreateTicket, newTicketData);  
     
     //should get the ticket ID here!
@@ -77,13 +77,25 @@ class NewTicketController {
     //     let newAttData ={
     //         // id: 1234,         
     //         date : dateTimeNow,
-    //         ticket_id: nTicketView.ticketIDField.val(), //should obtain the ticket ID somehow!!
-    //         file_name: element
+    //         ticketid: nTicketView.ticketIDField.val(), //should obtain the ticket ID somehow!!
+    //         filename: element
     //     };
     //     myAjax.postAjax(apiEndPointAttachments, newAttData);
     // }); 
 
+     nTicketView.resetAllFields(); 
+    
+     //get the ticket number for the ticket just created and display it  
+    $.get(apiEndPointTicketNumber,function(data,status){
+      $('#ticket-number').text(data.ticketnr);
+      nTicketView.submissionConfirmationWindow.show();
+    });
+     
+     
     }  
+
+
+
 
  }
 }

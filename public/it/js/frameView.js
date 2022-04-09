@@ -21,10 +21,10 @@ class FrameView {
 
 //normal page - navigation
 this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets');
-this.loadPage($('#ticketmanagement .menuitem'),3,'/newticket'); 
+this.loadPage($('#ticketmanagement .menuitem'),1,'/newticket'); 
 //dropdown menu - navigation
 this.loadPage($('#nd-ticketmanagement .menuitem'),0,'/alltickets');
-this.loadPage($('#nd-ticketmanagement .menuitem'),3,'/newticket'); 
+this.loadPage($('#nd-ticketmanagement .menuitem'),1,'/newticket'); 
 
 
 
@@ -135,8 +135,6 @@ class Nav {
         title: "Ticket Management",
         navMenuItemTitlesArray: [
           "All tickets",
-          "New tickets",
-          "Unassigned tickets",
           "Create new ticket",
           "Tickets assigned to my team",
           "Tickets assigned to me",
@@ -203,8 +201,6 @@ class NavDropDown {
     title: "Ticket Management",
     navMenuItemTitlesArray: [
       "All tickets",
-      "New tickets",
-      "Unassigned tickets",
       "Create new ticket",
       "Tickets assigned to my team",
       "Tickets assigned to me",
