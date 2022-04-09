@@ -25,7 +25,7 @@ class MyAjax{
 
      /*POST - új adat felvitele az AB-ba API végponton keresztül*/
      postAjax(apiEndPoint,newData) {
-    
+     newData._token=this.token;
         $.ajax({
           headers: {'X-CSRF-TOKEN': this.token},
           url: apiEndPoint,
@@ -35,7 +35,7 @@ class MyAjax{
             console.log('POST success');
           },
           
-          traditional: true,
+          
         });
       }
     
@@ -53,6 +53,7 @@ class MyAjax{
     
       /*PUT - dott id-jú adat módosítása az AB-ban API végponton keresztül*/
       putAjax(apiEndPoint,newData,id) {
+        newData._token=this.token;
         $.ajax({
           headers: {'X-CSRF-TOKEN': this.token},
           url: apiEndPoint+"/"+id,

@@ -34,7 +34,7 @@ class TicketController extends Controller
             if($ticket->type=="Incident"){
                 $prefix='INC';
             };
-
+            Carbon::resetToStringFormat();
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => $caller->name, 
@@ -47,8 +47,8 @@ class TicketController extends Controller
                 'category_name' => $category->name,
                 'service_name' => $service->name,
                 'status' => $ticket->status, 
-                'created_on' =>  Carbon::createFromFormat('Y-m-d H:i:s', $ticket->created_on)->format('d-m-Y H:i:s'),   
-                'updated' => Carbon::createFromFormat('Y-m-d H:i:s', $ticket->updated)->format('d-m-Y H:i:s'),   
+                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),  // !!!
+                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   //!!!
                         
                 );
                 array_push($response,$data);
@@ -165,10 +165,9 @@ class TicketController extends Controller
         $ticket->caller = $request->caller_id;      
         $ticket->contact_type = $request->contact_type;
         $ticket->status = $request->status;
-        $ticket->type = $request->type;
-        $ticket->service = $request->service_id;
+        $ticket->type = $request->type;     
         $ticket->category = $request->category_id;
-        $ticket->created_on = Carbon::now()->format('d-m-Y');        
+        $ticket->created_on = Carbon::now()->format('Y-m-d H:i:s');        
         $ticket->updated_by = $request->updated_by_id;
         $ticket->created_by = Auth::user()->id; //a belogolt user
         $ticket->assigned_to = Auth::user()->id; //első körben ahhoz a helpdeskeshez legyen assignolva, aki nyitotta
@@ -193,10 +192,8 @@ class TicketController extends Controller
         $ticket->save();  
 
        //ticket number mező kitöltése
-        $t=Ticket::find($ticket->id);
-        $ticket_number = $prefix.$t->ticket_id;
-        Ticket::where('id', $t->id)->update(['ticket_number' => $ticket_number]); //https://stackoverflow.com/questions/35279933/update-table-using-laravel-model
-
+        $t=Ticket::find($ticket->id);      
+        Ticket::where('id', $t->id)->update(['ticket_number' => $prefix.$t->id]); //https://stackoverflow.com/questions/35279933/update-table-using-laravel-model
         return Ticket::find($ticket->id);
     }
 
