@@ -109,9 +109,5 @@ class CategoryController extends Controller
             $results=Category::where('main_cat_id','=',$serviceId)->where($column, $expression, '%' . $value . '%')->orderBy('name')->get();
         }
         return $results;
-    
-
-   
-
-}
+    }
 }

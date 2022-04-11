@@ -11,7 +11,9 @@ article {
   height: fit-content; 
 }
 
-
+.single-search{
+  visibility: hidden;
+}
 
 form {
   border-radius: 5px;

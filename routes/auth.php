@@ -11,10 +11,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ResolverController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    
-
-   
+Route::middleware('guest')->group(function () {   
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');

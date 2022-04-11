@@ -8,40 +8,40 @@ class TicketListController {
     myAjax.getAjax(apiAllTickets, ticketDataArray, ticketList);
     new TicketListHeader();
 
+    this.selectedTicketNr ="";
+
     /*DISPLAY TICKET LIST */
     function ticketList(array) {
       const parentItem = $("#ticket-container");
       const templateItem = $(".template .ticket-data-line"); // új templateItem, a multiplikálódás elkerülése végett
       parentItem.empty(); //szülőelem ürítése, hogy többszöri lefutáskor ne legyen hozzáfűzés
       templateItem.show();
-      array.forEach(function (data) {
-        //console.log(data);
+      array.forEach(function (data) {      
         let node = templateItem.clone().appendTo(parentItem); //
         const obj = new TicketListItem(node, data);
 
       });
-      $("#pageinterval-bar").empty(); //ne duplikálódjon a pageintervalbar tartalma, mikor újra példányosítódik a Pagination osztály
-      new Pagination();
-      // array.splice(0, array.length); //ez az összetett keresés miatt kell(select/option + keresőmező együttes használata), ha az én megoldásomat nézzük
-      // //templateItem.remove() //templateItem eltávolítása
+      $("#pageinterval-bar").empty(); //in order to prevent duplication of the content of pageintervalbar when invoking a new instance of the Pagination class
+      new Pagination();     
       templateItem.hide();   
-   
     }
        
     /*CLICK ON TICKET NR. AND GET REDIRECTED TO THE MODIFY PAGE*/
        $("#ticket-container").on("click",'.ticket-data .ticketID a',(e)=>{      
-        const ticketID = $(e.target).text();  
-        console.log(ticketID)           
-         //transfer ticket ID to the modifyController            
-         window.location.href="modifyticket.html?id="+ticketID;          
+        const ticketNr = $(e.target).text();  
+        console.log(ticketNr) 
+       //over to the modify page     
+         window.location.href="/modifyticket/"+ticketNr;  
+         this.selectedTicketNr=ticketNr;
+         
       })
 
 
     /*GENERAL SEARCH*/
     $(window).on("generalSearch", (event) => {
      // console.log('event detail '+event.detail )
-      let filter = apiAllTickets + "search?q=" + event.detail; //szűrési feltétel hozzáadása az API végpont útvonalához
-      myAjax.getAjax(filter, ticketDataArray, ticketList); //szűrt adatok lekérése, megjelenítése
+      let filter = apiAllTickets + "search?q=" + event.detail; //configure API endpoint containing the filter conditions
+      myAjax.getAjax(filter, ticketDataArray, ticketList); //display filtered ticketlist
     });
 
     /*FILTER BAR - filtering tickets by attributes*/
@@ -57,11 +57,8 @@ class TicketListController {
           "&";
       });
       filterInputValueChain = filterInputValueChain.substring(0,filterInputValueChain.length - 1);
-      let filter = apiAllTickets + filterInputValueChain; ///szűrési feltétel hozzáadása az API végpont útvonalához
-      console.log(filter)
-     
-       myAjax.getAjax(filter, ticketDataArray, ticketList); //szűrt adatok lekérése, megjelenítése
-    
+      let filter = apiAllTickets + filterInputValueChain; //configure API endpoint containing the filter conditions        
+       myAjax.getAjax(filter, ticketDataArray, ticketList); //display filtered ticketlist
   
     });
 
@@ -73,7 +70,7 @@ class TicketListController {
     let asc=true;
     $(window).on("sortByAttribute", (event) => {
       let attribute = event.detail;  
-      myAjax.getAjax(apiAllTickets,ticketDataArray, function(){ //újra lekérjük a listát
+      myAjax.getAjax(apiAllTickets,ticketDataArray, function(){ //get the list of up-to-date data
         asc ? sortByKeyAsc(ticketDataArray,attribute) : sortByKeyDesc(ticketDataArray,attribute);
         ticketList(ticketDataArray);
       })   
@@ -90,14 +87,9 @@ class TicketListController {
           return ((a[key]< b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0));
       });
   }
-
-
-  
+ 
 
   }
 
-  
-  
 
-  
 }

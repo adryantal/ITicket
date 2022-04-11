@@ -25,17 +25,22 @@ class ModifyTicketView {
     this.attachmentList = $("#attachment-list");
     this.addAttachmentFileInput = $("#attachment"); 
     this.postCommentBtn = $("#comment-btn").children('input'); 
+    this.serviceID="";
+    this.assignmentGroupID="";
       
+    //disable assignedTo and category fields
+    this.categoryField.attr('disabled', 'disabled'); 
+    this.assignedToField.attr('disabled', 'disabled');
 
-   this.setRequiredInputFields();
+      
+    this.setRequiredInputFields();
     this.setAutocompInputFields();
 
     //add attachments  
     this.addAttachmentFileInput.on("change", (event) => {
       //update displayed list
       this.addAttachments(event);          
-      this.eventTrigger('modifyAttachments',this.attachments);  
-             
+      this.eventTrigger('modifyAttachments',this.attachments);             
     });   
 
     //remove attachments
@@ -151,73 +156,140 @@ class ModifyTicketView {
      this.displayAttachmentList();    
   }
 
-  
-  
-  autoComp(selector, attributeName,apiEndPoint) {    
-    selector
-      .autocomplete({
-        source: function (request, response) {
+  autoCompForTicketNrs(selector, attributeName,apiEndPoint) {       
+    selector.autocomplete({
+        source: function (request, response) {           
           $.ajax({
-            url: apiEndPoint + "?" + attributeName + "_like=" + request.term,
+            url:  apiEndPoint,
             dataType: "json",
             data: {
-              q: request.term,
+              ticketnr_like : request.term,              
             },
             success: function (data) {
-              if (data.length > 0) {
-                response(
-                  $.map(data, function (item) {
-                    return {
-                      label: item["id"],
-                      value: item[attributeName],
-                    };
-                  })
-                );
-              } else {
-                //If no records found, set the default "No match found" item with label null.
-                response([{ label: null, value: "No results found." }]);
+              if (data.length > 0) {             
+              response(
+                $.map(data, function (item) {
+                  return {
+                    label : item["id"],
+                    value: item[attributeName],
+                  };
+                })
+              );
+            } else {
+              //If no records found, set the default "No match found" item with label null.
+              response([{ label:null, value: 'No results found.'}]);                  
               }
             },
           });
         },
-        minlength: 3,
-        select: (e, u) => {
-          //If the No match found" item is selected, clear the TextBox.
-          if (u.item.value == "No results found.") {
-            selector.val("");
-            return false;
-          } else {
-            //if results are found, create a new hidden input field to store the ID
-            this.addHiddenInputField(selector.attr("id"), u.item.label);
+        minlength: 3,        
+            select:  (e, u) =>{
+                //If the No match found" item is selected, clear the TextBox.
+                if (u.item.value == 'No results found.') {                  
+                  selector.val("");                 
+                    return false;
+                }else{ 
+                  //if results are found, create a new hidden input field to store the ID                                
+                  this.addHiddenInputField(selector.attr("id"),u.item.label);                          
+                }                                    
+            },
+            change: function (e, u) {        
+              if(!(u.item === null || u.item===undefined || u.item.value=='No results found.')){
+               selector.val(u.item.value); // take from attribute and insert as value              
+              }else{
+                selector.val(""); 
+              }
           }
-        },
-        change: function (e, u) {
-          if (!(u.item === null || u.item === undefined)) {
-               selector.val(u.item.value); // take from attribute and insert as value
-          } else {
-               selector.val("");
-          }
-        },
       })
       .data("uiAutocomplete")._renderItem = function (ul, item) {
-      //get position of the selector being clicked onto
-      let inputFieldPosition = selector.position();
-      $(ul).addClass("ac-template");
-      //set position of the autocomplete based on the selector's position
-      $(ul).css({
-        top: inputFieldPosition.top + 20,
-        left: inputFieldPosition.left,
-        position: "absolute",
-      });
-      const showNameAndID = ["caller", "subjperson", "assignedTo"]; //show both name and ID in autocomplete dropdown for these selectors
-      let html;
-      if (jQuery.inArray(selector.attr("id"), showNameAndID) > -1) {
-           html = "<a>" + item.value + (item.label === "No results found." ? "" : " (" + item.label + ")") + "</a>";
+      //get position of the selector being clicked on  
+      let inputFieldPosition = selector.position();          
+        $(ul).addClass("ac-template");
+      //set position of the autocomplete based on the selector's position 
+        $(ul).css({
+          top: inputFieldPosition.top + 20,
+          left: inputFieldPosition.left,
+          position: "absolute",
+        });        
+          let html;       
+          html = "<a>" + item.value + "</a>";      
+        return $("<li></li>").data("item.autocomplete", item).append(html).appendTo(ul);
+    }      
+  }
+
+  
+ autoComp(selector, attributeName,apiEndPoint) {       
+    selector.autocomplete({
+        source: function (request, response) {           
+          $.ajax({
+            url:  apiEndPoint,
+            dataType: "json",
+            data: {
+              name_like : request.term,    //a query expression-t sajnos nem lehetet változón keresztül átadni-- >emiatt elengedhetetlen a "kódduplikáció"         
+            },
+            success: function (data) {
+              if (data.length > 0) {             
+              response(
+                $.map(data, function (item) {
+                  return {
+                    label : item["id"],
+                    value: item[attributeName],
+                  };
+                })
+              );
+            } else {
+              //If no records found, set the default "No match found" item with label null.
+              response([{ label:null, value: 'No results found.'}]);                              
+              }
+            },
+          });
+        },
+        minlength: 3,        
+            select:  (e, u) =>{
+                //If no match is found when item is selected, clear the TextBox.
+                if (u.item.value == 'No results found.') {                  
+                  selector.val("");                 
+                    return false;
+                }else{ 
+                  //if results are found, create a new hidden input field to store the ID                                
+                  this.addHiddenInputField(selector.attr("id"),u.item.label); 
+                  if(selector.attr("id")==='service') {               
+                    this.serviceID=u.item.label;  //if a service has been seleted, get the selected service's ID (needed in order to determine the related categories)   
+                    this.categoryField.removeAttr('disabled');
+                  }   
+                  if(selector.attr("id")==='assignmentGroup') {               
+                    this.assignmentGroupID=u.item.label;  //if an assign.group has been seleted, get the selected group's ID (needed in order to determine the team members)   
+                    this.assignedToField.removeAttr('disabled');
+                  }        
+                }                                    
+            },
+            change: function (e, u) {        
+              if(!(u.item === null || u.item===undefined || u.item.value=='No results found.')){
+               selector.val(u.item.value); // take from attribute and insert as value              
+              }else{
+                selector.val(""); 
+              }
+          }
+      })
+      .data("uiAutocomplete")._renderItem = function (ul, item) {
+      //get position of the selector being clicked on  
+      let inputFieldPosition = selector.position();          
+        $(ul).addClass("ac-template");
+      //set position of the autocomplete based on the selector's position 
+        $(ul).css({
+          top: inputFieldPosition.top + 20,
+          left: inputFieldPosition.left,
+          position: "absolute",
+        });   
+        const showNameAndID = ["caller", "subjperson", "assignedTo"]; //show both name and ID in autocomplete dropdown for these selectors
+        let html;       
+        if (jQuery.inArray(selector.attr("id"), showNameAndID) > -1) {
+             html = "<a>" + item.value + (item.label === "No results found." ? "" : " (" + item.label + ")") + "</a>";
       } else {
-           html = "<a>" + item.value + "</a>";
+            html = "<a>" + item.value + "</a>";
       }
-      return $("<li></li>").data("item.autocomplete", item).append(html).appendTo(ul);
-    };      
+        return $("<li></li>").data("item.autocomplete", item).append(html).appendTo(ul);
+    }      
   }
 
   draftComment(){
@@ -256,43 +328,53 @@ class ModifyTicketView {
   } 
 
   setAutocompInputFields(){    
-    const apiEndPointUsers = "http://localhost:3000/users";
-    const apiEndPointCategories = "http://localhost:3000/categories";    
-    const apiEndPointResolvers = "http://localhost:3000/resolvers"; 
-    const apiEndPointTickets = "http://localhost:3000/tickets";
+    const apiEndPointUsers = "api/user/all/filter";       
+    const apiEndPointServices = "api/service/all/filter";  
+    const apiEndPointPTickets = "/api/ticket/parentfor/"+this.ticketIDField.val();   
+    const apiEndPointResolvers = "api/resolver/all/filter"; 
         
+         
     $(window).on( {
-      keyup: (event) => {   
+      keypress: (event) => {           
        let selectorName = $(event.target).attr("id");          
       switch (selectorName) {        
-        case "caller":                                 
+        case "caller":                         
           this.autoComp($("#caller"), "name", apiEndPointUsers);                           
           break;
         case "subjperson":                  
           this.autoComp($("#subjperson"), "name", apiEndPointUsers);
           break;
         case "assignedTo":                            
-          this.autoComp($("#assignedTo"), "name",apiEndPointUsers);
+          this.autoComp($("#assignedTo"), "name","api/resolver/"+this.assignmentGroupID+"/users/filter");
           break;
         case "service":               
-          this.autoComp($("#service"), "name",apiEndPointCategories); //
+          this.autoComp($("#service"), "name",apiEndPointServices);         
           break;
-        case "category":                
-          this.autoComp($("#category"), "name",apiEndPointCategories); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra
-           break;
-        case "assignmentGroup":                   
-           this.autoComp($("#assignmentGroup"), "name",apiEndPointResolvers); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra
-           break;   
-           case "parentTicket":                   
-           this.autoComp($("#parentTicket"), "id",apiEndPointTickets); //ez meg nem jo: majd kulon utvonal kell csak a fokategoriakra
-           break;      
+        case "category": 
+          if(!this.serviceField.val()==""){                                  
+          this.autoComp($("#category"), "name","api/service/"+this.serviceID+"/categories/filter"); 
+          }
+          case "parentTicket":               
+          this.autoCompForTicketNrs($("#parentTicket"), "ticketnr",apiEndPointPTickets);         
+          break;     
+          case "assignmentGroup":               
+          this.autoComp($("#assignmentGroup"), "name",apiEndPointResolvers);         
+          break;                       
         default: ;        
-      };    
+      };  
            
-    } 
-
-    
-   
+    } , keyup:()=> {
+        if(this.serviceField.val()==='') {  
+          this.categoryField.val(''); 
+            this.categoryField.attr('disabled', 'disabled'); 
+        } 
+        if(this.assignmentGroupField.val()==='') {  
+          this.assignedToField.val(''); 
+            this.assignedToField.attr('disabled', 'disabled'); 
+        } 
+        
+        
+      }
     });
 
   }

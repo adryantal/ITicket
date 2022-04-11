@@ -1,78 +1,101 @@
 class TicketListItem {
-  constructor(ticketDataContainer, data) {
-    this.ticketDataContainer = ticketDataContainer;
-    this.data = data;
+    constructor(ticketDataContainer, data) {
+        this.ticketDataContainer = ticketDataContainer;
+        this.data = data;
 
-    /*Pointers to ticket attributes*/
-    this.idItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".ticketID")
-      .children("a");
-    this.callerItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".caller")
-      .children("a");
-    this.subjpersonItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".subjperson")
-      .children("a");
-    this.titleItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".title");
-    this.typeItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".type");
-    this.serviceItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".service");
-    this.categoryItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".category");
-    this.statusItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".status");
-    this.assignedToItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".assignedTo")
-      .children("a");
-    this.createdOnItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".createdOn");
-    this.createdByItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".createdBy")
-      .children("a");
-    this.updatedItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".updated");
-    this.updatedByItem = this.ticketDataContainer
-      .children(".ticket-data")
-      .children(".updatedBy")
-      .children("a");
+        /*Pointers to ticket attributes*/
+        this.idItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".ticketID")
+            .children("a");
+        this.callerItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".caller")
+            .children("a");
+        this.subjpersonItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".subjperson")
+            .children("a");
+        this.titleItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".title");
+        this.typeItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".type");
+        this.serviceItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".service");
+        this.categoryItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".category");
+        this.statusItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".status");
+        this.assignedToItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".assignedTo")
+            .children("a");
+        this.createdOnItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".createdOn");
+        this.createdByItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".createdBy")
+            .children("a");
+        this.updatedItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".updated");
+        this.updatedByItem = this.ticketDataContainer
+            .children(".ticket-data")
+            .children(".updatedBy")
+            .children("a");
 
-    this.setData(this.data);
+        this.setData(this.data);
+        this.setPageResponsivity(700, 4); //under width of 700px only the first 4 columns are visible
+    }
+    setData(data) {
+        this.data = data;
+        this.idItem.text(data.id);
+        this.callerItem.text(data.caller_name);
+        this.subjpersonItem.text(data.subjperson_name);
+        this.titleItem.text(data.title);
+        this.typeItem.text(data.type);
+        this.serviceItem.text(data.service_name);
+        this.categoryItem.text(data.category_name);
+        this.statusItem.text(data.status);
+        this.assignedToItem.text(data.assigned_to_name);
+        this.createdOnItem.text(data.created_on);
+        this.createdByItem.text(data.created_by_name);
+        this.updatedItem.text(data.updated);
+        this.updatedByItem.text(data.updated_by_name);
+    }
 
-  }
-
-  setData(data) {
-    this.data = data;
-    this.idItem.text(data.id);
-    this.callerItem.text(data.caller_name);
-    this.subjpersonItem.text(data.subjperson_name);
-    this.titleItem.text(data.title);
-    this.typeItem.text(data.type);
-    this.serviceItem.text(data.service_name);
-    this.categoryItem.text(data.category_name);   
-    this.statusItem.text(data.status);       
-    this.assignedToItem.text(data.assigned_to_name);
-    this.createdOnItem.text(data.created_on);
-    this.createdByItem.text(data.created_by_name);
-    this.updatedItem.text(data.updated);
-    this.updatedByItem.text(data.updated_by_name);
-
-  }
-
- 
+    setPageResponsivity(size, colNr) {
+        let parameter = "(min-width:" + size + "px)";
+        const mq = window.matchMedia(parameter);
+        if (!mq.matches) {
+            //"window width < 760px"
+            $("#attr-bar")
+                .children("div")
+                .each(function (index) {
+                    if (index > colNr) {
+                        $("#attr-bar").children("div").eq(index).hide();
+                        $("#attr-filter-bar").children("div").eq(index).hide();
+                    }
+                });
+            $(".ticket-data-line").each(function (i) {
+                let tDataLine = $(".ticket-data-line").eq(i);
+                tDataLine.children("div").each(function (index) {
+                    if (index > colNr) {
+                        tDataLine.children("div").eq(index).hide();
+                    }
+                });
+            });
+            $("body").css("overflow-x", "hidden");
+        } else {
+            $("body").css("overflow", "scroll");
+        }
+    }
 }
 
 class TicketFilter {
@@ -136,7 +159,7 @@ class TicketFilter {
 
 class Pagination {
   constructor() {
-    const ticketContainer = $("#ticket-container");
+
     const ticketDataLine = $("#ticket-container .ticket-data-line");
     const pageIntervalBar = $("#pageinterval-bar");
     const paginationBar = $("#pagination-bar");
@@ -152,6 +175,7 @@ class Pagination {
         location.reload();
         countlimitPerPage();  
         counter++;
+        $(window).scrollLeft(0);
     }); 
      
     if (counter === 0) {
@@ -161,8 +185,7 @@ class Pagination {
       countlimitPerPage(); 
       pageIntervalBar.append("1-" + (limitPerPage-1));
       }
-    }
-    
+    }    
   
 
     paginationBar.append(
@@ -295,7 +318,8 @@ class Pagination {
     });
 
     function countlimitPerPage(){
-      let itemContainerHeight =  $("main").height() -  $("#attr-bar").height() - $("#search-status-bar").height();
+      
+      let itemContainerHeight =  $("main").height() -  $("#attr-bar").height(); //- $("#search-status-bar").height();
           limitPerPage = 0;
           $(".ticket-data-line").each(function () {
             if (
@@ -338,6 +362,9 @@ class TicketListHeader {
     ];
 
     new AttributeHeader($("#attr-bar"), AttrHeaderTitlesArray);
+
+    //responsivity: if page width is lower than a pre-define limit, then only a few columns should be visible
+
   }
 
 

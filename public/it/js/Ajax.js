@@ -51,9 +51,10 @@ class MyAjax{
         });
       }
     
-      /*PUT - dott id-jú adat módosítása az AB-ban API végponton keresztül*/
+      /*PUT - adott id-jú adat módosítása az AB-ban API végponton keresztül*/
       putAjax(apiEndPoint,newData,id) {
         newData._token=this.token;
+       
         $.ajax({
           headers: {'X-CSRF-TOKEN': this.token},
           url: apiEndPoint+"/"+id,

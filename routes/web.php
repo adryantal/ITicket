@@ -21,9 +21,8 @@ use App\Http\Middleware\IsResolver;
 |
 */
 
-
+Route::get('/', function () {return redirect('/login');});
 Route::get('/login', function () { return view('auth.login');}); //login oldal
-
 Route::get('/logout', [LogoutController::class, 'perform']); //bejelentkezett user kijelentkeztetése
 Route::get('/notauthorized', function () {return view('it.notauthorized');});
 
@@ -31,23 +30,28 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::middleware(['auth', IsResolver::class])->group(function () {
-   
+Route::middleware(['auth', IsResolver::class])->group(function () {   
 
     //oldalak útvonalai
     Route::get('/switchboard', function () {return view('switchboard');});   
     Route::get('/switchboard/db', function () {return view('it.switchboardfordb');}); //ez majd csak a db-eseknek lesz elérhető https://stackoverflow.com/questions/65835538/laravel-8-register-user-while-logged-in
     Route::get('/alltickets', function () {return view('it.ticketlist');}); //ticketek kilistázása
     Route::get('/newticket',  function () {return view('it.newticket');}); //új ticket rögzítése - form
+    Route::get('/modifyticket',  function () {return view('it.modifyticket');})->name('modifyticket'); // ticket módosítása - form
+
     Route::get('/api/ticket/new/number', [TicketController::class, 'getLastTicketSubmittedByAuthUser']); //sikeres rögz. után a ticketszám/ticket adatok lekérése
 
     /*Útvonalak ticketekre*/
     Route::get('/api/ticket/all', [TicketController::class, 'getAllTickets']);  //összes ticket kilistázása 
     Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //általános keresés (összes attribútumon értékein belül keres) 
-    Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés ticketekre    
+    Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés ticketekre  
+    Route::get('/api/ticket/get/{ticketnr}', [TicketController::class, 'dataforModifyTicketForm']); //ticket nr. alapján ticketadatokat ad vissza  
     Route::get('/api/ticket/all/searchtickets', [TicketController::class, 'search']); //egy adott- vagy több attribútum szerinti szűrés ticketekre (csak a ticket táblán belül)   
     Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése   
     Route::get('/api/ticket/{id}', [TicketController::class, 'getTicket']);  //adott ticket megkeresése id alapján
+    Route::get('/modifyticket/{ticketnr}', [TicketController::class, 'retrieveConstTicketData']); //a nem változtatható ticketadatok kilistázása ticketszám alapján
+    Route::get('/api/ticket/parentfor/{ticketnr}', [TicketController::class, 'allTicketsExceptCurrent']);//adott tickethez kiválasztható parent ticketek a modify formon
+    Route::put('/api/ticket/{id}', [TicketController::class, 'update']); //ticket updatelése a modify formon keresztül
 
     /*Útvonalak kategóriákra*/
     Route::get('/api/service/all', [CategoryController::class, 'getAllServices']);  //összes főkat.
@@ -61,6 +65,10 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     Route::get('/api/category/all/filter', [CategoryController::class, 'filterCategories']);  //alkategóriák szűrése megadott attr. alapján
     Route::get('/api/service/{id}/categories/filter', [CategoryController::class, 'filterCategoriesPerService']); //adott service alá tart. kategóriák v2.
     Route::get('/api/service/all/filter', [CategoryController::class, 'filterServices']);  //alkategóriák szűrése megadott attr. alapján
+
+    /*Útvonalak resolverekhez*/
+    Route::get('/api/resolver/{id}/users/filter', [ResolverController::class, 'filterUsersPerResolver']);
+    Route::get('/api/resolver/all/filter', [ResolverController::class, 'filter']);
 
     /*Útvonalak a csatolmányokhoz kapcsolódóan*/
     Route::get('/api/attachment/all', [AttachmentController::class, 'getAllAttachments']);  //összes csatolmány

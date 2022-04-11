@@ -51,7 +51,6 @@ class Ticket extends Model
 
       //adott ticket kategóriája
       public function category()
-
       {
           return $this->belongsTo(Category::class);
       }
@@ -62,7 +61,11 @@ class Ticket extends Model
              return $this->hasMany(Attachment::class);
          }
   
-      
+      //adott tickethez tart. naplóbejegyzések
+      public function journal()
+      {
+          return $this->belongsTo(Journal::class);
+      }
      
      //rekurzív kapcsolat -->$this->hasMany(Class,parentID,childID)
     //adott ticket alatti child ticketeket adja vissza

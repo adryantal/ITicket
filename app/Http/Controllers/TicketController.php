@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Resolver;
 use Illuminate\Http\Request;
+
+use function PHPUnit\Framework\isNull;
 
 class TicketController extends Controller
 {
@@ -19,15 +24,10 @@ class TicketController extends Controller
         {
        $response=array();
         $alltickets = Ticket::all();
-        foreach ($alltickets as $ticket) {
-            $caller=User::find($ticket->caller);
-            $subjperson=User::find($ticket->subjperson);
-            $assigned_to=User::find($ticket->assigned_to);
-            $created_by=User::find($ticket->created_by);
+        foreach ($alltickets as $ticket) {           
             $updated_by=User::find($ticket->updated_by);
             $category=Category::find($ticket->category);
-            $service=Category::where('id','=',$category->main_cat_id)->first();
-            
+            $service=Category::where('id','=',$category->main_cat_id)->first();            
             if($ticket->type=="Request"){
                 $prefix='REQ';
             };
@@ -37,10 +37,10 @@ class TicketController extends Controller
             //Carbon::resetToStringFormat();
             $data = array(
                 'id'=> $prefix.$ticket->id,
-                'caller_name' => $caller->name, 
-                'subjperson_name' => $subjperson->name, 
-                'assigned_to_name' => $assigned_to->name, 
-                'created_by_name'=>$created_by->name, 
+                'caller_name' => User::find($ticket->caller)->name, 
+                'subjperson_name' => User::find($ticket->subjperson)->name, 
+                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
                 'type' => $ticket->type,              
@@ -118,16 +118,91 @@ class TicketController extends Controller
 
       //adott ticket. alá tart. child ticketek
       public function getAllChildTickets($ticketid){
-        $$child_tickets = Ticket::where('parent_ticket','=',$ticketid)
+        $child_tickets = Ticket::where('parent_ticket','=',$ticketid)
         ->orderBy('parent_ticket')       
         ->get();
         return response()->json($child_tickets);
     }
 
+//a nem változtatható ticketadatok kilistázása ticketszám alapján
+   public function retrieveConstTicketData($ticketNr){
+  
+       $ticket=Ticket::where('ticketnr','=',$ticketNr)->first(); 
+       $updated_by=User::where('id','=',$ticket->updated_by)->first();    
+       $now=Carbon::now();
+       $created_on=Carbon::create($ticket->created_on);
+       $timespent= $now->diffInHours($created_on, true); 
+       $timeleft=$ticket->sla-$timespent;      
+        //egy array-t készítek elő, amelyet majd a ticketadatok betöltéséhez átküldök a modifyticket oldalnak session-ön keresztül
+       $data = array(
+        'id'=> $ticket->id,
+        'ticketnr'=> $ticket->ticketnr,
+        'created_by_name'=>User::where('id','=',$ticket->created_by)->first()->name, 
+        'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,        
+        'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
+        'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   
+        'sla' => $ticket->sla, 
+        'timeleft' => $timeleft,
+        'timespent' => $timespent,                
+        );    
+      return redirect('/modifyticket')->with('data', $data);
+   }
 
 
 
 
+//a modify ticket formba történő adatbetöltéshez
+   public function dataforModifyTicketForm($ticketNr){
+
+    $ticket=Ticket::where('ticketnr','=',$ticketNr)->first(); 
+    $updated_by=User::find($ticket->updated_by);
+    $category=Category::find($ticket->category);    
+    $now=Carbon::now();
+    $parent_ticket=Ticket::find($ticket->parent_ticket);    
+    $created_on=Carbon::create($ticket->created_on);
+    $timespent= $now->diffInHours($created_on, true); 
+    $timeleft=$ticket->sla-$timespent;
+    $assignment_group_id = User::find($ticket->assigned_to)->first()->resolver_id;     
+
+    $data = array(
+     'id'=> $ticket->id,
+     'ticketnr'=> $ticket->ticketnr,
+     'caller_name' => User::find($ticket->caller)->name, 
+     'subjperson_name' => User::find($ticket->subjperson)->name, 
+     'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+     'assignment_group_name' => Resolver::find($assignment_group_id)->name,
+     'created_by_name'=>User::where('id','=',$ticket->created_by)->first()->name, 
+     'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+     'title' => $ticket->title,
+     'description' => $ticket->description,
+     'type' => $ticket->type,            
+     'contact_type' => $ticket->contact_type,    
+     'category_name' => $category->name,
+     'service_name' => Category::find($category->main_cat_id)->name,
+     'status' => $ticket->status, 
+     'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
+     'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   
+     'sla' => $ticket->sla, 
+     'timeleft' => $timeleft,
+     'timespent' => $timespent, 
+     'impact' => $ticket->impact,
+     'priority' => $ticket->priority,   
+     'urgency' => $ticket->urgency,
+     'parent_ticketnr' =>   $parent_ticket === null ? "" : $parent_ticket->ticketnr,    
+     //ezeket azért kell átadni, hogy ha esetleg nem kerül sor az adott mező értékének megváltoztatására:
+     'caller_id' => User::find($ticket->caller)->id, 
+     'subjperson_id' => User::find($ticket->subjperson)->id, 
+     'assigned_to_id' => User::find($ticket->assigned_to)->id, 
+     'assignment_group_id' => Resolver::find($assignment_group_id)->id,
+     'category_id' => $category->id,
+     'service_id' => Category::find($category->main_cat_id)->id,
+
+     );
+   
+    return $data;
+   }
+
+   
 
     /**
      * Display a listing of the resource.
@@ -177,7 +252,7 @@ class TicketController extends Controller
         $ticket->urgency = $request->urgency;
         $ticket->impact = $request->impact;
         $ticket->parent_ticket = $request->parent_ticket;
-        $ticket->updated=Carbon::now()->format('Y-m-d H:i:s');;
+        $ticket->updated=Carbon::now()->format('Y-m-d H:i:s');
        //sla && time left
         if($request->type =="Request"){
             $ticket->sla=120; //5*24
@@ -284,11 +359,8 @@ class TicketController extends Controller
         
         $response=array();
        
-        foreach ($results as $ticket) {            
-            $caller=User::find($ticket->caller);
-            $subjperson=User::find($ticket->subjperson);
-            $assigned_to=User::find($ticket->assigned_to);
-            $created_by=User::find($ticket->created_by);
+        foreach ($results as $ticket) {          
+         
             $updated_by=User::find($ticket->updated_by);
             $category=Category::find($ticket->category);
             $service=Category::where('id','=',$category->main_cat_id)->first();
@@ -301,10 +373,10 @@ class TicketController extends Controller
             };
             $data = array(
                 'id'=> $prefix.$ticket->id,
-                'caller_name' => $caller->name, 
-                'subjperson_name' => $subjperson->name, 
-                'assigned_to_name' => $assigned_to->name, 
-                'created_by_name'=>$created_by->name, 
+                'caller_name' => User::find($ticket->caller)->name, 
+                'subjperson_name' => User::find($ticket->subjperson)->name, 
+                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
                 'type' => $ticket->type,              
@@ -317,10 +389,8 @@ class TicketController extends Controller
                 );
                 array_push($response,$data);          
             }
-
-       
+     
         return response()->json($response);
-
     }
 
 
@@ -336,6 +406,12 @@ class TicketController extends Controller
             $expression=$explodedKey[1];
             $results=Ticket::where($attribute, $expression, '%' . $value . '%')->get();
         }
+        return $results;
+    }
+    //összes ticket kivéve a kijelölt
+    public function allTicketsExceptCurrent($ticketnr)
+    {
+        $results = Ticket::where('ticketnr', 'not like', '%' . $ticketnr . '%')->get();
         return $results;
     }
 
@@ -383,11 +459,8 @@ class TicketController extends Controller
 
                         $response=array();
        
-                        foreach ($results as $ticket) {            
-                            $caller=User::find($ticket->caller);
-                            $subjperson=User::find($ticket->subjperson);
-                            $assigned_to=User::find($ticket->assigned_to);
-                            $created_by=User::find($ticket->created_by);
+                        foreach ($results as $ticket) {   
+                            
                             $updated_by=User::find($ticket->updated_by);
                             $category=Category::find($ticket->category);
                             $service=Category::where('id','=',$category->main_cat_id)->first();
@@ -401,10 +474,10 @@ class TicketController extends Controller
                 
                             $data = array(
                                 'id'=> $prefix.$ticket->id,
-                                'caller_name' => $caller->name, 
-                                'subjperson_name' => $subjperson->name, 
-                                'assigned_to_name' => $assigned_to->name, 
-                                'created_by_name'=>$created_by->name, 
+                                'caller_name' =>  User::find($ticket->caller)->name, 
+                                'subjperson_name' => User::find($ticket->subjperson)->name, 
+                                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                                'created_by_name'=>User::find($ticket->created_by)->name, 
                                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                                 'title' => $ticket->title,
                                 'type' => $ticket->type,              
@@ -419,12 +492,7 @@ class TicketController extends Controller
                             }
                 
                        
-                        return response()->json($response);
-                
-
-
-  
-       
+                        return response()->json($response);       
     }
 
 
@@ -458,9 +526,28 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ticket $ticket)
-    {
-        //
+    public function update(Request $request, $id)   
+    
+    {        
+        $ticket = Ticket::find($id);        
+                              
+        $ticket->title = $request->title;
+        $ticket->description = $request->description;
+        $ticket->status = $request->status;   
+        $ticket->type = $request->type;  
+        $ticket->caller = $request->caller_id;         
+        $ticket->subjperson = $request->subjperson_id;
+        $ticket->assigned_to = $request->assigned_to_id; 
+        $ticket->updated  =  Carbon::now()->format('Y-m-d H:i:s');  
+        $ticket->updated_by  = Auth::user()->id;
+        $ticket->category  = $request->category_id;        
+        $ticket->contact_type =  $request->contact_type;
+        $ticket->urgency =  $request->urgency;
+        $ticket->priority =  $request->priority;
+        $ticket->impact =  $request->impact;
+
+        if (!isNull($request->parent_ticket_id)){ $ticket->parent_ticket =  $request->parent_ticket_id;}  
+        $ticket->save();          
     }
 
     /**

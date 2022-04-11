@@ -4,24 +4,21 @@ class ModifyTicketController {
   constructor() {
     new FrameView();
     const mTicketView = new ModifyTicketView();
-    const myAjax = new MyAjax();
+    const token = $('meta[name="csrf-token"]').attr("content");
+    const myAjax = new MyAjax(token);
     let attachmentsArray = []; //attachments display list
     let attachmentsToBeAdded = [];
     let attachmentToBeRemoved = [];
     let commentsArray = [];
-    let commentsToBeInserted = [];
-    let apiEndPointTicket = "http://localhost:3000/tickets";
-    let apiEndPointAttachments = "http://localhost:3000/attachments";
-    let apiendPointJournals = "http://localhost:3000/journals";
-    
-  //read in ticketID from the URL
-  const index = document.URL.indexOf("=");
-  let ticketID = document.URL.substring(index + 1, document.URL.length);
-  let apiEndPointSelectedTicket = "http://localhost:3000/tickets?id=" + ticketID;
-
-
-    loadTicketData();
+    let commentsToBeInserted = [];   
+    let apiEndPointAttachments = "api/attachment/all";
+    let apiendPointJournals = "api/journal/all";    
+    const ticketNr = mTicketView.ticketIDField.val();  //get ticketNr
+    const ticketID = ticketNr.substring(3,ticketNr.length);
+    let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;
+    let apiEndPointTicket = "api/ticket";
  
+    loadTicketData();
    
     //if a new attachment is to be added, add the related object to the attachmentsToBeAdded array
     $(window).on("newFile", (event) => {
@@ -61,46 +58,42 @@ class ModifyTicketController {
   
     function loadTicketData(){
       loadBasicTicketData();
-      loadAttachments();
-      loadComments();
+     // loadAttachments();
+     // loadComments();
     }
 
     function loadBasicTicketData() {
       /*LOAD BASIC DETAILS*/
       //load ticket data from API endpoint
       const tArray = [];
-      myAjax.getAjax(apiEndPointSelectedTicket, tArray, function () {
-        mTicketView.ticketIDField.val(tArray[0].id);
-        mTicketView.callerField.val(tArray[0].caller_name);
-        mTicketView.subjpersonField.val(tArray[0].subjperson_name);
-        mTicketView.serviceField.val(tArray[0].service_name);
-        mTicketView.statusField.val(tArray[0].status);
-        mTicketView.categoryField.val(tArray[0].category_name);
-        mTicketView.impactField.val(tArray[0].impact);
-        mTicketView.priorityField.val(tArray[0].priority);
-        mTicketView.urgencyField.val(tArray[0].urgency);
-        mTicketView.assignmentGroupField.val(tArray[0].assignment_group_name);
-        mTicketView.assignedToField.val(tArray[0].assigned_to_name);
-        mTicketView.titleField.val(tArray[0].title);
-        mTicketView.typeField.val(tArray[0].type);
-        mTicketView.descriptionField.val(tArray[0].description);
-        mTicketView.contactTypeField.val(tArray[0].contact_type);
-        mTicketView.parentTicketField.val(tArray[0].parent_ticket);
-        mTicketView.createdByField.val(tArray[0].created_by_name);
-        mTicketView.createdOnField.val(tArray[0].created_on);
-        mTicketView.lastUpdatedBy.val(tArray[0].updated_by_name);
-        mTicketView.lastUpdatedOn.val(tArray[0].updated);
-        mTicketView.parentTicketField.val(tArray[0].parent_ticket);
+      $.getJSON(apiEndPointSelectedTicket, function(data) {
+        console.log(data);
+        mTicketView.ticketIDField.val();
+        mTicketView.callerField.val(data.caller_name);
+        mTicketView.subjpersonField.val(data.subjperson_name);
+        mTicketView.serviceField.val(data.service_name);
+        mTicketView.statusField.val(data.status);
+        mTicketView.categoryField.val(data.category_name);
+        mTicketView.impactField.val(data.impact);
+        mTicketView.priorityField.val(data.priority);
+        mTicketView.urgencyField.val(data.urgency);
+        mTicketView.assignmentGroupField.val(data.assignment_group_name);
+        mTicketView.assignedToField.val(data.assigned_to_name);
+        mTicketView.titleField.val(data.title);
+        mTicketView.typeField.val(data.type);
+        mTicketView.descriptionField.val(data.description);
+        mTicketView.contactTypeField.val(data.contact_type);
+        mTicketView.parentTicketField.val(data.parent_ticket);       
+        mTicketView.createdOnField.val(data.created_on);      
+        mTicketView.lastUpdatedOn.val(data.updated);
+        mTicketView.parentTicketField.val(data.parent_ticketnr);
         //creating hidden input fields for the IDs
-        mTicketView.addHiddenInputField("caller", tArray[0].caller_id);
-        mTicketView.addHiddenInputField("subjperson", tArray[0].subjperson_id);
-        mTicketView.addHiddenInputField("assignedTo", tArray[0].assigned_to_id);
-        mTicketView.addHiddenInputField(
-          "assignmentGroup",
-          tArray[0].assignment_group_id
-        );
-        mTicketView.addHiddenInputField("service", tArray[0].service_id);
-        mTicketView.addHiddenInputField("category", tArray[0].category_id);
+        mTicketView.addHiddenInputField("caller", data.caller_id); 
+        mTicketView.addHiddenInputField("subjperson", data.subjperson_id);
+        mTicketView.addHiddenInputField("assignedTo", data.assigned_to_id);
+        mTicketView.addHiddenInputField("assignmentGroup", data.assignment_group_id);
+        mTicketView.addHiddenInputField("service", data.service_id);
+        mTicketView.addHiddenInputField("category", data.category_id);
       });
     }
 
@@ -144,7 +137,10 @@ class ModifyTicketController {
 
     function updateBasicTicketData() {
       /*insert value of the input fields to the Tickets table*/
+     
       let modifiedTicketData = {
+        id: ticketID,
+        ticketnr: ticketNr,
         caller_name: mTicketView.callerField.val(),
         subjperson_name: mTicketView.subjpersonField.val(),
         title: mTicketView.titleField.val(),
@@ -156,14 +152,11 @@ class ModifyTicketController {
         assignment_group_name: mTicketView.assignmentGroupField.val(),
         impact: mTicketView.impactField.val(),
         priority: mTicketView.priorityField.val(),
-        urgency: mTicketView.urgencyField.val(),
-        created_on: "",
-        created_by_name: mTicketView.createdByField.val(),
-        updated: "",
-        updated_by: "",
+        urgency: mTicketView.urgencyField.val(),    
+        created_by_name: mTicketView.createdByField.val(),        
         description: mTicketView.descriptionField.val(),
         contact_type: mTicketView.contactTypeField.val(),
-        parent_ticket: mTicketView.parentTicketField.val(),
+        parent_ticket_id: mTicketView.parentTicketField.val().substring(3,mTicketView.parentTicketField.val().length),
         //attachments: attachmentsArray
 
         //reading data from hidden input fields
@@ -174,11 +167,8 @@ class ModifyTicketController {
         assigned_to_id: $("#assignedToID").val(),
         assignment_group_id: $("#assignmentGroupID").val(),
       };
-      myAjax.putAjax(
-        apiEndPointTicket,
-        modifiedTicketData,
-        mTicketView.ticketIDField.val()
-      );
+      console.log(modifiedTicketData);
+      myAjax.putAjax(apiEndPointTicket,modifiedTicketData,ticketID);
     }
 
     function updateAttachments(){
@@ -244,8 +234,8 @@ class ModifyTicketController {
 
     function modifyNewTicket() {
       updateBasicTicketData();
-      updateAttachments();
-      insertNewComments();    
+     // updateAttachments();
+     // insertNewComments();    
     }
 
 

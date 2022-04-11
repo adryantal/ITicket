@@ -4,17 +4,15 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Home</title>
+  <title>ITicket - Create new ticket</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
   <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\newticket.css" />
-  <link rel="icon" type="image/x-icon" href="../images/logo_mini.PNG" />
+  <link rel="icon" type="image/x-icon" href="/storage/logo_mini.PNG" />
   <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
-  <script
-  src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"
-  integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY="
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY="
   crossorigin="anonymous"></script>
   <script src='it\js\frameView.js'></script>  
   <script src='it\js\newTicketView.js'></script>

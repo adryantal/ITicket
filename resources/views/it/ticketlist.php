@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\ticketlist.css" />
-    <link rel="icon" type="image/x-icon" href="../images/logo_mini.PNG" />
+    <link rel="icon" type="image/x-icon" href="/storage/logo_mini.PNG" />
     <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
     <script src="it\js\Ajax.js"></script>    
     <script src="it\js\frameView.js"></script>   

@@ -15,7 +15,7 @@ class NewTicketView {
     this.assignmentGroupField = $("#assignmentGroup");
     this.contactTypeField = $("#contactType");
     this.descriptionField = $("#description");
-    this.titleField = $("#title");
+    this.titleField = $("#title");    
     this.parentTicketField = $("#parentTicket");
     this.attachmentList = $("#attachment-list");
     this.addAttachmentFileInput = $("#attachment");    
@@ -47,7 +47,6 @@ class NewTicketView {
     
    //reset form
     this.resetForm(); 
-
 
   }
 
@@ -258,7 +257,7 @@ class NewTicketView {
                 }                                    
             },
             change: function (e, u) {        
-              if(!(u.item === null || u.item===undefined)){
+              if(!(u.item === null || u.item===undefined || u.item.value=='No results found.')){
                selector.val(u.item.value); // take from attribute and insert as value              
               }else{
                 selector.val(""); 
@@ -303,10 +302,10 @@ class NewTicketView {
   } 
 
   setAutocompInputFields(){    
-    const apiEndPointUsers = "http://localhost:8000/api/user/all/filter";       
-    const apiEndPointServices = "http://localhost:8000/api/service/all/filter";  
-    const apiEndPointTickets = "http://localhost:8000/api/ticket/all/searchtickets";   
-    const apiEndPointResolvers = "http://localhost:8000/api/resolver/all/filter";  
+    const apiEndPointUsers = "api/user/all/filter";       
+    const apiEndPointServices = "api/service/all/filter";  
+    const apiEndPointTickets = "api/ticket/all/searchtickets";   
+    
     
         
     $(window).on( {
@@ -327,7 +326,7 @@ class NewTicketView {
           break;
         case "category": 
           if(!this.serviceField.val()==""){                                  
-          this.autoComp($("#category"), "name","http://localhost:8000/api/service/"+this.serviceID+"/categories/filter"); 
+          this.autoComp($("#category"), "name","api/service/"+this.serviceID+"/categories/filter"); 
           }
           case "parentTicket":               
           this.autoCompForTicketNrs($("#parentTicket"), "ticketnr",apiEndPointTickets);         
@@ -337,6 +336,7 @@ class NewTicketView {
            
     } , keyup:()=> {
         if(this.serviceField.val()==='') {  
+          this.categoryField.val(''); 
             this.categoryField.attr('disabled', 'disabled'); 
         } 
       }
