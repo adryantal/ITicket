@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\JournalController;
 use App\Http\Middleware\IsResolver;
 
 /*
@@ -38,7 +39,6 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     Route::get('/alltickets', function () {return view('it.ticketlist');}); //ticketek kilistázása
     Route::get('/newticket',  function () {return view('it.newticket');}); //új ticket rögzítése - form
     Route::get('/modifyticket',  function () {return view('it.modifyticket');})->name('modifyticket'); // ticket módosítása - form
-
     Route::get('/api/ticket/new/number', [TicketController::class, 'getLastTicketSubmittedByAuthUser']); //sikeres rögz. után a ticketszám/ticket adatok lekérése
 
     /*Útvonalak ticketekre*/
@@ -80,10 +80,12 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     /*Útvonalak userekhez --> ez a felület majd csak a database-eseknek lesz engedélyezett*/
     Route::get('/api/user/all', [UserController::class, 'getAllUsers']);  //összes user
     Route::get('/api/user/{id}', [UserController::class, 'getUser']);  //adott user megkeresése id alapján
-
     Route::get('/api/user/all/filter', [UserController::class, 'filter']);  //userek szűrése adott attr. alapján
 
-    Route::get('/newuser', function () { return view('newuser');});  //új user hozzáadása - még nincs kész; egyelőre SOS megoldásnak a newuser.blade.php használandó
+    Route::get('/newuser', function () { return view('newuser');});  //egyelőre SOS megoldás, a newuser.blade.php használandó
+
+    /*Útvonalak naplózáshoz*/
+    Route::post('/api/journal/new', [JournalController::class, 'addNewJournal']);  //új naplóbejegyzés beszúrása
 });
 
 

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+
+
 use App\Models\Journal;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class JournalController extends Controller
@@ -33,9 +37,30 @@ class JournalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function addNewJournal(Request $request)
+    {  // dd($request->all());
+       // parse_str($request->getContent(),$arrayToProcess); //json_decode($request->getContent(), true);
+       $arrayToProcess=request('data');
+            
+        foreach ($arrayToProcess as $journal) {
+            $j  =   new Journal();
+            $j->comment = $journal['description'] ; 
+            $j->ticketid= $journal['ticketid']; 
+            $j->caller= $journal['caller_id']; 
+            $j->subjperson= $journal['subjperson_id']; 
+            $j->assignedto= $journal['assigned_to_id']; 
+          //  $j->category= $journal['category_id']; 
+          //$j->priority= $journal['priority'];
+          //$j->urgency= $journal['urgency'];
+          // $j->impact= $journal['impact'];
+            $j->status= $journal['status'];
+            $j->updatedby = Auth::user()->id;
+            $j->updated = Carbon::now()->format('Y-m-d H:i:s');         
+            $j->save();
+        }
+
+        
+       
     }
 
     /**

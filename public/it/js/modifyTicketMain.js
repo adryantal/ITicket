@@ -1,3 +1,4 @@
 $(function(){
+    
     new ModifyTicketController();    
 });

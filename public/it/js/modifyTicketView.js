@@ -32,7 +32,10 @@ class ModifyTicketView {
     this.categoryField.attr('disabled', 'disabled'); 
     this.assignedToField.attr('disabled', 'disabled');
 
-      
+    
+    restrictPageRefresh();
+
+
     this.setRequiredInputFields();
     this.setAutocompInputFields();
 
@@ -53,6 +56,28 @@ class ModifyTicketView {
 
     $("#comment-template").hide();
     this.draftComment();
+
+
+
+    function restrictPageRefresh() {
+        window.onbeforeunload = (e) => {
+          
+            return "Are you sure you would like to leave and lose all data entered?";
+        };
+        //disable right mouse click
+        $(window).bind("contextmenu", function (e) {
+            return false;
+        });
+        //disable F5
+        $(document).ready(function() {
+          $(window).keydown(function(event){        
+            if(event.keyCode == 116) {        
+              event.preventDefault();        
+              return false;        
+            }        
+          });        
+        });
+    }
   }
 
   eventTrigger(eventName, eventDetail) {
@@ -376,6 +401,9 @@ class ModifyTicketView {
         
       }
     });
+
+
+    
 
   }
 }

@@ -53,6 +53,10 @@ class UserController extends Controller
       }
 
 
+
+
+     
+
       //adott resolverhez tart. ticketek (lehet csak a nyitott ticketeket...)
 
 

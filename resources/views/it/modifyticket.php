@@ -18,12 +18,6 @@
   <script src='it\js\modifyTicketMain.js'></script>
   <meta name="csrf-token" content=<?php $token = csrf_token(); echo $token; ?>>
 
-<script type="text/javascript">
-    window.onbeforeunload = function(e) {
-      return'By refreshing the page data will be lost!';
-      event.preventDefault();
-    }
-</script>
 
 
 </head>

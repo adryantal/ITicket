@@ -12,7 +12,7 @@ class ModifyTicketController {
     let commentsArray = [];
     let commentsToBeInserted = [];   
     let apiEndPointAttachments = "api/attachment/all";
-    let apiendPointJournals = "api/journal/all";    
+    let apiendPointJournalNew = "api/journal/new";    
     const ticketNr = mTicketView.ticketIDField.val();  //get ticketNr
     const ticketID = ticketNr.substring(3,ticketNr.length);
     let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;
@@ -173,19 +173,10 @@ class ModifyTicketController {
 
     function updateAttachments(){
       /*UPDATE ATTACHMENTS*/
-      /*insert new attachments to the Attachments table*/
-      let now = new Date(Date.now());
-      let dateTimeNow =
-        $.datepicker.formatDate("yy-mm-dd", now) +
-        " " +
-        now.getHours() +
-        ":" +
-        now.getMinutes() +
-        ":" +
-        now.getSeconds();
+      /*insert new attachments to the Attachments table*/      
       attachmentsToBeAdded.forEach((element) => {
         let newAttData = {
-          date: dateTimeNow,
+          
           ticketid: mTicketView.ticketIDField.val(),
           filename: element,
         };
@@ -206,13 +197,24 @@ class ModifyTicketController {
     
     function insertNewComments(){
        /*INSERT NEW COMMENTS TO THE JOURNALS TABLE */
+       let arraytoJson = [];
        commentsToBeInserted.forEach((element) => {
-        let newCommentData = {
-          description: element,
-          ticketid: mTicketView.ticketIDField.val(),
-        };
-        myAjax.postAjax(apiendPointJournals, newCommentData);
-      });
+           let newCommentData = {
+               description: element,
+               ticketid: ticketID,
+               caller_id: $("#callerID").val(),
+               subjperson_id: $("#subjpersonID").val(),
+               service_id: $("#serviceID").val(),
+               category_id: $("#categoryID").val(),
+               assigned_to_id: $("#assignedToID").val(),
+               status: mTicketView.statusField.val(),
+               impact: mTicketView.impactField.val(),
+               priority: mTicketView.priorityField.val(),
+               urgency: mTicketView.urgencyField.val(),
+           };
+           arraytoJson.push(newCommentData);           
+       });     
+      myAjax.postAjaxForArray(apiendPointJournalNew, JSON.parse(JSON.stringify(arraytoJson)));
       commentsToBeInserted.splice(0, commentsToBeInserted.length);
     }
 
@@ -235,7 +237,7 @@ class ModifyTicketController {
     function modifyNewTicket() {
       updateBasicTicketData();
      // updateAttachments();
-     // insertNewComments();    
+      insertNewComments();    
     }
 
 

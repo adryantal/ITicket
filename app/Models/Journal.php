@@ -9,6 +9,11 @@ class Journal extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'created_on' => 'datetime:d-m-Y H:i:s',
+        'updated' => 'datetime:d-m-Y H:i:s',
+    ];
+
     //adott bejegyzéshez tart. ticket
 public function ticket()
 {

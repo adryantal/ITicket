@@ -8,9 +8,9 @@ class NewTicketController {
     const token=$('meta[name="csrf-token"]').attr('content');
     const myAjax = new MyAjax(token);
     const attachmentsArray = [];
-    let apiEndPointCreateTicket = "http://localhost:8000/api/ticket";
-    let apiEndPointTicketNumber="http://localhost:8000/api/ticket/new/number";
-    let apiEndPointAttachments = "http://localhost:8000/api/attachment/";
+    let apiEndPointCreateTicket = "api/ticket";
+    let apiEndPointTicketNumber="api/ticket/new/number";
+    let apiEndPointAttachments = "api/attachment/";
     
     
     $(window).on("transferAttachments", (event) => {

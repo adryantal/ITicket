@@ -38,6 +38,23 @@ class MyAjax{
           
         });
       }
+
+ /*POST - új adat felvitele tömbösen az AB-ba API végponton keresztül*/
+      postAjaxForArray(apiEndPoint,requestData) {
+        requestData._token=this.token;
+           $.ajax({
+             headers: {'X-CSRF-TOKEN': this.token},
+             url: apiEndPoint,
+             type: "POST",
+             data: {data : requestData},
+             success: function (data) {
+               console.log('POST success');
+             },
+             
+             
+           });
+         }
+       
     
       /*DELETE - adott id-jú adat törlése az AB-ból API végponton keresztül*/
       deleteAjax(apiEndPoint,id) {
