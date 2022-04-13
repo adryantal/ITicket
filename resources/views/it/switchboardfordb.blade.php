@@ -11,8 +11,8 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="\..\it\css\switchboard.css" rel="stylesheet">
-    
+    <link href="\..\it\css\switchboardfordb.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -27,50 +27,67 @@
                     <div> <a href="{{ URL::to('/logout') }}">Log out</a> </div>
                 </div>
             </nav>
-         <article>
+            <article>
 
-            <div class="container-fluid bg-3 text-center">
+                <div class="container-fluid bg-3 text-center ">
 
-                <div class="margin logo"><img src="<?php echo asset('storage/logo_mid_transparent.png') ?>" alt="Logo" class="logoMid" class="img-responsive margin"></div>
-                <div class="row d-flex  justify-content-between">
+                    <div class="margin logo"><img src="<?php echo asset('storage/logo_mid_transparent.png') ?>" alt="Logo" class="logoMid" class="img-responsive margin"></div>
+                    <div class="row d-flex  justify-content-between">
 
-                    <div class="col-sm-5 border rounded">
-                        <h2>User view</h2>
-                        <a href="{{ URL::to('/userplatform') }}">
+                        <div class="col-sm-5 border rounded p-3 ">
+                            <h2>User view</h2>
+                            <a href="{{ URL::to('/userplatform') }}">
 
-                            <div class="square"> <i class="fa fa-users"  style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
-                        </a>
+                                 <div class="square"> <i class="fa fa-users" style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
+                            </a>
 
-                    </div>
+                        </div>
 
 
-                    <div class="col-sm-5 border rounded">
-                        <h2>Ticket Management Platform</h2>
-                        <a href="{{ URL::to('/alltickets') }}">
+                        <div class="col-sm-5 border rounded p-3 ">
+                            <h2>Ticket Management Platform</h2>
+                            <a href="{{ URL::to('/alltickets') }}">
 
-                            <div class="square"> <i class="fa fa-ticket " style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
+                                <div class="square"> <i class="fa fa-ticket " style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
 
-                        </a>
+                            </a>
 
-                    </div>
-
-                    
-                    <div class="col-sm-5 border rounded">
-                        <h2>User Management Platform</h2>
-                        <a href="{{ URL::to('/it/tickets/all') }}">
-
-                            <div class="square"> <i class="fa fa-database " style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
-
-                        </a>
+                        </div>
 
                     </div>
 
+
+                    <div class="row d-flex  justify-content-between">
+                   
+
+
+                        <div class="col-sm-5 border rounded p-3 ">
+                            <h2>User Creation Tool</h2>
+                            <a href="{{ URL::to('/newuser') }}">
+
+                                <div class="square"> <i class="fa fa-laptop " style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
+
+                            </a>
+
+                        </div>
+
+                        <div class="col-sm-5 border rounded p-3 ">
+                            <h2>User Data Modification Tool</h2>
+                            <a href="{{ URL::to('/modifyuser') }}">
+
+                                <div class="square"> <i class="fa fa-database" style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
+
+                            </a>
+
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+                </div>
 
 
             </article>
-    </main>
-</body>
+        </main>
+    </body>
 
 </html>

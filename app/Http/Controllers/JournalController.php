@@ -49,11 +49,12 @@ class JournalController extends Controller
             $j->caller= $journal['caller_id']; 
             $j->subjperson= $journal['subjperson_id']; 
             $j->assignedto= $journal['assigned_to_id']; 
-          //  $j->category= $journal['category_id']; 
-          //$j->priority= $journal['priority'];
-          //$j->urgency= $journal['urgency'];
-          // $j->impact= $journal['impact'];
+            $j->category= $journal['category_id'];       
+            $j->priority= $journal['priority'];
+            $j->urgency= $journal['urgency'];
+            $j->impact= $journal['impact'];
             $j->status= $journal['status'];
+            $j->contact_type= $journal['contact_type'];
             $j->updatedby = Auth::user()->id;
             $j->updated = Carbon::now()->format('Y-m-d H:i:s');         
             $j->save();

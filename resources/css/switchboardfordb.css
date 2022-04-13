@@ -1,5 +1,5 @@
-@import url(https://fonts.googleapis.com/css2?family=PT+Sans&display=swap);
 @charset "UTF-8";
+@import url(https://fonts.googleapis.com/css2?family=PT+Sans&display=swap);
 
 
 * {
@@ -46,7 +46,7 @@ nav {
 .col-sm-5 {
     padding: 50px;
     background-color: rgba(227, 239, 255, 0.6);
-    text-align: center;
+    margin-bottom: 20px;
 }
 
 .col-sm-5 h2 {
@@ -71,12 +71,6 @@ a {
 a:hover{
     text-decoration: underline;
     color: rgb(47, 60, 68);
-}
-
-@media screen and (max-width: 765px) {
-    .col-sm-5 {
-        margin-bottom: 20px;
-    }
 }
 
 

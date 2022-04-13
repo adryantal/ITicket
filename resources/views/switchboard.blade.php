@@ -43,7 +43,7 @@
                     </div>
 
 
-                    <div class="col-sm-5 border rounded">
+                    <div class="col-sm-5 border rounded ">
                         <h2>Ticket Management Platform</h2>
                         <a href="{{ URL::to('/alltickets') }}">
 

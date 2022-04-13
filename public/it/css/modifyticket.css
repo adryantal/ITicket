@@ -263,10 +263,23 @@ input::-webkit-file-upload-button:hover,
   padding: 2px;
 }
 
+.comment-creator, .handling-team{
+  font-weight: bold;
+}
+
 #comment-draft, #comment-history{
 margin: 0px 25px 20px 25px;
 }
 
+.status-indication-bar{
+  border-left:  1px solid rgba(175, 180, 182, 0.6);  
+  border-right:  1px solid rgba(175, 180, 182, 0.6);  
+  padding: 3px;
+  background: rgb(200, 223, 243, 0.4);
+  color: rgb(92, 122, 146);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
 
 #comment-draft .comment-header{
   background-color: rgba(186, 172, 221, 0.9);

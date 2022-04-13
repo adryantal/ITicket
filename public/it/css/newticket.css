@@ -81,11 +81,12 @@ form select {
 
 form select option{
   background-color: rgba(186, 172, 221, 0.9); 
-  color: black;
-  height: 25px;
- 
+  color: black; 
+  line-height: 25px;
   
 }
+
+
 
 form textarea {
   border-color: rgb(125, 163, 163, 0.6);

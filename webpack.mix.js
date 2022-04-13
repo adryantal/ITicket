@@ -20,6 +20,7 @@ mix.js('resources/js/app.js', 'public/js')
     require('autoprefixer'),
 ])
 .postCss('resources/css/switchboard.css','public/it/css', [])
+.postCss('resources/css/switchboardfordb.css','public/it/css', [])
 .postCss('resources/css/loggedout.css','public/it/css', [])
 .postCss('resources/css/notauthorized.css','public/it/css', [])
 .postCss('resources/css/frame.css','public/it/css', []) 

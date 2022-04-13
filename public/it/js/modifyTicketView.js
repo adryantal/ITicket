@@ -27,19 +27,25 @@ class ModifyTicketView {
     this.attachmentList = $("#attachment-list");
     this.addAttachmentFileInput = $("#attachment"); 
     this.postCommentBtn = $("#comment-btn").children('input'); 
-   
+    this.commentTextArea = $("#comment");        
     this.serviceID="";
     this.assignmentGroupID="";
       
     //disable assignedTo and category fields
     this.categoryField.attr('disabled', 'disabled'); 
     this.assignedToField.attr('disabled', 'disabled');
+    //controlling the status of the below 2 fields
+    this.disableChildInputOnChange(this.serviceField,this.categoryField);
+    this.disableChildInputOnChange(this.assignmentGroupField,this.assignedToField);
+   
 
     
     restrictPageRefresh(); 
 
     this.setRequiredInputFields();
     this.setAutocompInputFields();
+
+   
 
     //add attachments  
     this.addAttachmentFileInput.on("change", (event) => {
@@ -64,8 +70,7 @@ class ModifyTicketView {
 
 
     function restrictPageRefresh() {
-        window.onbeforeunload = (e) => {
-          
+        window.onbeforeunload = (e) => {          
             return "Are you sure you would like to leave and lose all data entered?";
         };
         //disable right mouse click
@@ -94,12 +99,11 @@ class ModifyTicketView {
 
 
   setRequiredInputFields(){    
-    const requiredfields = [this.callerField, this.impactField, this.urgencyField, 
-      this.priorityField, this.subjpersonField, this.serviceField, this.categoryField, this.titleField, 
-      this.descriptionField, this.contactTypeField]
+    const requiredfields = [this.callerField, this.impactField, this.urgencyField,  this.priorityField, this.subjpersonField, 
+      this.serviceField, this.categoryField, this.titleField,    this.descriptionField, this.contactTypeField]
     requiredfields.forEach(element => {
       element.attr("required",true);
-    });
+    });  
      
   }
 
@@ -109,37 +113,23 @@ class ModifyTicketView {
           let fileName = event.target.files[index].name;
           let fileExt = fileName.substring(fileName.lastIndexOf("."));
           const allowedTypes = [
-            ".pdf",
-            ".jpeg",
-            ".jpg",
-            ".JPG",
-            ".png",
-            ".PNG",
-            ".pdf",
-            ".doc",
-            ".docx",
-            ".xls",
-            ".xlsx",
-            ".ppt",
-            ".pptx",
-            ".txt",
-            ".zip",
-            ".msg",
-          ];
+            ".pdf",".jpeg", ".jpg",".JPG", ".png",".PNG",".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".zip", ".msg", ];
           if (jQuery.inArray(fileExt, allowedTypes) == -1) {
-            alert(
-              "Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg"
-            );
-            return false;
-          } else {
-            if (jQuery.inArray(fileName, this.attachments) === -1) {
-              this.attachments.push(fileName);
-              //send the filename to the controller if it is not in the attachment display list   
-              this.eventTrigger('newFile',fileName); 
-            } else {
-              confirm("Some of the selected files are already in the list!");             
+              alert(
+                  "Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg"
+              );
               return false;
-            }
+          } else {
+              if (jQuery.inArray(fileName, this.attachments) === -1) {
+                  this.attachments.push(fileName);
+                  //send the filename to the controller if it is not in the attachment display list
+                  this.eventTrigger("newFile", fileName);
+              } else {
+                  confirm(
+                      "Some of the selected files are already in the list!"
+                  );
+                  return false;
+              }
           }
         }
         this.displayAttachmentList();
@@ -152,11 +142,7 @@ class ModifyTicketView {
     this.attachmentList.empty();
     this.attachments.forEach((element, index) => {
       this.attachmentList.append(
-        "<div id='attachment" +
-          index +
-          "'>&#128206 " +
-          element +
-          " <div class='attm-remove-btn'>x</div></div>"
+        "<div id='attachment" +  index + "'>&#128206 " +  element + " <div class='attm-remove-btn'>x</div></div>"
       );
     });
   }
@@ -167,20 +153,20 @@ class ModifyTicketView {
       //remove it from the attachment display list
       this.attachments.splice(attIndex, 1);
       //get the filename
-      let txt = ($(event.target).parent().closest("div")).text();
-      let filename = txt.substring(3,txt.length-2);     
+      let txt = $(event.target).parent().closest("div").text();
+      let filename = txt.substring(3, txt.length - 2);
       //check if the selected file is amongst the already existing attachments
       //if so, add forward details of the related object to the controller and remove it from this.existingAttachments
-      let i;  
-      if(this.existingAttachments.length>0){   
-      this.existingAttachments.forEach((element, index) => {
-        if(element.filename===filename){      
-          i=index;    
-          this.eventTrigger("deleteExistingAttachment",element);
-        }
-      });   
-      this.existingAttachments.splice(i, 1); 
-    }  
+      let i;
+      if (this.existingAttachments.length > 0) {
+          this.existingAttachments.forEach((element, index) => {
+              if (element.filename === filename) {
+                  i = index;
+                  this.eventTrigger("deleteExistingAttachment", element);
+              }
+          });
+          this.existingAttachments.splice(i, 1);
+      }  
      //send filename to controller to check if the attachment to be removed is amongst the new attachments to be added;
      this.eventTrigger("checkifNewAttachment",filename);       
      this.displayAttachmentList();    
@@ -215,12 +201,12 @@ class ModifyTicketView {
         minlength: 3,        
             select:  (e, u) =>{
                 //If the No match found" item is selected, clear the TextBox.
-                if (u.item.value == 'No results found.') {                  
-                  selector.val("");                 
+                if (u.item.value == "No results found.") {
+                    selector.val("");
                     return false;
-                }else{ 
-                  //if results are found, create a new hidden input field to store the ID                                
-                  this.addHiddenInputField(selector.attr("id"),u.item.label);                          
+                } else {
+                    //if results are found, create a new hidden input field to store the ID
+                    this.addHiddenInputField(selector.attr("id"), u.item.label);
                 }                                    
             },
             change: function (e, u) {        
@@ -235,13 +221,13 @@ class ModifyTicketView {
       //get position of the selector being clicked on  
       let inputFieldPosition = selector.position();          
         $(ul).addClass("ac-template");
-      //set position of the autocomplete based on the selector's position 
+        //set position of the autocomplete based on the selector's position
         $(ul).css({
-          top: inputFieldPosition.top + 20,
-          left: inputFieldPosition.left,
-          position: "absolute",
-        });        
-          let html;       
+            top: inputFieldPosition.top + 20,
+            left: inputFieldPosition.left,
+            position: "absolute",
+        });
+        let html;       
           html = "<a>" + item.value + "</a>";      
         return $("<li></li>").data("item.autocomplete", item).append(html).appendTo(ul);
     }      
@@ -323,23 +309,29 @@ class ModifyTicketView {
   }
 
   draftComment(){
-       //post a comment (only at frontend level)    
-       this.postCommentBtn.on("click",()=>{
-        $("#comments-empty").hide(); 
-        let commentDescription = $("#comment").val();       
-        if(!commentDescription==""){
-        $("#comment-template .comment-item").clone().prependTo("#comment-draft");
-        $("#comment-draft .comment-item").eq(0).children(".comment-description").text(commentDescription); 
-       //transfer description of new comment to controller
-       this.eventTrigger("newComments", commentDescription); 
-       $("#comment").val("");  
-      }
-        else
-        {(alert("Empty comment field!"));
-      }      
-
+      //post a comment (only at frontend level)
+      this.postCommentBtn.on("click", () => {
+          $("#comments-empty").hide();
+          $("#comment-template .comment-timestamp").text(""); // ide lehetne egy date now? úgyse szúródik be AB-be...
+          $("#comment-template .comment-creator").text(" Draft comment");
+          $("#comment-template .handling-team").text('| To save click on "Submit"');
+          $("#comment-template .status-indication-bar").hide();
+          let commentDescription = $("#comment").val();
+          if (!commentDescription == "") {
+              $("#comment-template .comment-item")
+                  .clone()
+                  .prependTo("#comment-draft");
+              $("#comment-draft .comment-item")
+                  .eq(0)
+                  .children(".comment-description")
+                  .text(commentDescription);
+              //transfer description of new comment to controller (only description value gets transferred, so values of the other fields can be modified at the frontend at each click)
+              this.eventTrigger("newComments", commentDescription);
+              $("#comment").val("");
+          } else {
+              alert("Empty comment field!");
+          }
       });
-      
   }
 
   addHiddenInputField(selectorName,val){
@@ -364,7 +356,7 @@ class ModifyTicketView {
     const apiEndPointResolvers = "api/resolver/all/filter"; 
         
          
-    $(window).on( {
+    $(window).on( {     
       keypress: (event) => {           
        let selectorName = $(event.target).attr("id");          
       switch (selectorName) {        
@@ -393,41 +385,45 @@ class ModifyTicketView {
         default: ;        
       };  
            
-    } , keyup:()=> {
-        if(this.serviceField.val()==='') {  
-          this.categoryField.val(''); 
-            this.categoryField.attr('disabled', 'disabled'); 
-        } 
-        if(this.assignmentGroupField.val()==='') {  
-          this.assignedToField.val(''); 
-            this.assignedToField.attr('disabled', 'disabled'); 
-        } 
-        
-        
-      }
+    }
     });
-
-
-    
-
   }
+
+   
+   disableChildInputOnChange(parentSelector,childSelector){
+    parentSelector.on("input", ()=> {
+      childSelector.val(''); 
+      childSelector.attr('disabled', 'disabled'); 
+    });
+  
+   }
 }
 
 
 class CommentItem{
-  constructor(container,data){
+  constructor(container,data){  
      this.container = container;  
      this.data = data;     
      this.commentTemplateItem = $("#comment-template .comment-item");
      this.headerItem = this.commentTemplateItem.children(".comment-header");
+     this.statusIndicationBarItem = this.commentTemplateItem.children(".status-indication-bar");
      this.descriptionItem = this.commentTemplateItem.children(".comment-description");
-     this.changedFieldsItem = this.commentTemplateItem.children(".changed-fields");
+     this.timeStampField = this.headerItem.children().children(".comment-timestamp");
+    
+     this.commentCreatorField = this.headerItem.children().children(".comment-creator");
+     this.handlingTeamField = this.headerItem.children().children(".handling-team");
      this.setData(this.data);
      this.commentTemplateItem.clone().appendTo(container);    
   }
-  setData(data){
-   console.log("setdata")
+  setData(data){ 
     this.data = data; 
-    this.descriptionItem.text(data.description);
-  }
+    this.descriptionItem.text(this.data.comment);    
+    this.timeStampField.text(this.data.updated);    
+    this.commentCreatorField.text(this.data.updatedby+" @ ");
+    this.handlingTeamField.text(this.data.assignment_group_name);
+    this.statusIndicationBarItem.show();
+    this.statusIndicationBarItem.html('Status set to: <b>'+this.data.status+'</b>');
+
+
+}
 }

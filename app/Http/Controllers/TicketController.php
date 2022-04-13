@@ -12,7 +12,9 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Resolver;
+use App\Models\Journal;
 use Illuminate\Http\Request;
+
 
 use function PHPUnit\Framework\isNull;
 
@@ -156,65 +158,89 @@ class TicketController extends Controller
 
 
 
-//a modify ticket formba történő adatbetöltéshez
-   public function dataforModifyTicketForm($ticketNr){
+    //a modify ticket formba történő adatbetöltéshez
+    public function dataforModifyTicketForm($ticketNr)
+    {
+        $ticket = Ticket::where('ticketnr', '=', $ticketNr)->first();
+        $updated_by = User::find($ticket->updated_by);
+        $category = Category::find($ticket->category);
+        $now = Carbon::now();
+        $parent_ticket = Ticket::find($ticket->parent_ticket);
+        $created_on = Carbon::create($ticket->created_on);
+        $timespent = $now->diffInHours($created_on, true);
+        if ($ticket->type == "Request") {
+            $sla = 120; //5*24
+        }
+        if ($ticket->type == "Incident") {
+            $sla = 72;  //3*24 
+        }
+        $timeleft = $sla - $timespent;
+        $assignment_group_id = User::find($ticket->assigned_to)->first()->resolver_id;
 
-    $ticket=Ticket::where('ticketnr','=',$ticketNr)->first(); 
-    $updated_by=User::find($ticket->updated_by);
-    $category=Category::find($ticket->category);    
-    $now=Carbon::now();
-    $parent_ticket=Ticket::find($ticket->parent_ticket);    
-    $created_on=Carbon::create($ticket->created_on);
-    $timespent= $now->diffInHours($created_on, true); 
-    if($ticket->type =="Request"){
-        $sla=120; //5*24
-     } 
-        if($ticket->type =="Incident"){
-        $sla=72;  //3*24 
-    } 
+        //kapcsolódó naplóbejegyzések tömbbe mentése
+        $journals = Journal::where('ticketid', '=', $ticket->id)->orderBy('id', 'desc')->get();
+        $journalsArray = array();
+        foreach ($journals as $journal) {
+            $assignment_group_id = User::find($journal->assignedto)->first()->resolver_id;
+            $dataToPush = array( //a névadatokat is át kell adni, ezért specifikálnunk kell a mezőértékeket
+                'ticketid' => $journal->ticketid,
+                "updatedby" => User::find($journal->updatedby)->name,
+                "caller" => User::find($journal->caller)->name,
+                "subjperson" => User::find($journal->subjperson)->name,
+                "assignedto" => User::find($journal->assignedto)->name,
+                'assignment_group_name' => Resolver::find($assignment_group_id)->name,
+                'category' => $journal->category,
+                'status' => $journal->status,
+                'updated' => $journal->updated->format('d-m-Y H:i:s'),
+                'contact_type' => $journal->contact_type,
+                'impact' => $journal->impact,
+                'priority' => $journal->priority,
+                'urgency' => $journal->urgency,
+                'comment' => $journal->comment,
+            );
 
-    $timeleft=$sla-$timespent;
-    $assignment_group_id = User::find($ticket->assigned_to)->first()->resolver_id;     
+            array_push($journalsArray, $dataToPush);
+        }
 
-    $data = array(
-     'id'=> $ticket->id,
-     'ticketnr'=> $ticket->ticketnr,
-     'caller_name' => User::find($ticket->caller)->name, 
-     'subjperson_name' => User::find($ticket->subjperson)->name, 
-     'assigned_to_name' => User::find($ticket->assigned_to)->name, 
-     'assignment_group_name' => Resolver::find($assignment_group_id)->name,
-     'created_by_name'=>User::where('id','=',$ticket->created_by)->first()->name, 
-     'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
-     'title' => $ticket->title,
-     'description' => $ticket->description,
-     'type' => $ticket->type,            
-     'contact_type' => $ticket->contact_type,    
-     'category_name' => $category->name,
-     'service_name' => Category::find($category->main_cat_id)->name,
-     'status' => $ticket->status, 
-     'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
-     'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   
-    
-     'timeleft' => $timeleft,
-     'timespent' => $timespent, 
-     'impact' => $ticket->impact,
-     'priority' => $ticket->priority,   
-     'urgency' => $ticket->urgency,
-     'parent_ticketnr' =>   $parent_ticket === null ? "" : $parent_ticket->ticketnr,    
-     //ezeket azért kell átadni, hogy ha esetleg nem kerül sor az adott mező értékének megváltoztatására:
-     'caller_id' => User::find($ticket->caller)->id, 
-     'subjperson_id' => User::find($ticket->subjperson)->id, 
-     'assigned_to_id' => User::find($ticket->assigned_to)->id, 
-     'assignment_group_id' => Resolver::find($assignment_group_id)->id,
-     'category_id' => $category->id,
-     'service_id' => Category::find($category->main_cat_id)->id,
 
-     );
-   
-    return $data;
-   }
+        $data = array(
+            'id' => $ticket->id,
+            'ticketnr' => $ticket->ticketnr,
+            'caller_name' => User::find($ticket->caller)->name,
+            'subjperson_name' => User::find($ticket->subjperson)->name,
+            'assigned_to_name' => User::find($ticket->assigned_to)->name,
+            'assignment_group_name' => Resolver::find($assignment_group_id)->name,
+            'created_by_name' => User::where('id', '=', $ticket->created_by)->first()->name,
+            'updated_by_name' => $updated_by === null ? "" : $updated_by->name,
+            'title' => $ticket->title,
+            'description' => $ticket->description,
+            'type' => $ticket->type,
+            'contact_type' => $ticket->contact_type,
+            'category_name' => $category->name,
+            'service_name' => Category::find($category->main_cat_id)->name,
+            'status' => $ticket->status,
+            'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),
+            'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),
+            'timeleft' => $timeleft,
+            'timespent' => $timespent,
+            'impact' => $ticket->impact,
+            'priority' => $ticket->priority,
+            'urgency' => $ticket->urgency,
+            'parent_ticketnr' =>   $parent_ticket === null ? "" : $parent_ticket->ticketnr,
+            //ezeket azért kell átadni, hogy ha esetleg nem kerül sor az adott mező értékének megváltoztatására:
+            'caller_id' => User::find($ticket->caller)->id,
+            'subjperson_id' => User::find($ticket->subjperson)->id,
+            'assigned_to_id' => User::find($ticket->assigned_to)->id,
+            'assignment_group_id' => Resolver::find($assignment_group_id)->id,
+            'category_id' => $category->id,
+            'service_id' => Category::find($category->main_cat_id)->id,
+            'journals' => $journalsArray, //tömb!!!
+        );
 
-   
+        return $data;
+    }
+
+
 
     /**
      * Display a listing of the resource.
@@ -532,11 +558,8 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)   
-    
-    {        
-        $ticket = Ticket::find($id);        
-                              
+    public function update(Request $request, $id)    {        
+        $ticket = Ticket::find($id);                              
         $ticket->title = $request->title;
         $ticket->description = $request->description;
         $ticket->status = $request->status;   
@@ -551,7 +574,6 @@ class TicketController extends Controller
         $ticket->urgency =  $request->urgency;
         $ticket->priority =  $request->priority;
         $ticket->impact =  $request->impact;
-
         if (!isNull($request->parent_ticket_id)){ $ticket->parent_ticket =  $request->parent_ticket_id;}  
         $ticket->save();          
     }

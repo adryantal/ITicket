@@ -26,6 +26,7 @@ article{
     height: -moz-fit-content;
     height: fit-content;
     padding: 40px;
+   
     
 }
 
@@ -45,7 +46,9 @@ nav {
     box-shadow: 0.5px 0.5px 0.5px lightgray;
 }
 
-
+#previous-page{
+    text-align: center;
+}
 
 a {
     text-decoration: none;

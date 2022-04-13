@@ -115,6 +115,8 @@
                         </form>
 
                     </div>
+
+                    
                 
             
         </div>
@@ -122,6 +124,7 @@
 
     </x-auth-card>
 </x-guest-layout>
+        <div id='previous-page' class=" items-center  mt-4"> <a href="{{ URL::to('switchboard/db') }}">Previous page</a></div>
 
 </article>
 </body>

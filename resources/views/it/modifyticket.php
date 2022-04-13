@@ -17,9 +17,6 @@
   <script src='it\js\modifyTicketController.js'></script>
   <script src='it\js\modifyTicketMain.js'></script>
   <meta name="csrf-token" content=<?php $token = csrf_token(); echo $token; ?>>
-
-
-
 </head>
 
 <body>
@@ -202,13 +199,15 @@
         <section id="comment-template">
           <div class="comment-item">
             <div class="comment-header">
-              <div class="changed-fields">Changed fields</div>
-              <div class="comment-timestamp"><b>Field changes</b> | <b>03/23/2022 15:22</b></div>
+              <div class="comment-header-left"> <span class="comment-creator"></span> <span class="handling-team"> </span> </div>
+              <div class="comment-header-right"> <div class="comment-timestamp"></div></div>
             </div>
+            <div class="status-indication-bar"></div>
             <div class="comment-description">
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Labore, praesentium mollitia hic a illo quae
               nemo excepturi quo vel sunt nobis id voluptatem perspiciatis qui rem sint iusto, quam ratione?
             </div>
+          
           </div>
 
 
