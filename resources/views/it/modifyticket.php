@@ -32,8 +32,7 @@
       $created_by_name=null;  
       $created_on= null;
       $updated_by_name=null;
-      $updated=null;
-      $sla=null;
+      $updated=null;    
       $timespent=null;
       $timeleft=null;
     }
@@ -42,8 +41,7 @@
       $created_by_name= $ticket['created_by_name'];
       $created_on= $ticket['created_on'];  
       $updated_by_name= $ticket['updated_by_name'];
-      $updated= $ticket['updated'];
-      $sla= $ticket['sla'];
+      $updated= $ticket['updated'];   
       $timespent= $ticket['timespent'];
       $timeleft= $ticket['timeleft'];
     }    

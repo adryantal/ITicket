@@ -41,7 +41,7 @@ class JournalController extends Controller
     {  // dd($request->all());
        // parse_str($request->getContent(),$arrayToProcess); //json_decode($request->getContent(), true);
        $arrayToProcess=request('data');
-            
+        if (!$arrayToProcess==null){    
         foreach ($arrayToProcess as $journal) {
             $j  =   new Journal();
             $j->comment = $journal['description'] ; 
@@ -58,7 +58,7 @@ class JournalController extends Controller
             $j->updated = Carbon::now()->format('Y-m-d H:i:s');         
             $j->save();
         }
-
+    }
         
        
     }

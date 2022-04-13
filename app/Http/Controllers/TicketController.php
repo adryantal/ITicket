@@ -131,8 +131,14 @@ class TicketController extends Controller
        $updated_by=User::where('id','=',$ticket->updated_by)->first();    
        $now=Carbon::now();
        $created_on=Carbon::create($ticket->created_on);
-       $timespent= $now->diffInHours($created_on, true); 
-       $timeleft=$ticket->sla-$timespent;      
+       $timespent= $now->diffInHours($created_on, true);
+        if ($ticket->type == "Request") {
+            $sla = 120; //5*24
+        }
+        if ($ticket->type == "Incident") {
+            $sla = 72;  //3*24 
+        }
+       $timeleft=$sla-$timespent;      
         //egy array-t készítek elő, amelyet majd a ticketadatok betöltéséhez átküldök a modifyticket oldalnak session-ön keresztül
        $data = array(
         'id'=> $ticket->id,
@@ -140,8 +146,7 @@ class TicketController extends Controller
         'created_by_name'=>User::where('id','=',$ticket->created_by)->first()->name, 
         'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,        
         'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
-        'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   
-        'sla' => $ticket->sla, 
+        'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),        
         'timeleft' => $timeleft,
         'timespent' => $timespent,                
         );    
@@ -161,7 +166,14 @@ class TicketController extends Controller
     $parent_ticket=Ticket::find($ticket->parent_ticket);    
     $created_on=Carbon::create($ticket->created_on);
     $timespent= $now->diffInHours($created_on, true); 
-    $timeleft=$ticket->sla-$timespent;
+    if($ticket->type =="Request"){
+        $sla=120; //5*24
+     } 
+        if($ticket->type =="Incident"){
+        $sla=72;  //3*24 
+    } 
+
+    $timeleft=$sla-$timespent;
     $assignment_group_id = User::find($ticket->assigned_to)->first()->resolver_id;     
 
     $data = array(
@@ -182,7 +194,7 @@ class TicketController extends Controller
      'status' => $ticket->status, 
      'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
      'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   
-     'sla' => $ticket->sla, 
+    
      'timeleft' => $timeleft,
      'timespent' => $timespent, 
      'impact' => $ticket->impact,
@@ -213,8 +225,6 @@ class TicketController extends Controller
     {
         //
     }
-
-
 
 
     /**
@@ -254,14 +264,10 @@ class TicketController extends Controller
         $ticket->parent_ticket = $request->parent_ticket;
         $ticket->updated=Carbon::now()->format('Y-m-d H:i:s');
        //sla && time left
-        if($request->type =="Request"){
-            $ticket->sla=120; //5*24
-            $ticket->time_left= 120;
+        if($request->type =="Request"){           
             $prefix='REQ';
         } 
-        if($request->type =="Incident"){
-            $ticket->sla=72;  //3*24
-            $ticket->time_left= 72;
+        if($request->type =="Incident"){          
             $prefix='INC';
         }   
 

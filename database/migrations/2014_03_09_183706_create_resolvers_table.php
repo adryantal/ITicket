@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
         });
-        DB::statement("ALTER TABLE tickets AUTO_INCREMENT = 100;"); //auto increment seed from 100
+        DB::statement("ALTER TABLE resolvers AUTO_INCREMENT = 100;"); //auto increment seed from 100
     }
 
     /**

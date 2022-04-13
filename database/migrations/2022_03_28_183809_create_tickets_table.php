@@ -33,9 +33,7 @@ return new class extends Migration
             $table->string('status'); //akt. állapot
             $table->string('type');   //inc. v. req.                       
             $table->dateTime('created_on', $precision = 0); //jegy létrejöttének dátuma
-            $table->dateTime('updated', $precision = 0)->nullable(); //utolsó módosítás dátuma          
-            $table->tinyInteger('time_left')->nullable(); //created_on + sla - mai dátum (órában megadva)
-            $table->tinyInteger('sla');  //trigger írja be, h. inc. esetén 3(3*24 h), req. esetén 5(5*24) nap az SLA
+            $table->dateTime('updated', $precision = 0)->nullable(); //utolsó módosítás dátuma                     
             $table->timestamps();
         });
 
