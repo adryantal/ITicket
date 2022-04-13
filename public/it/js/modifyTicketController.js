@@ -19,6 +19,8 @@ class ModifyTicketController {
     let apiEndPointTicket = "api/ticket";
  
     loadTicketData();
+
+
    
     //if a new attachment is to be added, add the related object to the attachmentsToBeAdded array
     $(window).on("newFile", (event) => {
@@ -44,10 +46,13 @@ class ModifyTicketController {
       }
     });
 
+
+
     //receive descriptions of new comments to be addeed
     $(window).on("newComments", (event) => {
       commentsToBeInserted.push(event.detail);
     });
+
 
 
     //validate ticket data and submit ticket data
@@ -86,7 +91,9 @@ class ModifyTicketController {
         mTicketView.parentTicketField.val(data.parent_ticket);       
         mTicketView.createdOnField.val(data.created_on);      
         mTicketView.lastUpdatedOn.val(data.updated);
-        mTicketView.parentTicketField.val(data.parent_ticketnr);
+        mTicketView.parentTicketField.val(data.parent_ticketnr);       
+        mTicketView.timeSpentField.val(data.timespent);
+        checkTimeLeft(data);
         //creating hidden input fields for the IDs
         mTicketView.addHiddenInputField("caller", data.caller_id); 
         mTicketView.addHiddenInputField("subjperson", data.subjperson_id);
@@ -95,6 +102,19 @@ class ModifyTicketController {
         mTicketView.addHiddenInputField("service", data.service_id);
         mTicketView.addHiddenInputField("category", data.category_id);
       });
+    }
+
+    //format timeLeftField and timeSpentField and set value of timeLeftField to 0 in case of SLA breach
+    function checkTimeLeft(data){
+      if(Number(data.timeleft) <=0 )        {     
+        mTicketView.timeLeftField.css("color","crimson"); 
+        mTicketView.timeSpentField.css("color","crimson");
+        mTicketView.timeLeftField.val(0);
+      }else
+      {
+        mTicketView.timeLeftField.val(data.timeleft);
+      }
+
     }
 
     

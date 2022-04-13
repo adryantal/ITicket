@@ -46,10 +46,8 @@
       $sla= $ticket['sla'];
       $timespent= $ticket['timespent'];
       $timeleft= $ticket['timeleft'];
-    }
-    
+    }    
      ?>
- 
    
 
     <article>
@@ -148,7 +146,7 @@
             <div><label for="createdOn">Created on</label></div>
             <div> <input type="other" name="createdOn" id="createdOn" disabled value="<?php echo $created_on  ?>"></div>
             <div><label for="LastUpdatedOn">Last updated on</label></div>
-            <div> <input type="other" name="LastUpdatedOn" id="LastUpdatedOn" disabled value="<?php echo $updated  ?>"></div>
+            <div> <input type="other" name="lastUpdatedOn" id="lastUpdatedOn" disabled value="<?php echo $updated  ?>"></div>
 
           </div>
 
@@ -156,10 +154,10 @@
 
 
             <div><label for="timeSpent"></label>Time spent (hours)</div>
-            <div> <input type="other" name="timeSpent" id="timeSpent" disabled value="<?php echo $timespent  ?>"></div>
+            <div> <input type="other" name="timeSpent" id="timeSpent" disabled ></div>
 
             <div><label for="timeLeft">Time left (hours)</label></div>
-            <div> <input type="other" name="timeLeft" id="timeLeft" disabled value="<?php echo $timeleft  ?>"></div>
+            <div> <input type="other" name="timeLeft" id="timeLeft" disabled ></div>
           </div>
 
           <div class="row-bottom">

@@ -20,11 +20,14 @@ class ModifyTicketView {
     this.descriptionField = $("#description");
     this.titleField = $("#title");
     this.parentTicketField = $("#parentTicket");
-    this.lastUpdatedOn = $("#parentTicket");
+    this.timeLeftField = $('#timeLeft');
+    this.timeSpentField = $('#timeSpent');
+    this.lastUpdatedOn = $("#lastUpdatedOn");
     this.lastUpdatedBy = $("#lastUpdatedBy");
     this.attachmentList = $("#attachment-list");
     this.addAttachmentFileInput = $("#attachment"); 
     this.postCommentBtn = $("#comment-btn").children('input'); 
+   
     this.serviceID="";
     this.assignmentGroupID="";
       
@@ -33,15 +36,14 @@ class ModifyTicketView {
     this.assignedToField.attr('disabled', 'disabled');
 
     
-    restrictPageRefresh();
-
+    restrictPageRefresh(); 
 
     this.setRequiredInputFields();
     this.setAutocompInputFields();
 
     //add attachments  
     this.addAttachmentFileInput.on("change", (event) => {
-      //update displayed list
+      //update displayed attachment list
       this.addAttachments(event);          
       this.eventTrigger('modifyAttachments',this.attachments);             
     });   
@@ -53,8 +55,10 @@ class ModifyTicketView {
       this.eventTrigger('modifyAttachments',this.attachments);   
     });  
 
-
+   //hide comment template item
     $("#comment-template").hide();
+
+    //prepare comment drafts
     this.draftComment();
 
 
@@ -80,6 +84,7 @@ class ModifyTicketView {
     }
   }
 
+ 
   eventTrigger(eventName, eventDetail) {
     let ev = new CustomEvent(eventName, {
       detail: eventDetail,
