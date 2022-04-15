@@ -13,22 +13,25 @@
 </div>
 
 <div id="infobar">
+<div id="switchboard-link" > <a href="#" >Switchboard</a></div>
  <!-- Search bar -->
  <div class="wrapper c-height">
    <div class="search-area c-height">
      <div class="single-search">
        <input class="custom-input" name="custom_search" placeholder="Enter keywords..." type="text">
        <a class="icon-area" >
-         <i class="magnifier"><img src="'.asset("storage/icons/magnifier.png"). '" alt=""></i>
+         <span class="magnifier"><img src="'.asset("storage/icons/magnifier.png"). '" alt=""></span>
        </a>
      </div>
+    
    </div>
+  
  </div>
 <!-- Dropdown list - avatar -->
  <div class="profile-dropdown">
    <button class="pr-dropbtn" id="avatar"><img src="'.asset("storage/icons/avatar_default.png").'" alt="" class="avatar-img">        
    </button>
-   <div id="username">'. auth()->user()->name .'</div>
+   <div id="username" res-group-id="'.auth()->user()->resolver_id .'">'. auth()->user()->name .'</div>
    <div class="prdropdown-content">
      <a href="#">Profile</a>
      <a href="/logout">Logout</a>        

@@ -9,6 +9,7 @@ use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\JournalController;
+use App\Http\Middleware\IsDbTeamMember;
 use App\Http\Middleware\IsResolver;
 
 /*
@@ -31,18 +32,29 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+
 Route::middleware(['auth', IsResolver::class])->group(function () {   
 
     //oldalak útvonalai
-    Route::get('/switchboard', function () {return view('switchboard');});   
+    Route::get('/switchboard', function () {return view('switchboard');});    
     Route::get('/switchboard/db', function () {return view('it.switchboardfordb');}); //ez majd csak a db-eseknek lesz elérhető https://stackoverflow.com/questions/65835538/laravel-8-register-user-while-logged-in
     Route::get('/alltickets', function () {return view('it.ticketlist');}); //ticketek kilistázása
     Route::get('/newticket',  function () {return view('it.newticket');}); //új ticket rögzítése - form
     Route::get('/modifyticket',  function () {return view('it.modifyticket');})->name('modifyticket'); // ticket módosítása - form
-    Route::get('/api/ticket/new/number', [TicketController::class, 'getLastTicketSubmittedByAuthUser']); //sikeres rögz. után a ticketszám/ticket adatok lekérése
+    Route::get('/api/ticket/new/number', [TicketController::class, 'getLastTicketSubmittedByAuthUser']); //sikeres rögz. után a ticketszám/ticketadatok lekérése
+    Route::get('/teamcharts',  function () {return view('it.teamcharts');}); //chartok
+
+     /*Útvonalak chartokhoz*/
+    Route::get('api/charts/team/tickets/open',  [TicketController::class, 'openTicketsTeam']); //a bejelentkezett user csapata által kezelt, nyitott jegyek száma személyenként
+    Route::get('api/charts/team/tickets/resolved',  [TicketController::class, 'resolvedTicketsTeam']); //a bejelentkezett user csapatának 30 napon belüli lezárt jegyei személyenként
+    Route::get('api/charts/team/tickets/breachedsla',  [TicketController::class, 'breachedSlaTicketsTeam']); //a bejelentkezett user csapatának SLA breached nyitott ticketei, személyenként
+    Route::get('api/charts/team/tickets/breakdownbytype',  [TicketController::class, 'bdTypeTicketsTeam']); //a bejelentkezett user csapata megoldott ticketeinek típus szerinti eloszlása az utolsó 30 napban
 
     /*Útvonalak ticketekre*/
     Route::get('/api/ticket/all', [TicketController::class, 'getAllTickets']);  //összes ticket kilistázása 
+    Route::get('/api/ticket/all/assignedtome', [TicketController::class, 'getAuthUserTickets']);  //a bejelentkezett user által kezelt ticketek kilistázása 
+    Route::get('/api/ticket/all/assignedtomyteam', [TicketController::class, 'getAuthTeamTickets']);  //a bejelentkezett user csapatának tagjaihoz rendelt ticketek kilistázása 
+    Route::get('/api/ticket/all/assignedtome/{type}', [TicketController::class, 'getAuthUserTicketsPerType']);  //a bejelentkezett user jegyei típus szerint
     Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //általános keresés (összes attribútumon értékein belül keres) 
     Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés ticketekre  
     Route::get('/api/ticket/get/{ticketnr}', [TicketController::class, 'dataforModifyTicketForm']); //ticket nr. alapján ticketadatokat ad vissza  
@@ -87,6 +99,12 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     /*Útvonalak naplózáshoz*/
     Route::post('/api/journal/new', [JournalController::class, 'addNewJournal']);  //új naplóbejegyzés beszúrása
 });
+
+
+Route::middleware(['auth', IsDbTeamMember::class])->group(function () {   
+   
+});
+
 
 
 require __DIR__.'/auth.php';

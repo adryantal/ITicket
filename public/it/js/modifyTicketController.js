@@ -59,7 +59,10 @@ class ModifyTicketController {
        } else 
        if($("#comment-draft").children('div').length<1){
         alert('Please insert a comment for the modification!');           
-      }else{
+      }else if(mTicketView.assignedToField.val()===''){
+        alert('You cannot update a case if it is unassigned. Please make sure it is assigned to you or a colleague. Thank you.'); 
+      }
+      else{
         validateForm();
         $("#comment-draft div").each(function(){
            $(this.remove());
@@ -71,8 +74,8 @@ class ModifyTicketController {
     
     setStatusFieldBorder();  
   
-    function loadAllTicketData(ticketNr){
-      loadTicketData(ticketNr);
+    function loadAllTicketData(ticketNr){     
+      loadTicketData(ticketNr);     
      // loadAttachments();    
     }
 
@@ -81,12 +84,12 @@ class ModifyTicketController {
       let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;
       //load ticket data from API endpoint     
       $.getJSON(apiEndPointSelectedTicket, function(data) {
-        console.log(data);
+        setTicketToInactive(data);
         mTicketView.ticketIDField.val(ticketNr);
         mTicketView.callerField.val(data.caller_name);
         mTicketView.subjpersonField.val(data.subjperson_name);
         mTicketView.serviceField.val(data.service_name);
-        mTicketView.statusField.val(data.status);
+        mTicketView.statusField.val(data.status);     
         mTicketView.categoryField.val(data.category_name);
         mTicketView.impactField.val(data.impact);
         mTicketView.priorityField.val(data.priority);
@@ -111,8 +114,18 @@ class ModifyTicketController {
         mTicketView.addHiddenInputField("service", data.service_id);
         mTicketView.addHiddenInputField("category", data.category_id);        
         loadComments(data.journals);
-       
+        
+              
       });
+    }
+
+    //in case the ticket is in Closed status, disable all input fields on the form
+    function setTicketToInactive(data){
+      if (data.status==="Closed"){        
+        $('form').find(':input:not(:disabled)').prop('disabled',true);
+        return false;
+      }
+  
     }
 
     //format timeLeftField and timeSpentField and set value of timeLeftField to 0 in case of SLA breach

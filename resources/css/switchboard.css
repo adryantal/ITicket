@@ -8,6 +8,7 @@
 
 body {
     font-family: "PT Sans", sans-serif;
+    min-width: 255px;
     
 }
 
@@ -68,14 +69,31 @@ a {
     color: rgb(47, 60, 68);
 }
 
-a:hover{
+nav a:hover{
     text-decoration: underline;
     color: rgb(47, 60, 68);
 }
 
+
+
+
 @media screen and (max-width: 765px) {
     .col-sm-5 {
         margin-bottom: 20px;
+        padding: 10px 10px;
     }
 }
+
+
+
+
+
+@media screen and (max-width: 435px) {
+    .logo img{
+        width: 100%;
+        }
+    }     
+
+
+
 

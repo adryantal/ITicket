@@ -8,8 +8,10 @@
 
 body {
     font-family: "PT Sans", sans-serif;
-    
+    min-width: 250px;
+   
 }
+
 
 .navbar {
     background-color: rgb(133, 193, 250);
@@ -20,35 +22,38 @@ body {
 
 
 article{
+  
     border: 1px solid lightgray;
     border-radius: 5px;
     height: -webkit-fit-content;
     height: -moz-fit-content;
     height: fit-content;
-    padding: 40px;
+    padding: 30px;
    
     
 }
 
 .logo{
 margin-bottom: 30px;
+
 }
-
-
 
 nav {
     color: rgb(47, 60, 68);
 }
 
-#resolver{
+select, input[type=text]{
     height: 43px;
+    border: 1px solid lightgrey;
     border-radius: 5px;
-    box-shadow: 0.5px 0.5px 0.5px lightgray;
+    box-shadow: 0.5px 0.5px 2px lightgray;
 }
 
-#previous-page{
-    text-align: center;
-}
+select, input[type=text]:focus{
+border:1px solid rgb(95, 124, 156);
+box-shadow: 0.5px 0.5px 2px lightgray;
+};
+
 
 a {
     text-decoration: none;
@@ -60,9 +65,14 @@ a:hover{
     color: rgb(47, 60, 68);
 }
 
+#previous{
+    margin-top: 20px;
+}
+
+
 @media screen and (max-width: 765px) {
     .col-sm-5 {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 }
 

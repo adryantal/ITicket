@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>ITicket - All tickets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\ticketlist.css" />
     <link rel="icon" type="image/x-icon" href="/storage/logo_mini.PNG" />
@@ -50,8 +51,7 @@
               </div>
                 <div id="pageinterval-bar">
               </div>
-
-            
+                   
           </div>
 
         </article>

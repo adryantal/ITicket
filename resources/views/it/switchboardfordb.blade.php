@@ -1,9 +1,13 @@
+
+
 <!DOCTYPE html>
 
 <html>
 
 <head>
     <title>ITicket - Switchboard</title>
+
+
 
     <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,6 +18,8 @@
     <link href="\..\it\css\switchboardfordb.css" rel="stylesheet">
 
 </head>
+
+
 
 <body>
 
@@ -36,8 +42,8 @@
 
                         <div class="col-sm-5 border rounded p-3 ">
                             <h2>User view</h2>
-                            <a href="{{ URL::to('/userplatform') }}">
-
+                            <!-- <a href="{{ URL::to('/userplatform') }}"> -->
+                            <a href="#">
                                  <div class="square"> <i class="fa fa-users" style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
                             </a>
 
@@ -72,9 +78,9 @@
                         </div>
 
                         <div class="col-sm-5 border rounded p-3 ">
-                            <h2>User Data Modification Tool</h2>
-                            <a href="{{ URL::to('/modifyuser') }}">
-
+                            <h2>User Data Management Tool</h2>
+                            <!-- <a href="{{ URL::to('/modifyuser') }}"> -->
+                            <a href='#'>
                                 <div class="square"> <i class="fa fa-database" style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
 
                             </a>
@@ -85,9 +91,11 @@
                 </div>
                 </div>
 
-
+ 
             </article>
         </main>
     </body>
 
 </html>
+
+

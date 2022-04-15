@@ -40,9 +40,21 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'phone_number' => ['required', 'string', 'max:20'],
+            'department' => ['required', 'string', ],
+            
+            
             //'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        if ($request->department == 'IT' or $request->department == 'it') {
+            $request->department='IT';           
+        } else {
+            $request->resolver = null;
+        }        
+
+
         $domain = '@fantasy-comp.com';
         $user = User::create([
             
@@ -51,9 +63,9 @@ class RegisteredUserController extends Controller
             'email' => $request->ad_id.$domain,
             //'password' => Hash::needsRehash($request ->password) ? Hash::make($request ->password) : $request ->password,
             'password' =>  Hash::make('12345678'), //default; lehetne egy random generátort beállítani security okok miatt, és első belépéskor a Helpdesk reseteli a usernek a pw-öt
-            'active' =>  $request->active, //kezdetben lehetne akár aktív, és a DB Teammel lehet aktiváltatni 
+            'active' =>  $request->active, //kezdetben aktív, és a DB Teammel lehet inaktiváltatni 
             'phone_number' =>  $request->phone_number, 
-            'department' =>  $request->department, 
+            'department' =>  $request->department,
             'resolver_id' =>  $request->resolver, 
         ]);
 

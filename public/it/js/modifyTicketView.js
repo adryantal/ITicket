@@ -30,6 +30,9 @@ class ModifyTicketView {
     this.commentTextArea = $("#comment");        
     this.serviceID="";
     this.assignmentGroupID="";
+
+
+   
       
     //disable assignedTo and category fields
     this.categoryField.attr('disabled', 'disabled'); 
@@ -44,7 +47,7 @@ class ModifyTicketView {
 
     this.setRequiredInputFields();
     this.setAutocompInputFields();
-
+   
    
 
     //add attachments  
@@ -69,7 +72,7 @@ class ModifyTicketView {
 
 
 
-    function restrictPageRefresh() {
+    function restrictPageRefresh() {      
         window.onbeforeunload = (e) => {          
             return "Are you sure you would like to leave and lose all data entered?";
         };
@@ -100,12 +103,14 @@ class ModifyTicketView {
 
   setRequiredInputFields(){    
     const requiredfields = [this.callerField, this.impactField, this.urgencyField,  this.priorityField, this.subjpersonField, 
-      this.serviceField, this.categoryField, this.titleField,    this.descriptionField, this.contactTypeField]
+      this.serviceField, this.categoryField, this.titleField,    this.descriptionField, this.contactTypeField, this.assignedToField]
     requiredfields.forEach(element => {
       element.attr("required",true);
     });  
      
   }
+
+
 
   addAttachments(event) {    
       if (event.target.files.length <= 10) {

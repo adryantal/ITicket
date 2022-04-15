@@ -150,6 +150,17 @@ li {
   color: white;
 }
 
+#switchboard-link a{
+  color: lightblue;
+  text-decoration: none;
+}
+
+#switchboard-link a:hover{
+  text-decoration: underline;
+}
+
+
+
 a:hover {
   cursor: pointer;
 }

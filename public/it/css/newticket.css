@@ -1,6 +1,10 @@
 @import url(https://fonts.googleapis.com/css2?family=PT+Sans&display=swap);
 @charset "UTF-8";
 
+body{
+  min-width: 1000px;
+}
+
 article {
   margin-top: 50px;
   padding: 7px;
@@ -257,7 +261,10 @@ input::-webkit-file-upload-button:hover, #attachment:hover, #confirmation-close-
 
 @media screen and (max-width: 768px) {
 
- 
+ body{
+    min-width: 508px;
+ }
+
   article {
     height: -webkit-fit-content;
     height: -moz-fit-content;

@@ -19,14 +19,24 @@ class FrameView {
     new Nav();
     new NavDropDown();
 
-//normal page - navigation
-this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets');
-this.loadPage($('#ticketmanagement .menuitem'),1,'/newticket'); 
+//general page - navigation
+this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets','allTickets');
+this.loadPage($('#ticketmanagement .menuitem'),1,'/newticket','');
+this.loadPage($('#ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
+this.loadPage($('#ticketmanagement .menuitem'),3,'/alltickets','myTickets');
+this.loadPage($('#ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
+this.loadPage($('#ticketmanagement .menuitem'),5,'/alltickets','myRequests');
+this.loadPage($('#dashboards .menuitem'),0,'/teamcharts','');
 //dropdown menu - navigation
-this.loadPage($('#nd-ticketmanagement .menuitem'),0,'/alltickets');
-this.loadPage($('#nd-ticketmanagement .menuitem'),1,'/newticket'); 
+this.loadPage($('#nd-ticketmanagement .menuitem'),0,'/alltickets','allTickets');
+this.loadPage($('#nd-ticketmanagement .menuitem'),1,'/newticket',''); 
+this.loadPage($('#nd-ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
+this.loadPage($('#nd-ticketmanagement .menuitem'),3,'/alltickets','myTickets');
+this.loadPage($('#nd-ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
+this.loadPage($('#nd-ticketmanagement .menuitem'),5,'/alltickets','myRequests');
+this.loadPage($('#nd-dashboards .menuitem'),0,'/teamcharts','');
 
-
+this.setSwitchBoardLink();
 
 this.navDropdownSetHeight();
 
@@ -35,13 +45,24 @@ $(window).on("resize", () => {
 })
 }
 
-loadPage(selector, index, url){
+
+loadPage(selector, index, url,note){
   selector.eq(index).on('click', function(e){
     e.preventDefault(); 
-    window.open(url,"_self");    
+    localStorage.setItem("ticketListType", note);
+    window.open(url,"_self");     
   });
-
 }
+
+
+  setSwitchBoardLink(){
+    if($('#username').attr('res-group-id')==='102'){
+      console.log($('#username').attr('id'))
+      $("#switchboard-link a").prop("href", "switchboard/db")
+    }else{
+      $("#switchboard-link a").prop("href", "switchboard")
+    }
+  }
 
   switchNavDropDown(event){
 /*Click events - Nav dropdown*/
@@ -147,10 +168,8 @@ class Nav {
         divID: "dashboards",
         title: "Dashboards",
         navMenuItemTitlesArray: [
-          "Individual - weekly",
-          "Individual - monthly",
-          "Team - monthly",
-          "Team - weekly",
+          "Team charts",
+          "Individual charts",         
         ],
       },
     ];
@@ -213,10 +232,8 @@ class NavDropDown {
     divID: "nd-dashboards",
     title: "Dashboards",
     navMenuItemTitlesArray: [
-      "Individual - weekly",
-      "Individual - monthly",
-      "Team - monthly",
-      "Team - weekly",
+      "Team charts",
+      "Individual charts", 
     ],
   },
 ];

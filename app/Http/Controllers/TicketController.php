@@ -41,6 +41,55 @@ class TicketController extends Controller
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => User::find($ticket->caller)->name, 
                 'subjperson_name' => User::find($ticket->subjperson)->name, 
+                'assigned_to_name' => $ticket->assigned_to === null ? '' : User::find($ticket->assigned_to)->name, 
+                'created_by_name'=>User::find($ticket->created_by)->name, 
+                'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+                'title' => $ticket->title,
+                'type' => $ticket->type,              
+                'category_name' => $category->name,
+                'service_name' => $service->name,
+                'status' => $ticket->status, 
+                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),  
+                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),                
+                        
+                );
+                array_push($response,$data);
+            }
+
+           
+           ////////// Beépített 'listener / trigger' - a 72 órával ezelőtt resolved-ba tett jegyeket automatikusan Closed-ra állítja /////////
+            $ticketsToBeClosed = Ticket::where('status','=','Resolved')->where('updated','<',Carbon::now()->subHours(72))->get();
+            foreach ($ticketsToBeClosed as $ticketToBeClosed) {
+                $t=Ticket::find($ticketToBeClosed->id);               
+                $t->status='Closed';
+                $t->save();
+            }
+           ////////// 
+
+       
+        return response()->json($response);
+    }
+
+    //a bejelentkezett user által kezelt ticketek kilistázása 
+    public function getAuthUserTickets(){
+        $authUserId = Auth::user()->id;
+        $response=array();
+        $alltickets = Ticket::where('assigned_to','=', $authUserId)->get();
+       // dd( $alltickets );
+        foreach ($alltickets as $ticket) {           
+            $updated_by=User::find($ticket->updated_by);
+            $category=Category::find($ticket->category);
+            $service=Category::where('id','=',$category->main_cat_id)->first();            
+            if($ticket->type=="Request"){
+                $prefix='REQ';
+            };
+            if($ticket->type=="Incident"){
+                $prefix='INC';
+            };            
+            $data = array(
+                'id'=> $prefix.$ticket->id,
+                'caller_name' => User::find($ticket->caller)->name, 
+                'subjperson_name' => User::find($ticket->subjperson)->name, 
                 'assigned_to_name' => User::find($ticket->assigned_to)->name, 
                 'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
@@ -49,16 +98,165 @@ class TicketController extends Controller
                 'category_name' => $category->name,
                 'service_name' => $service->name,
                 'status' => $ticket->status, 
-                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),  // !!!
-                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),   //!!!                
+                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),
+                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),                   
                         
                 );
                 array_push($response,$data);
-            }
-
-       
+            }       
         return response()->json($response);
     }
+
+
+    //a bejelentkezett user által kezelt ticketek kilistázása típus szerint
+    public function getAuthUserTicketsPerType($type){
+        $authUserId = Auth::user()->id;
+        $response=array();
+        $alltickets = Ticket::where('assigned_to','=', $authUserId)->where('type',"=",ucfirst($type))->get();
+       // dd( $alltickets );
+        foreach ($alltickets as $ticket) {           
+            $updated_by=User::find($ticket->updated_by);
+            $category=Category::find($ticket->category);
+            $service=Category::where('id','=',$category->main_cat_id)->first();            
+            if($ticket->type=="Request"){
+                $prefix='REQ';
+            };
+            if($ticket->type=="Incident"){
+                $prefix='INC';
+            };            
+            $data = array(
+                'id'=> $prefix.$ticket->id,
+                'caller_name' => User::find($ticket->caller)->name, 
+                'subjperson_name' => User::find($ticket->subjperson)->name, 
+                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'created_by_name'=>User::find($ticket->created_by)->name, 
+                'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+                'title' => $ticket->title,
+                'type' => $ticket->type,              
+                'category_name' => $category->name,
+                'service_name' => $service->name,
+                'status' => $ticket->status, 
+                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),
+                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),                   
+                        
+                );
+                array_push($response,$data);
+            }       
+        return response()->json($response);
+    }
+
+
+
+    //a bejelentkezett user csapatának tagjaihoz rendelt ticketek kilistázása 
+    public function getAuthTeamTickets(){
+       
+        $alltickets = Ticket::join('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')        
+        ->where('assigned_to_user.resolver_id','=',Auth::user()->resolver_id)        
+        ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'created_by' ,'updated_by' ,'category','title' ,'type' ,'status' ,'created_on' ,'updated')
+            ->get();
+
+        $response=array();
+        
+        foreach ($alltickets as $ticket) {           
+            $updated_by=User::find($ticket->updated_by);
+            $category=Category::find($ticket->category);
+            $service=Category::where('id','=',$category->main_cat_id)->first();            
+            if($ticket->type=="Request"){
+                $prefix='REQ';
+            };
+            if($ticket->type=="Incident"){
+                $prefix='INC';
+            };            
+            $data = array(
+                'id'=> $prefix.$ticket->id,
+                'caller_name' => User::find($ticket->caller)->name, 
+                'subjperson_name' => User::find($ticket->subjperson)->name, 
+                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'created_by_name'=>User::find($ticket->created_by)->name, 
+                'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+                'title' => $ticket->title,
+                'type' => $ticket->type,              
+                'category_name' => $category->name,
+                'service_name' => $service->name,
+                'status' => $ticket->status, 
+                'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),
+                'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),                   
+                        
+                );
+                array_push($response,$data);
+            }       
+        return response()->json($response);
+    }
+
+
+
+
+    //a bejelentkezett user csapatának nyitott jegyei száma személyenként
+
+    public function openTicketsTeam(){
+        $response = Ticket::join('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')              
+        ->where('assigned_to_user.resolver_id','=',Auth::user()->resolver_id)
+        ->where('tickets.status', '!=' , 'Resolved')->where('tickets.status', '!=' ,'Closed')
+        ->selectRaw('tickets.assigned_to, assigned_to_user.name, count(*) as open_tickets')
+        ->groupBy(['tickets.assigned_to','assigned_to_user.name'])
+        ->get();
+
+        return response()->json($response);
+
+    }
+
+
+        //a bejelentkezett user csapatának lezárt jegyei száma személyenként (utolsó 30 nap)
+        public function resolvedTicketsTeam(){
+            $from=Carbon::now()->subDays(30);           
+            $to=Carbon::now();
+            $response = Ticket::join('users AS updated_by_user', 'updated_by', '=', 'updated_by_user.id')                 
+            ->where('updated_by_user.resolver_id','=',Auth::user()->resolver_id)->where( function($q) {              
+               $q ->where('tickets.status', '=' , 'Resolved')->orWhere('tickets.status', '=' , 'Closed');
+             })   
+            ->selectRaw('updated_by, updated_by_user.name, count(*) as resolved_tickets')
+            ->groupBy(['updated_by','updated_by_user.name', ])->whereBetween('updated', [$from, $to])
+            ->get();    
+            return response()->json($response);
+    
+        }
+
+      //a bejelentkezett user csapatának SLA breached nyitott jegyei személyenként
+
+        public function breachedSlaTicketsTeam(){ 
+            $response = Ticket::join('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')              
+            ->where('assigned_to_user.resolver_id','=',Auth::user()->resolver_id)
+            ->where('tickets.type','=', 'Incident')->where( function($q) {
+                            $expDateInc =  Carbon::now()->subHours(72);
+                             $q->whereDate('tickets.created_on', '<', $expDateInc)->where('tickets.status', '!=' , ['Resolved','Closed']);
+                         })
+             ->orWhere('tickets.type','=', 'Request')->where( function($q) {
+                        $expDateReq = Carbon::now()->subHours(120);
+                        $q->whereDate('tickets.created_on', '<', $expDateReq)->where('tickets.status', '!=' , ['Resolved','Closed']);
+                         })
+           ->selectRaw('tickets.assigned_to, assigned_to_user.name, count(*) as slabreached_open_tickets')
+            ->groupBy(['tickets.assigned_to','assigned_to_user.name'])
+            ->get();    
+            return response()->json($response);        }
+
+
+        //a bejelentkezett user csapata megoldott ticketeinek típus szerinti eloszlása az utolsó 30 napban
+            
+          public function bdTypeTicketsTeam(){ 
+            $from=Carbon::now()->subDays(30);           
+            $to=Carbon::now();
+            $response = Ticket::join('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')              
+            ->where('assigned_to_user.resolver_id','=',Auth::user()->resolver_id)
+            ->where('assigned_to_user.resolver_id','=',Auth::user()->resolver_id)->where( function($q) {              
+                $q ->where('tickets.status', '=' , 'Resolved')->orWhere('tickets.status', '=' , 'Closed');
+              })  
+            ->whereBetween('updated', [$from, $to])
+            ->selectRaw('type, count(*) as nr_of_tickets')
+            ->groupBy('type')
+            ->get();    
+            return response()->json($response); 
+
+        }
 
     //adott ticket megkeresése id alapján
     public function getTicket($ticketid)
@@ -175,7 +373,7 @@ class TicketController extends Controller
             $sla = 72;  //3*24 
         }
         $timeleft = $sla - $timespent;
-        $assignment_group_id = User::find($ticket->assigned_to)->first()->resolver_id;
+        $assignment_group_id = ($ticket->assigned_to== null) ? 101 :User::find($ticket->assigned_to)->first()->resolver_id;
 
         //kapcsolódó naplóbejegyzések tömbbe mentése
         $journals = Journal::where('ticketid', '=', $ticket->id)->orderBy('id', 'desc')->get();
@@ -208,7 +406,7 @@ class TicketController extends Controller
             'ticketnr' => $ticket->ticketnr,
             'caller_name' => User::find($ticket->caller)->name,
             'subjperson_name' => User::find($ticket->subjperson)->name,
-            'assigned_to_name' => User::find($ticket->assigned_to)->name,
+            'assigned_to_name' => $ticket->assigned_to==null ? '' : User::find($ticket->assigned_to)->name,
             'assignment_group_name' => Resolver::find($assignment_group_id)->name,
             'created_by_name' => User::where('id', '=', $ticket->created_by)->first()->name,
             'updated_by_name' => $updated_by === null ? "" : $updated_by->name,
@@ -230,7 +428,7 @@ class TicketController extends Controller
             //ezeket azért kell átadni, hogy ha esetleg nem kerül sor az adott mező értékének megváltoztatására:
             'caller_id' => User::find($ticket->caller)->id,
             'subjperson_id' => User::find($ticket->subjperson)->id,
-            'assigned_to_id' => User::find($ticket->assigned_to)->id,
+            'assigned_to_id' => $ticket->assigned_to==null ? '' : User::find($ticket->assigned_to)->id,
             'assignment_group_id' => Resolver::find($assignment_group_id)->id,
             'category_id' => $category->id,
             'service_id' => Category::find($category->main_cat_id)->id,
@@ -281,7 +479,7 @@ class TicketController extends Controller
         $ticket->created_on = Carbon::now()->format('Y-m-d H:i:s');        
         $ticket->updated_by = $request->updated_by_id;
         $ticket->created_by = Auth::user()->id; //a belogolt user
-        $ticket->assigned_to = Auth::user()->id; //első körben ahhoz a helpdeskeshez legyen assignolva, aki nyitotta
+        $ticket->assigned_to = null; //első körben ahhoz a helpdeskeshez legyen assignolva, aki nyitotta
         $ticket->title = ucfirst($request->title); //első betű nagy betű --> rendezés miatt fontos
         $ticket->description = ucfirst($request->description);
         $ticket->priority = $request->priority;
@@ -407,7 +605,7 @@ class TicketController extends Controller
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => User::find($ticket->caller)->name, 
                 'subjperson_name' => User::find($ticket->subjperson)->name, 
-                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'assigned_to_name' => $ticket->assigned_to==null ? '': User::find($ticket->assigned_to)->name, 
                 'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
@@ -508,7 +706,7 @@ class TicketController extends Controller
                                 'id'=> $prefix.$ticket->id,
                                 'caller_name' =>  User::find($ticket->caller)->name, 
                                 'subjperson_name' => User::find($ticket->subjperson)->name, 
-                                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                                'assigned_to_name' => $ticket->assigned_to===null ?  '' :User::find($ticket->assigned_to)->name, 
                                 'created_by_name'=>User::find($ticket->created_by)->name, 
                                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                                 'title' => $ticket->title,

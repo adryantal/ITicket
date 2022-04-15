@@ -18,7 +18,7 @@ class IsResolver
     public function handle(Request $request, Closure $next)
     {
         if (Auth::user()->resolver_id==""){ //ha nem resolver (resolver ID nincs kitöltve), irányítsa majd át a user platformra
-            return redirect('/userplatform'); //még nincs kész az útvonal (Tomi feladata)
+            return redirect(''); //még nincs kész az user view útvonal (Tomi feladata)
         }
         return $next($request);
 

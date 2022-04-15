@@ -1,11 +1,11 @@
 class TicketListController {
-  constructor() {
+  constructor(apiTickets) {
     new FrameView();    
     const ticketDataArray = [];
     const token=$('meta[name="csrf-token"]').attr('content');
     const myAjax = new MyAjax(token);
-    let apiAllTickets = "http://localhost:8000/api/ticket/all/";    
-    myAjax.getAjax(apiAllTickets, ticketDataArray, ticketList);
+      
+    myAjax.getAjax(apiTickets, ticketDataArray, ticketList);
     new TicketListHeader();
 
     this.selectedTicketNr ="";
@@ -40,7 +40,7 @@ class TicketListController {
     /*GENERAL SEARCH*/
     $(window).on("generalSearch", (event) => {
      // console.log('event detail '+event.detail )
-      let filter = apiAllTickets + "search?q=" + event.detail; //configure API endpoint containing the filter conditions
+      let filter = apiTickets + "search?q=" + event.detail; //configure API endpoint containing the filter conditions
       myAjax.getAjax(filter, ticketDataArray, ticketList); //display filtered ticketlist
     });
 
@@ -57,7 +57,7 @@ class TicketListController {
           "&";
       });
       filterInputValueChain = filterInputValueChain.substring(0,filterInputValueChain.length - 1);
-      let filter = apiAllTickets + filterInputValueChain; //configure API endpoint containing the filter conditions        
+      let filter = apiTickets + filterInputValueChain; //configure API endpoint containing the filter conditions        
        myAjax.getAjax(filter, ticketDataArray, ticketList); //display filtered ticketlist
   
     });
@@ -70,7 +70,7 @@ class TicketListController {
     let asc=true;
     $(window).on("sortByAttribute", (event) => {
       let attribute = event.detail;  
-      myAjax.getAjax(apiAllTickets,ticketDataArray, function(){ //get the list of up-to-date data
+      myAjax.getAjax(apiTickets,ticketDataArray, function(){ //get the list of up-to-date data
         asc ? sortByKeyAsc(ticketDataArray,attribute) : sortByKeyDesc(ticketDataArray,attribute);
         ticketList(ticketDataArray);
       })   
