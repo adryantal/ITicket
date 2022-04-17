@@ -1,6 +1,10 @@
 @charset "UTF-8";
 @import url(https://fonts.googleapis.com/css2?family=PT+Sans&display=swap);
 
+body {
+    width: 100%;
+}
+
 article {
     padding: 20px;
 }
@@ -26,13 +30,13 @@ article {
 }
 
 .chartgroup:first-child {
-    margin-top: 20px;
-    margin-left: 30px;
+    margin-top: 10px;
+    margin-left: 0px;
 }
 
 .chartgroup:nth-child(2) {
-    margin-left: 480px;
-    margin-top: 70px;
+    margin-left: 430px;
+    margin-top: 60px;
 }
 
 #bdtype-tickets {
@@ -46,13 +50,15 @@ nav {
 
 @media screen and (max-width: 765px) {
     article {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;        
+        padding: 0px;
     }
 
+    
     .donutchart {
         top: 70px;
+        left: 0px;
+        margin: 0px;
+        width: calc(100%);
     }
 
     .chartgroup:first-child {
@@ -61,17 +67,32 @@ nav {
 
     .chartgroup:nth-child(2) {
         margin-left: 30px;
+      
     }
 
     #team-open-tickets {
-        top: 1040px;
+        top: 1010px;
     }
 
     #team-resolved-tickets {
-        top: 380px;
+        top: 350px;
     }
 }
 
 @media screen and (max-height: 680px) {
-   nav{ display: none; }
+    nav {
+        height: 750px;
+    }
+}
+
+@media screen and (min-height: 1365px) {
+    nav {
+        height: 1520px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .chartgroup {
+        width: 100%;
+    }
 }

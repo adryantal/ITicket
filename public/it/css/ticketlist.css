@@ -2,6 +2,8 @@
 @charset "UTF-8";
 
 
+
+
 .ticket-container {
   display: flex;
   flex-direction: column;  
@@ -226,9 +228,24 @@ input::placeholder {
 
 /*Responsivity*/
 
+
+@media screen and (max-width: 1024px) {
+  main{
+    position: fixed;
+  }
+
+  article{
+    overflow: scroll;
+  }
+
+  }
+
 @media screen and (max-width: 768px) {
   article {
     margin-top: 15px;
+    /* position: relative; */
+
+   
   }
 
  

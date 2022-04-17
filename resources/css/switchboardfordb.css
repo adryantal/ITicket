@@ -1,7 +1,6 @@
 @charset "UTF-8";
 @import url(https://fonts.googleapis.com/css2?family=PT+Sans&display=swap);
 
-
 * {
     box-sizing: border-box;
 }
@@ -9,12 +8,11 @@
 body {
     font-family: "PT Sans", sans-serif;
     min-width: 255px;
-    
 }
 
 .navbar {
     background-color: rgb(133, 193, 250);
-    border-left:  1px solid lightgray;
+    border-left: 1px solid lightgray;
     border-right: 1px solid lightgray;
     box-shadow: 1px 1px 5px gray;
 }
@@ -23,7 +21,7 @@ body {
     width: 100%;
 }
 
-article{
+article {
     background-color: rgb(241 245 249);
     border: 1px solid lightgray;
     border-radius: 5px;
@@ -31,50 +29,54 @@ article{
     height: -moz-fit-content;
     height: fit-content;
     padding: 40px;
-    
+    margin: 0px 100px;
 }
 
-.logo{
-margin-bottom: 30px;
+.logo {
+    margin-bottom: 30px;
 }
 
 nav {
     color: rgb(47, 60, 68);
 }
 
-.col-sm-5 {
+.col-lg-5 {
     padding: 50px;
     background-color: rgba(227, 239, 255, 0.6);
     margin-bottom: 20px;
 }
 
-.col-sm-5 h2 {
+.col-lg-5 h2 {
     padding-bottom: 20px;
     color: rgb(47, 60, 68);
-    
 }
 
-
-.col-sm-5:hover {
+.col-lg-5:hover {
     background-color: rgba(205, 224, 241, 0.6);
-        
 }
-
 
 a {
     text-decoration: none;
     color: rgb(47, 60, 68);
 }
 
-a:hover{
+a:hover {
     text-decoration: underline;
     color: rgb(47, 60, 68);
 }
 
+@media screen and (max-width: 992px) {
+    article {
+        margin: 0px;
+    }
+
+    .col-lg-5:nth-child(1) {
+        margin-bottom: 20px;
+    }
+}
 
 @media screen and (max-width: 435px) {
-    .logo img{
+    .logo img {
         width: 100%;
-        }
-    }     
-
+    }
+}

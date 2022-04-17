@@ -29,9 +29,12 @@ article{
 
 .logo{
 margin-bottom: 30px;
+
 }
 
-
+.logo img{
+    width: 250px;
+}
 
 nav {
     color: rgb(47, 60, 68);

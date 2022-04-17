@@ -13,6 +13,9 @@
 
     <link href="\..\it\css\login.css" rel="stylesheet">
 
+   
+</head>
+
 <body>
 
     <main>
@@ -34,9 +37,8 @@
                     <!-- Validation Errors -->
                     <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
+                    <form method="POST" action="{{ route('login') }}">                      
+                        @csrf   
                         <!-- Email Address -->
                         <div>
                             <x-label for="email" :value="__('Email')" />

@@ -13,11 +13,13 @@ class FrameView {
 
     $(window).on("click", (event) => {
     this.switchNavDropDown(event);
-    this.switchProfileDropDown(event);        
+    this.switchProfileDropDown(event);  
+    
     });
 
     new Nav();
     new NavDropDown();
+    
 
 //general page - navigation
 this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets','allTickets');
@@ -45,7 +47,6 @@ $(window).on("resize", () => {
 })
 }
 
-
 loadPage(selector, index, url,note){
   selector.eq(index).on('click', function(e){
     e.preventDefault(); 
@@ -58,29 +59,28 @@ loadPage(selector, index, url,note){
   setSwitchBoardLink(){
     if($('#username').attr('res-group-id')==='102'){
       console.log($('#username').attr('id'))
-      $("#switchboard-link a").prop("href", "switchboard/db")
+      $("#switchboard-link").prop("href", "switchboard/db")
     }else{
-      $("#switchboard-link a").prop("href", "switchboard")
+      $("#switchboard-link").prop("href", "switchboard")
     }
   }
 
   switchNavDropDown(event){
 /*Click events - Nav dropdown*/
-    if (
-      !$(event.target).hasClass("h-icon") &&
-      this.navDropdownList.is(":visible")      
-    ) {
+    if ( !$(event.target).hasClass("h-icon") && this.navDropdownList.is(":visible") ) {
       this.navDropdownList.hide();
     }
-    if ($(event.target).hasClass("h-icon")) {
-      if (this.navDropdownList.is(":visible")) {
-        this.navDropdownList.hide();
+    if ($(event.target).hasClass("h-icon")) { 
+      console.log('kattintottam') 
+      if (this.navDropdownList.is(":visible")) { this.navDropdownList.hide();
         return;
       }
       if (this.profileDropdownList.is(":visible")) {
         this.profileDropdownList.hide();
+       
       }
       if (this.navDropdownList.is(":hidden")) {
+       
         this.navDropdownList.show();
         return;
       }

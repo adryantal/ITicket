@@ -13,7 +13,7 @@
 </div>
 
 <div id="infobar">
-<div id="switchboard-link" > <a href="#" >Switchboard</a></div>
+
  <!-- Search bar -->
  <div class="wrapper c-height">
    <div class="search-area c-height">
@@ -31,9 +31,11 @@
  <div class="profile-dropdown">
    <button class="pr-dropbtn" id="avatar"><img src="'.asset("storage/icons/avatar_default.png").'" alt="" class="avatar-img">        
    </button>
-   <div id="username" res-group-id="'.auth()->user()->resolver_id .'">'. auth()->user()->name .'</div>
+  
    <div class="prdropdown-content">
+   <div id="username" res-group-id="'.auth()->user()->resolver_id .'">'. auth()->user()->name .'</div>
      <a href="#">Profile</a>
+     <a href="#" id="switchboard-link"  >Switchboard</a>
      <a href="/logout">Logout</a>        
    </div>
  </div>

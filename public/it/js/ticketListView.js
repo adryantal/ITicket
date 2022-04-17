@@ -51,7 +51,8 @@ class TicketListItem {
             .children("a");
 
         this.setData(this.data);
-        this.setPageResponsivity(700, 4); //under width of 700px only the first 4 columns are visible
+        this.setPageResponsivity(768, 3); //under width of 700px only the first 4 columns are visible
+        this.setPageResponsivity(285, 2);
     }
     setData(data) {
         this.data = data;
@@ -74,7 +75,7 @@ class TicketListItem {
         let parameter = "(min-width:" + size + "px)";
         const mq = window.matchMedia(parameter);
         if (!mq.matches) {
-            //"window width < 760px"
+            //"window width < size"
             $("#attr-bar")
                 .children("div")
                 .each(function (index) {
@@ -91,10 +92,14 @@ class TicketListItem {
                     }
                 });
             });
-            $("body").css("overflow-x", "hidden");
+            $('article').css("overflow-x", "hidden"); 
+          
+                 
         } else {
-            $("body").css("overflow", "scroll");
+           //$("article").css("overflow-x", "scroll");
         }
+
+
     }
 }
 
@@ -173,31 +178,29 @@ class Pagination {
     let limitPerPage;
     //set limit per page based on browser height --> refresh needed
     //location.reload() refreshes the page on each resize event
-    let counter = 0;
+  
+   
       $(window).on('resize', ()=>{        
         location.reload();
         countlimitPerPage();  
-        counter++;
+     
         $(window).scrollLeft(0);
         
     }); 
      
-    if (counter === 0) {
-        if ($(".ticket-data-line").length == 1) {
-            //when only the template instance of .ticket-data-line exists
+
+        if ($(".ticket-data-line").length == 1) { //when only the template instance of .ticket-data-line exists
             pageIntervalBar.append("0");
         } else {
             countlimitPerPage();
-            pageIntervalBar.append("1-" + (limitPerPage - 1));
+            pageIntervalBar.append("1-" + (limitPerPage-1)); 
         }
-    }    
+  
   
 
     paginationBar.append(
       "<li id='previous-page'><a href='javascript:void(0)' aria-label='Previous'><span aria-hidden=true>&laquo;</span></a></li>"
-    );
-    $(
-      "#ticket-container .ticket-data-line:gt(" + (limitPerPage - 1) + ")"
+    ); $("#ticket-container .ticket-data-line:gt(" + (limitPerPage - 1) + ")"
     ).hide(); // Hide all items over page limits (e.g., 5th item, 6th item, etc.)
     let totalPages = Math.ceil(numberOfTickets / limitPerPage); // Get number of pages
     paginationBar.append( "<li class='current-page active'><a href='javascript:void(0)'>" +  1 +"</a></li>" ); // Add first page marker
@@ -283,10 +286,13 @@ class Pagination {
     });
 
     function countlimitPerPage(){      
-      let itemContainerHeight =  $("main").height() -  $("#attr-bar").height(); //- $("#search-status-bar").height();
+      let itemContainerHeight =  $("main").height() -  $("#attr-bar").height()- $("#search-status-bar").height();
           limitPerPage = 0;
+        
           $(".ticket-data-line").each(function () {
+            console.log($(this).position().top + $(this).height()+' '+$('#ticket-container').height())
               if ( $(this).position().top + $(this).height() /*+ MARGIN*/ > itemContainerHeight) {
+          
                   return;
               } else {
                   limitPerPage++;

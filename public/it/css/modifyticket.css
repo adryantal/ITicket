@@ -341,6 +341,12 @@ form legend{
     grid-template-columns: 1fr 2fr;
   }
 
+  .row-top,
+  .row-bottom,
+  #row-last {
+      padding: 0;
+  }
+
   .row-top div {
     margin: 7px 0px;
   }

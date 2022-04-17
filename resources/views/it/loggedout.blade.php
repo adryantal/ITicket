@@ -4,6 +4,7 @@
 
 <head>
     <title>ITicket - Switchboard</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
     <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,9 +23,9 @@
 
             <article>
 
-                <div class="container-fluid bg-3 text-center">
+                <div class="container-fluid bg-3 text-center justify-content-center">
 
-                    <div class="margin logo"><img src="<?php echo asset('storage/logo_mid_transparent.png') ?>" alt="Logo" class="logoMid" class="img-responsive margin"></div>
+                    <div class="logo row justify-content-center"><img src="<?php echo asset('storage/logo_mid_transparent.png') ?>" alt="Logo" class="logoMid img-responsive margin"></div>
                     <div class=" row justify-content-center">
                     <p>You have been logged out.</p>
                         <div class="col-sm-5 border rounded">

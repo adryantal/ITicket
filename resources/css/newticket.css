@@ -1,320 +1,330 @@
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
 
-body{
-  min-width: 1000px;
+body {
+    min-width: 1000px;
+    
+}
+
+main{
+    height: 100%;
 }
 
 article {
-  margin-top: 50px;
-  padding: 7px;
-  background-color: white;
-   
+    margin-top: 50px;
+    padding: 7px;
+    background-color: white;
+    
 }
 
 form {
-  border-radius: 5px;
-  border: 1px solid lightsteelblue;
-  padding: 20px;
-  background-color: rgba(140, 169, 207, 0.3);
-  box-shadow: 2px 4px 6px lightsteelblue;
-  justify-content: left;
-  align-items: center;
-  color: rgb(63, 94, 94, 0.6);
-  height: 97%;
+    border-radius: 5px;
+    border: 1px solid lightsteelblue;
+    padding: 20px;
+    background-color: rgba(140, 169, 207, 0.3);
+    box-shadow: 2px 4px 6px lightsteelblue;
+    justify-content: left;
+    align-items: center;
+    color: rgb(63, 94, 94, 0.6);
+    height: 100%;
+}
+
+nav {
+    height: 98.3%;
+
 }
 
 form div {
-  padding: 0px 25px;
+    padding: 0px 25px;
 }
 
 .row-top {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr 2fr;
-  justify-content: left;
-  align-items: center;
-  font-weight: bold;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 2fr;
+    justify-content: left;
+    align-items: center;
+    font-weight: bold;
 }
 
 .row-bottom {
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-  justify-content: left;
-  align-items: center;
-  font-weight: bold;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    justify-content: left;
+    align-items: center;
+    font-weight: bold;
 }
 
 .row-top,
 .row-bottom:first-child {
-  height: 35px;
+    height: 35px;
 }
 
 .row-bottom {
-  margin: 6.5px 0px 13px 0px;
+    margin: 6.5px 0px 13px 0px;
 }
 
 #row-last {
-  margin-top: 7px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  
+    margin-top: 7px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
-
 
 form input[type="text"],
 form input[type="number"],
 form input[type="other"],
 form select,
 form textarea {
-  width: 100%;
-  border-radius: 3px;
-  color: rgb(63, 94, 94);
-  
+    width: 100%;
+    border-radius: 3px;
+    color: rgb(63, 94, 94);
 }
-
-
 
 form input[type="text"],
 form input[type="number"],
 form input[type="other"],
 form select {
-  height: 25px;
-  font-size: 90%;
+    height: 25px;
+    font-size: 90%;
 }
 
-form select option{
-  background-color: rgba(186, 172, 221, 0.9); 
-  color: black; 
-  line-height: 25px;
-  
+form select option {
+    background-color: rgba(186, 172, 221, 0.9);
+    color: black;
+    line-height: 25px;
 }
-
-
 
 form textarea {
-  border-color: rgb(125, 163, 163, 0.6);
-  height: 150px;
-  font-family: inherit;
-  
+    border-color: rgb(125, 163, 163, 0.6);
+    height: 150px;
+    font-family: inherit;
 }
 
 form input,
 form select {
-  border: 1px solid rgb(125, 163, 163, 0.6);
+    border: 1px solid rgb(125, 163, 163, 0.6);
 }
 
 form input[type="text"]:focus,
 form input[type="number"]:focus,
 textarea:focus,
 select:focus {
-  outline: none !important;
-  border-color: #719ece;
-  box-shadow: 0 0 10px #7a9abd;
+    outline: none !important;
+    border-color: #719ece;
+    box-shadow: 0 0 10px #7a9abd;
 }
 
-#ticket-number{
-  color: crimson;
+#ticket-number {
+    color: crimson;
 }
 
-#submission-confirmation{
-  position: absolute;
-  left: 40%;
-  top: 30%;
-  z-index: 15;
-  border: 1px solid lightskyblue;
-  box-shadow: 0 0 10px #7a9abd;
-  background-color: rgba(186, 172, 221, 0.9); 
-  text-align: center;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
+#submission-confirmation {
+    position: absolute;
+    left: 40%;
+    top: 30%;
+    z-index: 15;
+    border: 1px solid lightskyblue;
+    box-shadow: 0 0 10px #7a9abd;
+    background-color: rgba(186, 172, 221, 0.9);
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 #newticketform-header {
-  background-color: #719ece;
-  height: 30px;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
-  text-shadow: 1px 1.5px 1.5px rgb(66, 93, 151);
-  letter-spacing: 0.2px;
-  margin-bottom: 3px;
-  border-radius: 3px;
-  box-shadow: 1px 2px 6px rgb(80, 113, 155);
-  font-size: 120%;
+    background-color: #719ece;
+    height: 30px;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    text-shadow: 1px 1.5px 1.5px rgb(66, 93, 151);
+    letter-spacing: 0.2px;
+    margin-bottom: 3px;
+    border-radius: 3px;
+    box-shadow: 1px 2px 6px rgb(80, 113, 155);
+    font-size: 120%;
 }
 
 #attachment-btn,
 #newticketform-buttons input,
-input::-webkit-file-upload-button,  #confirmation-close-btn {
-  border: 2px solid rgb(125, 163, 163, 0.6);
-  color: rgb(125, 163, 163);
-  background-color: white;
-  padding: 8px 20px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: bold;
+input::-webkit-file-upload-button,
+#confirmation-close-btn {
+    border: 2px solid rgb(125, 163, 163, 0.6);
+    color: rgb(125, 163, 163);
+    background-color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
 }
-
 
 #attachment-btn:hover,
 #newticketform-buttons input:hover,
-input::-webkit-file-upload-button:hover, #attachment:hover, #confirmation-close-btn:hover{
-  border: 2px solid lightslategray;
-  box-shadow: 0 1px 3px #4370a0;
-  cursor: pointer;
-  
-
+input::-webkit-file-upload-button:hover,
+#attachment:hover,
+#confirmation-close-btn:hover {
+    border: 2px solid lightslategray;
+    box-shadow: 0 1px 3px #4370a0;
+    cursor: pointer;
 }
 
-#attachment-container{   
-  display: flex;
-  flex-direction: column;  
+#attachment-container {
+    display: flex;
+    flex-direction: column;
 }
-
 
 #attachment-container input[type="file"] {
-  left: 0;
-  top: 0;
-  opacity: 0;  
-  border: 1px solid transparent;  
-  color: transparent;
-  width: 184px;  
-  position: relative;
-  z-index: 3; /*file input type should be above the button (#attachment-btn), so that it will be the target of the click event*/
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border: 1px solid transparent;
+    color: transparent;
+    width: 184px;
+    position: relative;
+    z-index: 3; /*file input type should be above the button (#attachment-btn), so that it will be the target of the click event*/
 }
 
-#panel-top{
-  z-index: 10;
+#panel-top {
+    z-index: 10;
 }
 
 #attachment-btn {
-  width: 125px;
-  width: fit-content;
-  display: block; 
-  position: absolute;
-  z-index: 2; 
+    width: 125px;
+    width: fit-content;
+    display: block;
+    position: absolute;
+    z-index: 2;
 }
 
 .attm-remove-btn {
-  color: coral;
-  border-radius: 3px;
-  text-align: center;
+    color: coral;
+    border-radius: 3px;
+    text-align: center;
 }
 
 .attm-remove-btn:hover {
-  color: crimson;
-  cursor: pointer;
+    color: crimson;
+    cursor: pointer;
 }
 
 #attachment-list {
-  
-  width: 300px;
- padding: 0;  
+    width: 300px;
+    padding: 0;
 }
 
 #attachment-list div {
-  display: grid;
-  grid-template-columns: 80% 20%;
+    display: grid;
+    grid-template-columns: 80% 20%;
 }
 
 #ui-id-1 {
-  /* display: none !IMPORTANT; */  
+    /* display: none !IMPORTANT; */
 }
 
-
-.ac-template{
-  padding: 5px; 
-  border-radius: 3px;
-  background-color: rgba(186, 172, 221, 0.9);  
-  border: 1px solid grey  ;
-  box-shadow: 1px 2px 4px lightslategray;
-  width: 200px;  
-  overflow: auto; 
-  
+.ac-template {
+    padding: 5px;
+    border-radius: 3px;
+    background-color: rgba(186, 172, 221, 0.9);
+    border: 1px solid grey;
+    box-shadow: 1px 2px 4px lightslategray;
+    width: 200px;
+    overflow: auto;
 }
-
 
 .ui-helper-hidden-accessible {
-  border: 0;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
-  
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
 }
 
-.single-search{
-  visibility: hidden;
+.single-search {
+    visibility: hidden;
 }
 
 /*Responsivity*/
 
 @media screen and (max-width: 768px) {
 
- body{
-    min-width: 508px;
- }
 
-  article {
-    height: fit-content;
-    /* padding: 20px 0px 0px 0px; */    
-    padding: 15px 10px 5px 10px;
-    min-width: 200px;
-  }
+    body {
+        min-width: 0px;
+     
+    }
 
-  form {
-    min-width: 0px;
-    width: 100%;
-    padding: 0px 0px 30px 0px;
-  }
+    main{
+      height: auto;
+        
+    }
 
-  .row-top {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: repeat(2, 1fr);
-    height: 100%;
-  }
+    article {
+        height: fit-content;
+        /* padding: 20px 0px 0px 0px; */
+        padding: 15px 0px 0px 0px;
+       
+    }
 
-  .row-bottom {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-  }
+    form {
+        width: 100%;
+        padding: 0px 0px 30px 0px;
+    }
 
-  .row-top div {
+    .row-top {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        grid-template-rows: repeat(2, 1fr);
+        height: 100%;
+    }
+
+    .row-bottom {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+    }
+
+    .row-top,
+    .row-bottom,
+    #row-last {
+        padding: 0;
+    }
+
+
+.row-top div {
     margin: 7px 0px;
-  }
+}
 
-  .row-bottom div {
+.row-bottom div {
     margin: 3px 0px 0px 0px;
-  }
+}
 
-  #row-last {
+#row-last {
     display: flex;
     align-items: flex-start;
-  }
+    flex-direction: column;
+}
 
-  #newticketform-buttons {
+#newticketform-buttons {
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;  
-   
-  }
-  
-  #attachment-list {
-    width: 250px;
-  }
+    gap: 10px;
+}
 
-  #submission-confirmation{
+#attachment-list {
+    width: 250px;
+}
+
+#submission-confirmation {
     left: 20%;
     top: 30%;
-  }
-
 }
+}
+
+
+
