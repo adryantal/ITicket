@@ -18,33 +18,49 @@ class FrameView {
     });
 
     new Nav();
-    new NavDropDown();
-    
+    new NavDropDown();    
 
-//general page - navigation
-this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets','allTickets');
-this.loadPage($('#ticketmanagement .menuitem'),1,'/newticket','');
-this.loadPage($('#ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
-this.loadPage($('#ticketmanagement .menuitem'),3,'/alltickets','myTickets');
-this.loadPage($('#ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
-this.loadPage($('#ticketmanagement .menuitem'),5,'/alltickets','myRequests');
-this.loadPage($('#dashboards .menuitem'),0,'/teamcharts','');
-//dropdown menu - navigation
-this.loadPage($('#nd-ticketmanagement .menuitem'),0,'/alltickets','allTickets');
-this.loadPage($('#nd-ticketmanagement .menuitem'),1,'/newticket',''); 
-this.loadPage($('#nd-ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
-this.loadPage($('#nd-ticketmanagement .menuitem'),3,'/alltickets','myTickets');
-this.loadPage($('#nd-ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
-this.loadPage($('#nd-ticketmanagement .menuitem'),5,'/alltickets','myRequests');
-this.loadPage($('#nd-dashboards .menuitem'),0,'/teamcharts','');
+    //general page - navigation
+    this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets','allTickets');
+    this.loadPage($('#ticketmanagement .menuitem'),1,'/newticket','');
+    this.loadPage($('#ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
+    this.loadPage($('#ticketmanagement .menuitem'),3,'/alltickets','myTickets');
+    this.loadPage($('#ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
+    this.loadPage($('#ticketmanagement .menuitem'),5,'/alltickets','myRequests');
+    this.loadPage($('#dashboards .menuitem'),0,'/teamcharts','');
+    //dropdown menu - navigation
+    this.loadPage($('#nd-ticketmanagement .menuitem'),0,'/alltickets','allTickets');
+    this.loadPage($('#nd-ticketmanagement .menuitem'),1,'/newticket',''); 
+    this.loadPage($('#nd-ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
+    this.loadPage($('#nd-ticketmanagement .menuitem'),3,'/alltickets','myTickets');
+    this.loadPage($('#nd-ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
+    this.loadPage($('#nd-ticketmanagement .menuitem'),5,'/alltickets','myRequests');
+    this.loadPage($('#nd-dashboards .menuitem'),0,'/teamcharts','');
 
-this.setSwitchBoardLink();
+    this.setSwitchBoardLink();
 
-this.navDropdownSetHeight();
+    this.navDropdownSetHeight();
 
-$(window).on("resize", () => {
-  this.navDropdownSetHeight();  
-})
+    $(window).on("resize", () => {
+      this.navDropdownSetHeight();  
+    });
+
+    let counter=0;
+    $(".single-search .icon-area").on("click", () => {
+    this.manageGeneralSearchArea(counter);
+    counter++;
+  });
+ 
+}
+
+ manageGeneralSearchArea(counter){  
+      if (counter % 2 === 0) {
+          $(".custom-input").addClass("custom-input-expand");
+          $(".icon-area").addClass("icon-transform-effect");
+      } else {
+          $(".custom-input").removeClass("custom-input-expand");
+          $(".icon-area").removeClass("icon-transform-effect");
+      }  
 }
 
 loadPage(selector, index, url,note){
@@ -76,8 +92,7 @@ loadPage(selector, index, url,note){
         return;
       }
       if (this.profileDropdownList.is(":visible")) {
-        this.profileDropdownList.hide();
-       
+        this.profileDropdownList.hide();       
       }
       if (this.navDropdownList.is(":hidden")) {
        

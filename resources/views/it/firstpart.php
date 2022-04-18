@@ -18,7 +18,7 @@
  <div class="wrapper c-height">
    <div class="search-area c-height">
      <div class="single-search">
-       <input class="custom-input" name="custom_search" placeholder="Enter keywords..." type="text">
+       <input class="custom-input" name="custom_search" placeholder="Enter keywords..." type="search" >
        <a class="icon-area" >
          <span class="magnifier"><img src="'.asset("storage/icons/magnifier.png"). '" alt=""></span>
        </a>

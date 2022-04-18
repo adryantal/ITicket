@@ -57,6 +57,7 @@ class NewTicketController {
       description: nTicketView.descriptionField.val(),
       contact_type: nTicketView.contactTypeField.val(),      
       parent_ticket: nTicketView.parentTicketField.val(),
+      
       attachments: attachmentsArray,
       
       //reading data from hidden input fields
@@ -67,21 +68,24 @@ class NewTicketController {
       assignment_group_id: 101,
       
     };
-    //console.log(newTicketData);    
+    console.log(newTicketData); 
+      
     myAjax.postAjax(apiEndPointCreateTicket, newTicketData);  
+
+    
     
     //should get the ticket ID here!
-
      /*insert attachments to the Attachments table*/   
     // attachmentsArray.forEach(element => {     
-    //     let newAttData ={
-    //         // id: 1234,         
-    //         date : dateTimeNow,
-    //         ticketid: nTicketView.ticketIDField.val(), //should obtain the ticket ID somehow!!
-    //         filename: element
-    //     };
-    //     myAjax.postAjax(apiEndPointAttachments, newAttData);
-    // }); 
+     /*   let newAttData ={
+            // id: 1234,         
+             date : dateTimeNow,
+             ticketid: nTicketView.ticketIDField.val(), //should obtain the ticket ID somehow!!
+             filename: element
+         };
+        myAjax.postAjax(apiEndPointAttachments, newAttData);
+     });     
+     */
 
      nTicketView.resetAllFields(); 
     

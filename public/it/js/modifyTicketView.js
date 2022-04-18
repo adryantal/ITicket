@@ -322,7 +322,7 @@ class ModifyTicketView {
           $("#comment-template .handling-team").text('| To save click on "Submit"');
           $("#comment-template .status-indication-bar").hide();
           let commentDescription = $("#comment").val();
-          if (!commentDescription == "") {
+          if (!commentDescription == "") { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!and there are no drafts yet
               $("#comment-template .comment-item")
                   .clone()
                   .prependTo("#comment-draft");
@@ -334,7 +334,9 @@ class ModifyTicketView {
               this.eventTrigger("newComments", commentDescription);
               $("#comment").val("");
           } else {
-              alert("Empty comment field!");
+            if($("#comment-draft .comment-item").length===0){
+              alert("Empty comment field!"); ///////////
+            }
           }
       });
   }

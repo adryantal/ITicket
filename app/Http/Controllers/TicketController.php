@@ -373,13 +373,16 @@ class TicketController extends Controller
             $sla = 72;  //3*24 
         }
         $timeleft = $sla - $timespent;
-        $assignment_group_id = ($ticket->assigned_to== null) ? 101 :User::find($ticket->assigned_to)->first()->resolver_id;
+       
+        if($ticket->assigned_to=== null)
+        {  $assignment_group_id= '101'; } else {  $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;}
+       
 
         //kapcsolódó naplóbejegyzések tömbbe mentése
         $journals = Journal::where('ticketid', '=', $ticket->id)->orderBy('id', 'desc')->get();
         $journalsArray = array();
         foreach ($journals as $journal) {
-            $assignment_group_id = User::find($journal->assignedto)->first()->resolver_id;
+            $assignment_group_id = User::find($journal->assignedto)->resolver_id;
             $dataToPush = array( //a névadatokat is át kell adni, ezért specifikálnunk kell a mezőértékeket
                 'ticketid' => $journal->ticketid,
                 "updatedby" => User::find($journal->updatedby)->name,
@@ -479,13 +482,13 @@ class TicketController extends Controller
         $ticket->created_on = Carbon::now()->format('Y-m-d H:i:s');        
         $ticket->updated_by = $request->updated_by_id;
         $ticket->created_by = Auth::user()->id; //a belogolt user
-        $ticket->assigned_to = null; //első körben ahhoz a helpdeskeshez legyen assignolva, aki nyitotta
+        $ticket->assigned_to = null; //első körben ne legyen senkihez assignolva
         $ticket->title = ucfirst($request->title); //első betű nagy betű --> rendezés miatt fontos
         $ticket->description = ucfirst($request->description);
         $ticket->priority = $request->priority;
         $ticket->urgency = $request->urgency;
         $ticket->impact = $request->impact;
-        $ticket->parent_ticket = $request->parent_ticket;
+        $ticket->parent_ticket = substr("$request->parent_ticket",3);
         $ticket->updated=Carbon::now()->format('Y-m-d H:i:s');
        //sla && time left
         if($request->type =="Request"){           
@@ -764,7 +767,7 @@ class TicketController extends Controller
         $ticket->type = $request->type;  
         $ticket->caller = $request->caller_id;         
         $ticket->subjperson = $request->subjperson_id;
-        $ticket->assigned_to = $request->assigned_to_id; 
+        $ticket->assigned_to = $request->assigned_to_id;       
         $ticket->updated  =  Carbon::now()->format('Y-m-d H:i:s');  
         $ticket->updated_by  = Auth::user()->id;
         $ticket->category  = $request->category_id;        
@@ -772,7 +775,8 @@ class TicketController extends Controller
         $ticket->urgency =  $request->urgency;
         $ticket->priority =  $request->priority;
         $ticket->impact =  $request->impact;
-        if (!isNull($request->parent_ticket_id)){ $ticket->parent_ticket =  $request->parent_ticket_id;}  
+      
+        if (($request->parent_ticket)!=null){ $ticket->parent_ticket =  $request->parent_ticket;}  
         $ticket->save();          
     }
 

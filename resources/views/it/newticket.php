@@ -31,7 +31,7 @@
         <div id="newticketform-header">Create new ticket</div>
 
         <div id='submission-confirmation'>
-          <div> Successful ticket submission! Ticket #: <span id="ticket-number" ></span></div>
+          <div> Successful ticket submission! <br>Ticket #: <span id="ticket-number" ></span></div>
           <div> <input type="button" id="confirmation-close-btn" value="OK"></div>
         </div>
 
@@ -88,7 +88,7 @@
             <div><label for="assignmentGroup">Assignment group</label></div>
             <div> <input type="text" name="assignmentGroup" id="assignmentGroup" value="IT Helpdesk" readonly></div>           
                 <div><label for="assignedTo" >Assigned to</label></div>
-                <div> <input type="text" id="assignedTo" name="assignedTo" value= <?php echo auth()->user()->name ?> readonly>
+                <div> <input type="text" id="assignedTo" name="assignedTo" readonly>
                 </div>
                 
           </div>

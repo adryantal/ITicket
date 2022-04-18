@@ -60,7 +60,7 @@ class ModifyTicketController {
        if($("#comment-draft").children('div').length<1){
         alert('Please insert a comment for the modification!');           
       }else if(mTicketView.assignedToField.val()===''){
-        alert('You cannot update a case if it is unassigned. Please make sure it is assigned to you or a colleague. Thank you.'); 
+        alert('You cannot update a case if it is unassigned. Please make sure it is assigned to you or a colleague. Thank you.');       
       }
       else{
         validateForm();
@@ -80,10 +80,12 @@ class ModifyTicketController {
     }
 
     function loadTicketData(ticketNr) {
+    
       /*LOAD BASIC DETAILS*/
       let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;
       //load ticket data from API endpoint     
       $.getJSON(apiEndPointSelectedTicket, function(data) {
+      
         setTicketToInactive(data);
         mTicketView.ticketIDField.val(ticketNr);
         mTicketView.callerField.val(data.caller_name);
@@ -114,7 +116,8 @@ class ModifyTicketController {
         mTicketView.addHiddenInputField("service", data.service_id);
         mTicketView.addHiddenInputField("category", data.category_id);        
         loadComments(data.journals);
-        
+        console.log('modified formba érkező adat: '+data.parent_ticket);
+     
               
       });
     }
@@ -190,7 +193,7 @@ class ModifyTicketController {
         created_by_name: mTicketView.createdByField.val(),        
         description: mTicketView.descriptionField.val(),
         contact_type: mTicketView.contactTypeField.val(),
-        parent_ticket_id: mTicketView.parentTicketField.val().substring(3,mTicketView.parentTicketField.val().length),
+        parent_ticket: mTicketView.parentTicketField.val().substring(3,mTicketView.parentTicketField.val().length),
         //attachments: attachmentsArray
 
         //reading data from hidden input fields
@@ -201,7 +204,8 @@ class ModifyTicketController {
         assigned_to_id: $("#assignedToID").val(),
         assignment_group_id: $("#assignmentGroupID").val(),
       };
-      console.log(modifiedTicketData);
+      console.log('modified formról kimenő  adat: '+ mTicketView.parentTicketField.val().substring(3,mTicketView.parentTicketField.val().length));
+     
       myAjax.putAjax(apiEndPointTicket,modifiedTicketData,ticketID);
     }
 

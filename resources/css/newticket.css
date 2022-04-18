@@ -120,8 +120,10 @@ select:focus {
 
 #submission-confirmation {
     position: absolute;
-    left: 40%;
-    top: 30%;
+    width: 300px;
+    height: 150px;
+    top: 250px; 
+    left: calc(45% - 75px); 
     z-index: 15;
     border: 1px solid lightskyblue;
     box-shadow: 0 0 10px #7a9abd;
@@ -321,10 +323,18 @@ input::-webkit-file-upload-button:hover,
 }
 
 #submission-confirmation {
-    left: 20%;
-    top: 30%;
+    width: 150px;
+    height: 150px;
+   
 }
 }
 
 
+@media screen and (max-width: 600px) {
 
+    #submission-confirmation {
+        left: calc(44% - 50px);
+    }
+
+ 
+}

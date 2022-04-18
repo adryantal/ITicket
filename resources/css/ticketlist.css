@@ -86,13 +86,19 @@ article {
   align-items: center;
 }
 
+.attr-filter{
+  display: flex;
+  flex-direction: row;
+
+}
+
 .sort-icon {
   width: 25px;
 }
 
 .sort-icon:hover {
   cursor: pointer;
-  opacity: 0.5;
+  opacity: 0.7;
 }
 
 .attr-filter {
@@ -100,25 +106,32 @@ article {
   
 }
 
-.attr-filter input {
+.attr-filter input[type=text]  {
   border-radius: 3px;
   padding: 2px;
-  width: 100px;
+  width: 83px;
   height: 23px;
   border: 1px solid rgb(101, 165, 204);
   align-items: center;
+  margin-right: 4px;
  
 }
 
-#filter-title {
-  width: 180px;
+.attr-filter i:hover{
+  cursor: pointer;
+  opacity: 0.6;
 }
 
-.attr-filter input:hover {
+#filter-title {
+  width: 173px;
+  margin-right: 4px;
+}
+
+.attr-filter input[type=text]:hover {
   border: 1px solid #2a4b7c;
 }
 
-.attr-filter input[type="text"]:focus {
+.attr-filter input[type=text]:focus {
   background-color: rgb(195, 219, 231);
   box-shadow: 2px 2px 5px #2a4b7c;
   outline: none !important;

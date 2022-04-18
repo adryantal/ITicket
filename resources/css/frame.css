@@ -215,19 +215,20 @@ input::placeholder {
   transform: scaleX(1);
 }
 
-.single-search:hover > .custom-input {
+.custom-input-expand {
   padding: 0 10px;
   transition: all 0.3s ease-in-out;
   width: fit-content;
   flex: 1;
 }
 
-.single-search:hover > .icon-area {
+.icon-transform-effect{
   background: rgb(66, 75, 119);
   color: #262626;
   margin-left: 5px;
   transform: scaleX(-1);
 }
+
 
 .single-search img {
   width: 20px;
@@ -297,10 +298,7 @@ input::placeholder {
   }
   /*Dropdown menu - avatar icon*/
 
-  /* .single-search:hover > .custom-input {
-    width: 140;
-  } */
-
+ 
   .wrapper{
     display: none;
   }

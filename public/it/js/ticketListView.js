@@ -107,10 +107,11 @@ class TicketFilter {
   constructor() {
     this.customSearchField = $(".custom-input"); //general search / custom search
     this.filterInputField = $(".attr-filter").children("input"); //whole class / ticket filter
-
+    this.filterSearchIcon = $(".attr-filter").children('i');
     const filterInputArray = [];
 
     this.filterByAttribute(filterInputArray);
+    this.filterBySingleAttribute();
     this.generalFilter();
   }
 
@@ -118,12 +119,12 @@ class TicketFilter {
     let ev = new CustomEvent(eventName, {
       detail: eventDetail,
     });
-    window.dispatchEvent(ev);
+    window.dispatchEvent(ev);    
   }
 
   /*TICKET FILTER - keypress event*/
-  filterByAttribute(filterInputArray) {
-    this.filterInputField.on("keypress", (e) => {
+  filterByAttribute(filterInputArray) { 
+    this.filterInputField.on("keydown", (e) => {
       //when pressing enter
       if (e.keyCode == 13) {
         this.filterInputField.each(function () {
@@ -140,11 +141,29 @@ class TicketFilter {
     });
   }
 
+
+/*TICKET FILTER - filter using the magnifier icon in each search field*/
+  filterBySingleAttribute(){
+    this.filterSearchIcon.on('click',(e)=>{
+      const fInputArray=[];
+       let searchVal=($(e.currentTarget).closest('.attr-filter').children('input').val());
+       let filterItemID=($(e.currentTarget).closest('.attr-filter').children('input').attr('id'));
+       console.log(searchVal,filterItemID)
+       if (!searchVal == ""){
+            //collect all POPUPATED filter input fields' IDs along with the values to an array
+            fInputArray.push({
+              id: filterItemID,
+              value: searchVal,
+            }); //saving the IDs and the input values to an array
+          }       
+        this.searchTrigger("filterTicketData", fInputArray); //forwarding the array to the Controller for further    
+    })    
+  } 
+
   /*GENERAL SEARCH using keywords - keypress event*/
-  generalFilter() {
-    this.customSearchField.on("keypress", (e) => {
-      //when pressing enter
-      if (e.keyCode == 13) {
+  generalFilter() {     
+      //when pressing the magnifier icon
+      $(".single-search .icon-area").on('click',()=>{       
         //set the search status bar to the default state, in case there are results of a previous filtering shown...
         $("#search-status-bar").empty();
         this.searchTrigger("generalSearch", $(".custom-input").val());
@@ -155,18 +174,20 @@ class TicketFilter {
             "Filter | All tickets > keyword(s)=<b>" + $(".custom-input").val()
           ) + "<b>";
         }
-        this.customSearchField.val("");
-      }
+        this.customSearchField.val("");      
     });
+
+
+
+
   }
+
+
 }
 
 
 class Pagination {
   constructor() {
-
-  
-
     const ticketDataLine = $("#ticket-container .ticket-data-line");
     const pageIntervalBar = $("#pageinterval-bar");
     const paginationBar = $("#pagination-bar");
@@ -174,29 +195,25 @@ class Pagination {
     //console.log(numberOfTickets);
     paginationBar.empty();
 
-
     let limitPerPage;
-    //set limit per page based on browser height --> refresh needed
-    //location.reload() refreshes the page on each resize event
-  
+      //set limit per page based on browser height --> refresh needed
    
       $(window).on('resize', ()=>{        
         location.reload();
-        countlimitPerPage();  
-     
+        countlimitPerPage();     
         $(window).scrollLeft(0);
         
-    }); 
-     
+    });      
 
         if ($(".ticket-data-line").length == 1) { //when only the template instance of .ticket-data-line exists
             pageIntervalBar.append("0");
         } else {
-            countlimitPerPage();
-            pageIntervalBar.append("1-" + (limitPerPage-1)); 
+            countlimitPerPage();         
+            if( limitPerPage>numberOfTickets)
+          { pageIntervalBar.append("1-" + (limitPerPage-1 )); 
+        }else
+        {  pageIntervalBar.append("1-" + (limitPerPage ))}          
         }
-  
-  
 
     paginationBar.append(
       "<li id='previous-page'><a href='javascript:void(0)' aria-label='Previous'><span aria-hidden=true>&laquo;</span></a></li>"
@@ -210,58 +227,11 @@ class Pagination {
     }
     // Add next button after all the page numbers
     paginationBar.append( "<li id='next-page'><a href='javascript:void(0)' aria-label='Next'><span aria-hidden=true>&raquo;</span></a></li>" );
-    // Function that displays new items based on page number that was clicked
-    $("#pagination-bar li.current-page").on("click", function () {
-      let currentPage;
-      // Check if page number that was clicked on is the current page that is being displayed
-      if ($(this).hasClass("active")) {
-        return false; // Return false (i.e., nothing to do, since user clicked on the page number that is already being displayed)
-      } else {
-        currentPage = $(this).index(); // Get the current page number
-        $("#pagination-bar li").removeClass("active"); // Remove the 'active' class status from the page that is currently being displayed
-        $(this).addClass("active"); // Add the 'active' class status to the page that was clicked on
-        ticketDataLine.hide(); // Hide all items in loop, this case, all the list groups
-        let grandTotal = limitPerPage * currentPage; // Get the total number of items up to the page number that was clicked on
-        // Loop through total items, selecting a new set of items based on page number
-        for (let i = grandTotal - limitPerPage; i < grandTotal; i++) {
-          $("#ticket-container .ticket-data-line:eq(" + i + ")").show(); // Show items from the new page that was selected
-        }
-        pageIntervalBar.empty();
-        if (currentPage === totalPages) {
-          pageIntervalBar.append(
-            limitPerPage * currentPage -  limitPerPage + 1 + "-" + numberOfTickets);
-        } else {
-          pageIntervalBar.append( limitPerPage * currentPage - limitPerPage +  1 + "-" + limitPerPage * currentPage);
-        }
-      }
-    });
+    
 
-    // Function to navigate to the next page when users click on the next-page id (next page button)
-    $("#next-page").on("click", function () {
-      let currentPage = $("#pagination-bar li.active").index(); // Identify the current active page
-      // Check to make sure that navigating to the next page will not exceed the total number of pages
-      if (currentPage === totalPages) {
-        return false; // Return false (i.e., cannot navigate any further, since it would exceed the maximum number of pages)
-      } else {
-        currentPage++; // Increment the page by one
-        $("#footer-bar li").removeClass("active"); // Remove the 'active' class status from the current page
-        ticketDataLine.hide(); // Hide all items in the pagination loop
-        let grandTotal = limitPerPage * currentPage; // Get the total number of items up to the page that was selected
-        // Loop through total items, selecting a new set of items based on page number
-        for (let i = grandTotal - limitPerPage; i < grandTotal; i++) {
-          $("#ticket-container .ticket-data-line:eq(" + i + ")").show(); // Show items from the new page that was selected
-        }
-        $("#footer-bar li.current-page:eq(" + (currentPage - 1) + ")").addClass(
-          "active"
-        ); // Make new page number the 'active' page
-      }
-        pageIntervalBar.empty();
-        if (currentPage >= totalPages) {         
-           pageIntervalBar.append( limitPerPage * currentPage - limitPerPage + 1 + "-" + numberOfTickets);
-        } else {
-            pageIntervalBar.append( limitPerPage * currentPage - limitPerPage +  1 + "-" + limitPerPage * currentPage);
-        }
-    });
+   goToSelectedPage();
+   nextPage();
+   
 
     // Function to navigate to the previous page when users click on the previous-page id (previous page button)
     $("#previous-page").on("click", function () {
@@ -289,8 +259,7 @@ class Pagination {
       let itemContainerHeight =  $("main").height() -  $("#attr-bar").height()- $("#search-status-bar").height();
           limitPerPage = 0;
         
-          $(".ticket-data-line").each(function () {
-            console.log($(this).position().top + $(this).height()+' '+$('#ticket-container').height())
+          $(".ticket-data-line").each(function () {          
               if ( $(this).position().top + $(this).height() /*+ MARGIN*/ > itemContainerHeight) {
           
                   return;
@@ -298,7 +267,69 @@ class Pagination {
                   limitPerPage++;
               }
           });   
+
         }  
+
+
+        
+   function goToSelectedPage(){
+    // Function that displays new items based on page number that was clicked
+       $("#pagination-bar li.current-page").on("click", function () {
+         let currentPage;
+         // Check if page number that was clicked on is the current page that is being displayed
+         if ($(this).hasClass("active")) {
+           return false; // Return false (i.e., nothing to do, since user clicked on the page number that is already being displayed)
+         } else {
+           currentPage = $(this).index(); // Get the current page number
+           $("#pagination-bar li").removeClass("active"); // Remove the 'active' class status from the page that is currently being displayed
+           $(this).addClass("active"); // Add the 'active' class status to the page that was clicked on
+           ticketDataLine.hide(); // Hide all items in loop, this case, all the list groups
+           let grandTotal = limitPerPage * currentPage; // Get the total number of items up to the page number that was clicked on
+           // Loop through total items, selecting a new set of items based on page number
+           for (let i = grandTotal - limitPerPage; i < grandTotal; i++) {
+             $("#ticket-container .ticket-data-line:eq(" + i + ")").show(); // Show items from the new page that was selected
+           }
+           pageIntervalBar.empty();
+           if (currentPage === totalPages) {
+             pageIntervalBar.append((limitPerPage * currentPage -  limitPerPage + 1) + "-" + numberOfTickets);
+           } else {
+             pageIntervalBar.append((limitPerPage * currentPage - limitPerPage +  1) + "-" +( limitPerPage * currentPage));
+           }
+         }
+       });
+   
+     }
+
+     
+   function nextPage(){
+    // Function to navigate to the next page when users click on the next-page id (next page button)
+    $("#next-page").on("click", function () {
+      let currentPage = $("#pagination-bar li.active").index(); // Identify the current active page
+      // Check to make sure that navigating to the next page will not exceed the total number of pages
+      if (currentPage === totalPages) {
+        return false; // Return false (i.e., cannot navigate any further, since it would exceed the maximum number of pages)
+      } else {
+        currentPage++; // Increment the page by one
+        $("#footer-bar li").removeClass("active"); // Remove the 'active' class status from the current page
+        ticketDataLine.hide(); // Hide all items in the pagination loop
+        let grandTotal = limitPerPage * currentPage; // Get the total number of items up to the page that was selected
+        // Loop through total items, selecting a new set of items based on page number
+        for (let i = grandTotal - limitPerPage; i < grandTotal; i++) {
+          $("#ticket-container .ticket-data-line:eq(" + i + ")").show(); // Show items from the new page that was selected
+        }
+        $("#footer-bar li.current-page:eq(" + (currentPage - 1) + ")").addClass(
+          "active"
+        ); // Make new page number the 'active' page
+      }
+        pageIntervalBar.empty();
+        if (currentPage >= totalPages) {         
+           pageIntervalBar.append( limitPerPage * currentPage - limitPerPage + 1 + "-" + numberOfTickets);
+        } else {
+            pageIntervalBar.append( limitPerPage * currentPage - limitPerPage +  1 + "-" + limitPerPage * currentPage);
+        }
+    });
+  }
+
   }
   
 }
@@ -379,6 +410,7 @@ class TicketListHeader {
   }
 }
 
+
 class AttributeHeader {
   constructor(container, AttrHeaderTitlesArray) {    
   this.attrHeaderTitlesArray=AttrHeaderTitlesArray;
@@ -451,7 +483,7 @@ class AttributeFilterBar {
     this.attrFilterDataArray.forEach((id) => {
       this.container.append(
         '<div class="attr-filter"><input type="text" name="' +
-          id +'" id="' +  id + '" placeholder="Search"></div>'
+          id +'" id="' +  id + '" placeholder="Search"><i class="fa fa-search-plus" style="font-size:19px; color: grey"></i></div>'
       );
     });
   }
