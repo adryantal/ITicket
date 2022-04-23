@@ -42,7 +42,7 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     Route::get('/newticket',  function () {return view('it.newticket');}); //új ticket rögzítése - form
     Route::get('/modifyticket',  function () {return view('it.modifyticket');})->name('modifyticket'); // ticket módosítása - form
     Route::get('/api/ticket/new/number', [TicketController::class, 'getLastTicketSubmittedByAuthUser']); //sikeres rögz. után a ticketszám/ticketadatok lekérése
-    Route::get('/teamcharts',  function () {return view('it.teamcharts');}); //chartok
+    Route::get('/teamcharts',  function () {return view('it.teamcharts');}); //chartok    
 
      /*Útvonalak chartokhoz*/
     Route::get('api/charts/team/tickets/open',  [TicketController::class, 'openTicketsTeam']); //a bejelentkezett user csapata által kezelt, nyitott jegyek száma személyenként
@@ -55,14 +55,15 @@ Route::middleware(['auth', IsResolver::class])->group(function () {
     Route::get('/api/ticket/all/assignedtome', [TicketController::class, 'getAuthUserTickets']);  //a bejelentkezett user által kezelt ticketek kilistázása 
     Route::get('/api/ticket/all/assignedtomyteam', [TicketController::class, 'getAuthTeamTickets']);  //a bejelentkezett user csapatának tagjaihoz rendelt ticketek kilistázása 
     Route::get('/api/ticket/all/assignedtome/{type}', [TicketController::class, 'getAuthUserTicketsPerType']);  //a bejelentkezett user jegyei típus szerint
-    Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //általános keresés (összes attribútumon értékein belül keres) 
+    Route::get('/api/ticket/all/search', [TicketController::class, 'generalSearch']); //általános keresés (összes attribútum értékein belül keres) 
     Route::get('/api/ticket/all/filter', [TicketController::class, 'filter']); //egy adott- vagy több attribútum szerinti szűrés ticketekre  
     Route::get('/api/ticket/get/{ticketnr}', [TicketController::class, 'dataforModifyTicketForm']); //ticket nr. alapján ticketadatokat ad vissza  
-    Route::get('/api/ticket/all/searchtickets', [TicketController::class, 'search']); //egy adott- vagy több attribútum szerinti szűrés ticketekre (csak a ticket táblán belül)   
-    Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése   
+    Route::get('/api/ticket/all/searchtickets', [TicketController::class, 'search']); //egy adott- vagy több attribútum szerinti szűrés ticketekre (csak a ticket táblán belül)    
     Route::get('/api/ticket/{id}', [TicketController::class, 'getTicket']);  //adott ticket megkeresése id alapján
     Route::get('/modifyticket/{ticketnr}', [TicketController::class, 'retrieveConstTicketData']); //a nem változtatható ticketadatok kilistázása ticketszám alapján
     Route::get('/api/ticket/parentfor/{ticketnr}', [TicketController::class, 'allTicketsExceptCurrent']);//adott tickethez kiválasztható parent ticketek a modify formon
+    Route::get('/api/ticket/all/unassigned', [TicketController::class, 'getUnassignedTickets']);//"New" státuszú-, illetve kezelő munkatárs nélküli ticketek kilistázása
+    Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése  
     Route::put('/api/ticket/{id}', [TicketController::class, 'update']); //ticket updatelése a modify formon keresztül
 
     /*Útvonalak kategóriákra*/

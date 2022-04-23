@@ -30,8 +30,7 @@ class NewTicketController {
     // Then submit if form is OK.
     if(reportValidity){
       addNewTicket();
-    }else{
-      // alert("could not submit")
+    }else{      
        evt.preventDefault();
        evt.stopPropagation();
        evt.stopImmediatePropagation();     

@@ -1,6 +1,13 @@
 <?php echo
 
-' <section id="panel-top">
+' 
+
+<div id="alert-popup">
+<div id="alert-text">Alert </div>
+<div> <input type="button" id="alert-close-btn" value="OK"></div>
+</div>
+
+<section id="panel-top">
 <div id="logocontainer">
   <img id="iticket-logo" src="'.asset("storage/logo_mini.PNG").'" alt="">
   <div class="nav-dropdown">
@@ -36,7 +43,7 @@
    <div id="username" res-group-id="'.auth()->user()->resolver_id .'">'. auth()->user()->name .'</div>
      <a href="#">Profile</a>
      <a href="#" id="switchboard-link"  >Switchboard</a>
-     <a href="/logout">Logout</a>        
+     <a href="/logout" id="logout-option">Logout</a>        
    </div>
  </div>
  

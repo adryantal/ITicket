@@ -3,10 +3,9 @@
 
 body {
     min-width: 1000px;
-    
 }
 
-main{
+main {
     height: 100%;
 }
 
@@ -14,7 +13,6 @@ article {
     margin-top: 50px;
     padding: 7px;
     background-color: white;
-    
 }
 
 form {
@@ -31,7 +29,6 @@ form {
 
 nav {
     height: 98.3%;
-
 }
 
 form div {
@@ -121,9 +118,9 @@ select:focus {
 #submission-confirmation {
     position: absolute;
     width: 300px;
-    height: 150px;
-    top: 250px; 
-    left: calc(45% - 75px); 
+    height: auto;
+    top: 250px;
+    left: calc(45% - 75px);
     z-index: 15;
     border: 1px solid lightskyblue;
     box-shadow: 0 0 10px #7a9abd;
@@ -254,23 +251,18 @@ input::-webkit-file-upload-button:hover,
 /*Responsivity*/
 
 @media screen and (max-width: 768px) {
-
-
     body {
         min-width: 0px;
-     
     }
 
-    main{
-      height: auto;
-        
+    main {
+        height: auto;
     }
 
     article {
         height: fit-content;
         /* padding: 20px 0px 0px 0px; */
         padding: 15px 0px 0px 0px;
-       
     }
 
     form {
@@ -296,45 +288,70 @@ input::-webkit-file-upload-button:hover,
         padding: 0;
     }
 
-
-.row-top div {
-    margin: 7px 0px;
-}
-
-.row-bottom div {
-    margin: 3px 0px 0px 0px;
-}
-
-#row-last {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-}
-
-#newticketform-buttons {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#attachment-list {
-    width: 250px;
-}
-
-#submission-confirmation {
-    width: 150px;
-    height: 150px;
-   
-}
-}
-
-
-@media screen and (max-width: 600px) {
-
-    #submission-confirmation {
-        left: calc(44% - 50px);
+    .row-top div {
+        margin: 7px 0px;
     }
 
- 
+    .row-bottom div {
+        margin: 3px 0px 0px 0px;
+    }
+
+    #row-last {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #newticketform-buttons {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #attachment-list {
+        width: 250px;
+    }
+
+    #submission-confirmation {
+        left: 30vw;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #submission-confirmation {
+        left: 25vw;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    #submission-confirmation {
+        left: 15vw;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    #submission-confirmation {
+        left: 12vw;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    #submission-confirmation {
+        left: 9vw;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    #submission-confirmation {
+        width: 250px;
+        left: 10vw;
+    }
+}
+
+@media screen and (max-width: 280px) {
+    #submission-confirmation {
+        width: 250px;
+        left: 5vw;
+    }
 }

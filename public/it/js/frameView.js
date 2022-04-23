@@ -1,5 +1,10 @@
 class FrameView {
   constructor() {
+
+    /*Pointers */
+    this.popUpAlert = $("#alert-popup");
+    this.AlertCloseBtn=$("#alert-close-btn");
+
     /*Pointers - Nav dropdown*/
     this.navDropdownList = $(".navdropd-content");
     this.hamburgerBtn = $("#hamburger-icon");
@@ -22,36 +27,55 @@ class FrameView {
 
     //general page - navigation
     this.loadPage($('#ticketmanagement .menuitem'),0,'/alltickets','allTickets');
-    this.loadPage($('#ticketmanagement .menuitem'),1,'/newticket','');
-    this.loadPage($('#ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
-    this.loadPage($('#ticketmanagement .menuitem'),3,'/alltickets','myTickets');
-    this.loadPage($('#ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
-    this.loadPage($('#ticketmanagement .menuitem'),5,'/alltickets','myRequests');
+    this.loadPage($('#ticketmanagement .menuitem'),1,'/alltickets','unassignedTickets');
+    this.loadPage($('#ticketmanagement .menuitem'),2,'/newticket','');
+    this.loadPage($('#ticketmanagement .menuitem'),3,'/alltickets','myTeamsTickets'); 
+    this.loadPage($('#ticketmanagement .menuitem'),4,'/alltickets','myTickets');
+    this.loadPage($('#ticketmanagement .menuitem'),5,'/alltickets','myIncidents');
+    this.loadPage($('#ticketmanagement .menuitem'),6,'/alltickets','myRequests');
     this.loadPage($('#dashboards .menuitem'),0,'/teamcharts','');
     //dropdown menu - navigation
     this.loadPage($('#nd-ticketmanagement .menuitem'),0,'/alltickets','allTickets');
-    this.loadPage($('#nd-ticketmanagement .menuitem'),1,'/newticket',''); 
-    this.loadPage($('#nd-ticketmanagement .menuitem'),2,'/alltickets','myTeamsTickets'); 
-    this.loadPage($('#nd-ticketmanagement .menuitem'),3,'/alltickets','myTickets');
-    this.loadPage($('#nd-ticketmanagement .menuitem'),4,'/alltickets','myIncidents');
-    this.loadPage($('#nd-ticketmanagement .menuitem'),5,'/alltickets','myRequests');
+    this.loadPage($('#nd-ticketmanagement .menuitem'),1,'/alltickets','unassignedTickets');
+    this.loadPage($('#nd-ticketmanagement .menuitem'),2,'/newticket',''); 
+    this.loadPage($('#nd-ticketmanagement .menuitem'),3,'/alltickets','myTeamsTickets'); 
+    this.loadPage($('#nd-ticketmanagement .menuitem'),4,'/alltickets','myTickets');
+    this.loadPage($('#nd-ticketmanagement .menuitem'),5,'/alltickets','myIncidents');
+    this.loadPage($('#nd-ticketmanagement .menuitem'),6,'/alltickets','myRequests');
     this.loadPage($('#nd-dashboards .menuitem'),0,'/teamcharts','');
 
     this.setSwitchBoardLink();
 
     this.navDropdownSetHeight();
 
+    //set height of the Nav Dropdown on window resize
     $(window).on("resize", () => {
       this.navDropdownSetHeight();  
     });
 
+    //manages behaviour of the General Search area based on the number of clicks
     let counter=0;
     $(".single-search .icon-area").on("click", () => {
     this.manageGeneralSearchArea(counter);
     counter++;
   });
- 
+
+  //clear localstorage upon logout
+  $("#logout-option").on("click",()=>{
+    localStorage.clear();
+  });
+
+  this.popUpAlert.hide();  
+
 }
+
+ displayAlert(text){
+  this.popUpAlert.show();
+  $("#alert-text").text(text); 
+  this.AlertCloseBtn.on("click",()=>{
+    this.popUpAlert.hide()
+  });
+ }
 
  manageGeneralSearchArea(counter){  
       if (counter % 2 === 0) {
@@ -171,6 +195,7 @@ class Nav {
         title: "Ticket Management",
         navMenuItemTitlesArray: [
           "All tickets",
+          "New & unassigned tickets",
           "Create new ticket",
           "Tickets assigned to my team",
           "Tickets assigned to me",
@@ -235,6 +260,7 @@ class NavDropDown {
     title: "Ticket Management",
     navMenuItemTitlesArray: [
       "All tickets",
+      "New & unassigned tickets",
       "Create new ticket",
       "Tickets assigned to my team",
       "Tickets assigned to me",

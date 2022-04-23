@@ -2,7 +2,7 @@
  
 class ModifyTicketController {
   constructor() {
-    new FrameView();
+    const modFframeView = new FrameView();
     const mTicketView = new ModifyTicketView();
     const token = $('meta[name="csrf-token"]').attr("content");
     const myAjax = new MyAjax(token);
@@ -38,8 +38,7 @@ class ModifyTicketController {
       let index;
       if (!(jQuery.inArray(event.detail, attachmentsToBeAdded) == -1)) {
         index = attachmentsToBeAdded.indexOf(event.detail);
-        attachmentsToBeAdded.splice(index, 1);
-        
+        attachmentsToBeAdded.splice(index, 1);        
       }
     });
 
@@ -55,12 +54,12 @@ class ModifyTicketController {
     $("#submit").on("click", (evt) => { 
       if(mTicketView.statusField.val()===null){
         mTicketView.statusField.css('border-color','crimson');
-        alert('Please select a status other than "New"!');  
+        modFframeView.displayAlert('Please select a status other than "New"!');  
        } else 
        if($("#comment-draft").children('div').length<1){
-        alert('Please insert a comment for the modification!');           
+        modFframeView.displayAlert('Please insert a comment for the modification!');           
       }else if(mTicketView.assignedToField.val()===''){
-        alert('You cannot update a case if it is unassigned. Please make sure it is assigned to you or a colleague. Thank you.');       
+        modFframeView.displayAlert('You cannot update a case if it is unassigned. Please make sure it is assigned to you or a colleague. Thank you.');       
       }
       else{
         validateForm();

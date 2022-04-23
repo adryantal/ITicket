@@ -31,6 +31,10 @@ $(function(){
                 apiRoute = "api/ticket/all/assignedtome/request";
                 additionalTasks(apiRoute,'Requests Assigned To Me');
                 break;
+            case "unassignedTickets":
+                apiRoute = "api/ticket/all/unassigned";
+                additionalTasks(apiRoute,'New & Unassigned Tickets');
+                break;
             default:            
         }
 
