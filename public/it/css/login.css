@@ -15,12 +15,14 @@ body {
     align-items: center;    
 }
 
+
+
 article{
+    margin-top:100px;
     background-color: rgb(241 245 249);
     border: 0.5px solid rgba(154, 153, 189, 0.2);
     border-radius: 5px;     
 }
-
 
 #gap{
     padding: 30px;
