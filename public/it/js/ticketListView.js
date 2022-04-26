@@ -398,9 +398,8 @@ class TicketListHeader {
   }
 
   automateSearchStatusBar() {
-    $(".attr-filter").on("keypress", function (e) {
-      $("#search-status-bar").empty();
-      $("#search-status-bar").append("Filter | All tickets");
+    $(".attr-filter").on("keypress", function (e) {      
+      $("#search-status-bar").text("Filter | All tickets");
       if (e.which == 13) {
         $(".attr-filter input:text").each((index) => {
           let inputField = $(".attr-filter input:text").eq(index);
@@ -476,9 +475,11 @@ class AttributeFilterBar {
       if (this.attrFilterBar.is(":hidden")) {
         this.attrFilterBar.show();
         $("article").css("grid-template-rows", "35px 35px 45px auto 30px");
+        $("#search-status-bar").text("Filter | All tickets");
       } else {
         this.attrFilterBar.hide();
         $("article").css("grid-template-rows", "35px 35px auto 30px");
+        $("#search-status-bar").text("All tickets");
       }
     });
   }

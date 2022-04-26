@@ -357,7 +357,7 @@ class ModifyTicketView {
   } 
 
   setAutocompInputFields(){    
-    const apiEndPointUsers = "api/user/all/filter";       
+    const apiEndPointUsers = "api/user/all/active/filter";   //active users only    
     const apiEndPointServices = "api/service/all/filter";  
     const apiEndPointPTickets = "/api/ticket/parentfor/"+this.ticketIDField.val();   
     const apiEndPointResolvers = "api/resolver/all/filter"; 

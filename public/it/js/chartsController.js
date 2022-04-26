@@ -7,8 +7,8 @@ class ChartsController {
 
     buildChart("api/charts/team/tickets/open","name","open_tickets","My Team's open tickets ",'team-open-tickets');
     buildChart("api/charts/team/tickets/resolved","name","resolved_tickets","My Team's resolved tickets (last 30 days) ",'team-resolved-tickets');
-    buildChart("api/charts/team/tickets/breachedsla","name","slabreached_open_tickets","My Team's sla-breached open tickets",'breached-sla-tickets');
-    buildChart("api/charts/team/tickets/breakdownbytype","type","nr_of_tickets","My Team's resolved tickets - breakdown by type (last 30 days) ",'bdtype-tickets');
+    buildChart("api/charts/team/tickets/breachedsla","name","slabreached_open_tickets","My Team's SLA-breached open tickets",'breached-sla-tickets');
+    buildChart("api/charts/team/tickets/breakdownbytype","type","nr_of_tickets","My Team's resolved tickets by type (last 30 days) ",'bdtype-tickets');
 
    function buildChart(api, keyLeft, keyRight,chartTitle,selectorID){
     const dataArray=[];

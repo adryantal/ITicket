@@ -62,6 +62,8 @@ Route::middleware(['auth', IsActiveUser::class])->group(function () {
         Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése  
         Route::put('/api/ticket/{id}', [TicketController::class, 'update']); //ticket updatelése a modify formon keresztül
 
+        Route::get('/api/ticket', [TicketController::class, 'it.newticket']); //új ticket rögzítése után 
+
         /*Útvonalak kategóriákra*/
         Route::get('/api/service/all', [CategoryController::class, 'getAllServices']);  //összes főkat.
         Route::get('/api/category/all', [CategoryController::class, 'getAllCategories']);  //összes alkat.
@@ -89,7 +91,8 @@ Route::middleware(['auth', IsActiveUser::class])->group(function () {
         /*Útvonalak userekhez --> ez a felület majd csak a database-eseknek lesz engedélyezett*/
         Route::get('/api/user/all', [UserController::class, 'getAllUsers']);  //összes user
         Route::get('/api/user/{id}', [UserController::class, 'getUser']);  //adott user megkeresése id alapján
-        Route::get('/api/user/all/filter', [UserController::class, 'filter']);  //userek szűrése adott attr. alapján    
+        Route::get('/api/user/all/filter', [UserController::class, 'filter']);  //userek szűrése adott attr. alapján  
+        Route::get('/api/user/all/active/filter', [UserController::class, 'filterActiveUsers']);  //aktív userek szűrése adott attr. alapján   
         Route::get('/api/user/all/filter/excauth', [UserController::class, 'filterExcAuth']);  //userek szűrése adott attr. alapján, kivéve a bejelentkezett usert 
         
 

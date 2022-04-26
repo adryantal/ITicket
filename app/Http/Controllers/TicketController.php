@@ -558,7 +558,7 @@ class TicketController extends Controller
         $ticket->priority = $request->priority;
         $ticket->urgency = $request->urgency;
         $ticket->impact = $request->impact;
-        $ticket->parent_ticket = substr("$request->parent_ticket",3);
+        $ticket->parent_ticket = $ticket->parent_ticket=== null ? null : substr("$request->parent_ticket",3);
         $ticket->updated=Carbon::now()->format('Y-m-d H:i:s');
        //sla && time left
         if($request->type =="Request"){           

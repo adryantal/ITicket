@@ -53,6 +53,18 @@ class UserController extends Controller
           return $results;
       }
 
+      public function filterActiveUsers(Request $request)
+      {
+          $queryString = $request->query();
+          foreach ($queryString as $key => $value) {
+              $explodedKey=explode('_',$key);
+              $column=$explodedKey[0];
+              $expression=$explodedKey[1];
+              $results=User::where($column, $expression, '%' . $value . '%')->where('active','=',1)->get();
+          }
+          return $results;
+      }
+
 
       public function filterExcAuth(Request $request)
       {

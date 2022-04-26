@@ -302,7 +302,7 @@ class NewTicketView {
   } 
 
   setAutocompInputFields(){    
-    const apiEndPointUsers = "api/user/all/filter";       
+    const apiEndPointUsers = "api/user/all/active/filter";  //active users only     
     const apiEndPointServices = "api/service/all/filter";  
     const apiEndPointTickets = "api/ticket/all/searchtickets";   
     

@@ -19,6 +19,7 @@ article {
     border: 1px solid lightskyblue;
     border-radius: 4px;
     height: 300px;
+    width: 400px;
 }
 
 #team-open-tickets {
@@ -56,7 +57,7 @@ nav {
     
     .donutchart {
         top: 70px;
-        left: 0px;
+        left: 1px;
         margin: 0px;
         width: calc(100%);
     }
@@ -91,9 +92,6 @@ nav {
     }
 }
 
-@media screen and (max-width: 400px) {
-    .chartgroup {
-        width: 100%;
-    }
-}
+
+
 

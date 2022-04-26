@@ -29,7 +29,7 @@
     <article>
 
       <div id="search-status-bar">
-        Filter | All tickets
+        All tickets
       </div>
 
       <div id="attr-bar">
