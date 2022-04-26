@@ -73,9 +73,9 @@ class ModifyTicketView {
 
 
     function restrictPageRefresh() {      
-        window.onbeforeunload = (e) => {          
-            return "Are you sure you would like to leave and lose all data entered?";
-        };
+        // window.onbeforeunload = (e) => {          
+        //     return "Are you sure you would like to leave and lose all data entered?";
+        // };
         //disable right mouse click
         $(window).bind("contextmenu", function (e) {
             return false;

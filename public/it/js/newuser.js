@@ -1,5 +1,11 @@
 $(function(){
-  $("#resolver").attr('disabled','disabled'); 
+    new NewUser();
+});
+
+
+class NewUser{
+  constructor(){
+    $("#resolver").attr('disabled','disabled'); 
     $("#department").on('input',()=>{        
       let deptVal = $("#department").val().toUpperCase();;  
       if(deptVal==='IT'){
@@ -19,5 +25,7 @@ $(function(){
         $('.submit').css('pointer-events', 'auto');
         document.getElementById("resolver").selectedIndex = "0";    
     }
-});    
-});
+});  
+
+  }
+}

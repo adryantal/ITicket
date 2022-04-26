@@ -72,6 +72,7 @@
         <div class="ticket-data"><span class="category"></span></div>
         <div class="ticket-data"><span class="status"></span></div>
         <div class="ticket-data"><span class="assignedTo"><a></a></span></div>
+        <div class="ticket-data"><span class="assignmentGroup"><a></a></span></div>
         <div class="ticket-data"><span class="createdOn"></span></div>
         <div class="ticket-data"><span class="createdBy"><a></a></span></div>
         <div class="ticket-data"><span class="updated"></span></div>

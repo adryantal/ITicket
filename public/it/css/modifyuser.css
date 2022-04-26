@@ -1,0 +1,126 @@
+@import url(https://fonts.googleapis.com/css2?family=PT+Sans&display=swap);
+@charset "UTF-8";
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "PT Sans", sans-serif;
+    min-width: 250px;
+   
+}
+
+
+.navbar {
+    background-color: rgb(133, 193, 250);
+    border-left:  1px solid lightgray;
+    border-right: 1px solid lightgray;
+    box-shadow: 1px 1px 5px gray;
+}
+
+
+article{
+  
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    padding: 30px;
+   
+    
+}
+
+.logo{
+margin-bottom: 30px;
+
+}
+
+nav {
+    color: rgb(47, 60, 68);
+}
+
+select, input[type=text],input[type=number],input[type=password]{
+    height: 43px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    box-shadow: 0.5px 0.5px 2px lightgray;
+}
+
+select:focus, input[type=text]:focus,input[type=number]:focus,input[type=number]:focus{
+border:1px solid rgb(95, 124, 156);
+box-shadow: 0.5px 0.5px 2px lightgray;
+};
+
+
+a {
+    text-decoration: none;
+    color: rgb(47, 60, 68);
+    
+}
+
+a:hover{
+    text-decoration: underline;
+    color: rgb(47, 60, 68);
+}
+
+#btn-submit{
+    background-color: rgb(47, 60, 68) ;
+    color: white;
+    padding: 7px 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#btn-submit:hover{
+    opacity: 0.9;
+}
+
+a, ul a{
+    cursor: pointer;
+}
+
+#previous{
+    margin-top: 20px;
+}
+
+
+.ac-template {
+    padding: 5px;
+    border-radius: 3px;
+    background-color: rgb(133, 193, 250, 0.9);
+    border: 1px solid grey;
+    box-shadow: 1px 2px 4px lightslategray;
+    width: 200px;
+    overflow: auto;
+  }
+
+  .ui-helper-hidden-accessible {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .alert{
+      margin-top: 20px;
+  }
+
+
+@media screen and (max-width: 765px) {
+    .col-sm-5 {
+        margin-bottom: 25px;
+    }
+}
+
+

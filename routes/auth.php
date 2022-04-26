@@ -32,7 +32,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('newuser', [RegisteredUserController::class, 'create'])
+    Route::get('newuser', [RegisteredUserController::class, 'loadResolvers'])
                 ->name('newuser');
                
     Route::post('newuser', [RegisteredUserController::class, 'store']);

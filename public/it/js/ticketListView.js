@@ -49,10 +49,16 @@ class TicketListItem {
             .children(".ticket-data")
             .children(".updatedBy")
             .children("a");
+        this.assignmentGroupItem = this.ticketDataContainer
+        .children(".ticket-data")
+        .children(".assignmentGroup");
+      
 
         this.setData(this.data);
-        this.setPageResponsivity(768, 3); //under width of 700px only the first 4 columns are visible
-        this.setPageResponsivity(285, 2);
+        this.setPageResponsivity(768, 3); //under window width of 700px only the first 3 columns are visible
+        this.setPageResponsivity(285, 2); //under window width of 285px only the first 2 columns are 
+        
+        let counter=0;
     }
     setData(data) {
         this.data = data;
@@ -69,6 +75,7 @@ class TicketListItem {
         this.createdByItem.text(data.created_by_name);
         this.updatedItem.text(data.updated);
         this.updatedByItem.text(data.updated_by_name);
+        this.assignmentGroupItem.text(data.assignment_group_name);
     }
 
     setPageResponsivity(size, colNr) {
@@ -92,19 +99,17 @@ class TicketListItem {
                     }
                 });
             });
-            $('article').css("overflow-x", "hidden"); 
-          
-                 
+            $("article").css("overflow-x", "hidden");
         } else {
-           //$("article").css("overflow-x", "scroll");
+            //$("article").css("overflow-x", "scroll");
         }
-
-
     }
 }
 
 class TicketFilter {
   constructor() {
+    
+
     this.customSearchField = $(".custom-input"); //general search / custom search
     this.filterInputField = $(".attr-filter").children("input"); //whole class / ticket filter
     this.filterSearchIcon = $(".attr-filter").children('i');
@@ -135,7 +140,7 @@ class TicketFilter {
               value: $(this).val(),
             }); //saving the IDs and the input values to an array
         });
-        this.searchTrigger("filterTicketData", filterInputArray); //forwarding the array to the Controller for further processing
+        this.searchTrigger("filterTicketData", filterInputArray); //forwarding the array to the Controller for further processing        
       }
       filterInputArray.splice(0, filterInputArray.length);
     });
@@ -143,43 +148,49 @@ class TicketFilter {
 
 
 /*TICKET FILTER - filter using the magnifier icon in each search field*/
-  filterBySingleAttribute(){
-    this.filterSearchIcon.on('click',(e)=>{
+  filterBySingleAttribute(){    
+    this.filterSearchIcon.on('click',(e)=>{      
       const fInputArray=[];
-       let searchVal=($(e.currentTarget).closest('.attr-filter').children('input').val());
+       let searchVal=$(e.currentTarget).closest('.attr-filter').children('input').val();
        let filterItemID=($(e.currentTarget).closest('.attr-filter').children('input').attr('id'));
-       console.log(searchVal,filterItemID)
-       if (!searchVal == ""){
-            //collect all POPUPATED filter input fields' IDs along with the values to an array
-            fInputArray.push({
-              id: filterItemID,
-              value: searchVal,
-            }); //saving the IDs and the input values to an array
-          }       
-        this.searchTrigger("filterTicketData", fInputArray); //forwarding the array to the Controller for further    
+       console.log(searchVal, filterItemID);
+       if (searchVal == "") {         
+               this.searchTrigger("filterTicketData", fInputArray); //forwarding the array to the Controller for further  
+               $("#search-status-bar").html("Filter | All tickets");        
+       } else {
+           //collect all POPUPATED filter input fields' IDs along with the values to an array
+           fInputArray.push({
+               id: filterItemID,
+               value: searchVal,
+           }); //saving the IDs and the input values to an array
+           $("#search-status-bar").html("Filter | All tickets > keyword(s)=<b>" + searchVal + "<b>");
+           this.searchTrigger("filterTicketData", fInputArray); //forwarding the array to the Controller for further           
+           $(e.currentTarget).closest('.attr-filter').children('input').val('');
+       }      
     })    
   } 
 
   /*GENERAL SEARCH using keywords - keypress event*/
-  generalFilter() {     
+  generalFilter() {       
+     let afterSearch = false;//only when this is true will any search be triggered 
       //when pressing the magnifier icon
-      $(".single-search .icon-area").on('click',()=>{       
+      $(".single-search .icon-area").on('click',()=>{        
         //set the search status bar to the default state, in case there are results of a previous filtering shown...
-        $("#search-status-bar").empty();
-        this.searchTrigger("generalSearch", $(".custom-input").val());
-        if (this.customSearchField.val() == "") {
+        $("#search-status-bar").empty();      
+        if (this.customSearchField.val() == "") {   
+          if(afterSearch){
+            this.searchTrigger("generalSearch", $(".custom-input").val());
+          }          
           $("#search-status-bar").append("Filter | All tickets");
+          afterSearch = false;
         } else {
-          $("#search-status-bar").append(
-            "Filter | All tickets > keyword(s)=<b>" + $(".custom-input").val()
-          ) + "<b>";
+          this.searchTrigger("generalSearch", $(".custom-input").val());
+          afterSearch = true;
+          $("#search-status-bar").append("Filter | All tickets > keyword(s)=<b>" + $(".custom-input").val() + "<b>");
         }
         this.customSearchField.val("");      
     });
-
-
-
-
+  
   }
 
 
@@ -355,18 +366,15 @@ class TicketListHeader {
       { title: "Category", sortBy: "category_name" },
       { title: "Status", sortBy: "status" },
       { title: "Assigned to", sortBy: "assigned_to_name" },
+      { title: "Assign. group", sortBy: "assignment_group_name" },
       { title: "Created on", sortBy: "created_on" },
       { title: "Created by", sortBy: "created_by_name" },
       { title: "Updated", sortBy: "updated" },
       { title: "Updated by", sortBy: "updated_by_name" },
     ];
 
-    new AttributeHeader($("#attr-bar"), AttrHeaderTitlesArray);
-
-    //responsivity: if page width is lower than a pre-define limit, then only a few columns should be visible
-
+    new AttributeHeader($("#attr-bar"), AttrHeaderTitlesArray);    
   }
-
 
   
   createAttrFilterBar() {
@@ -380,6 +388,7 @@ class TicketListHeader {
       "filter-category_name",
       "filter-status",
       "filter-assigned_to_name",
+      "filter-assignment_group_name",
       "filter-created_on",
       "filter-created_by_name",
       "filter-updated",
@@ -396,12 +405,7 @@ class TicketListHeader {
         $(".attr-filter input:text").each((index) => {
           let inputField = $(".attr-filter input:text").eq(index);
           if (inputField.val()) {
-            $("#search-status-bar").append(
-              "&nbsp;>&nbsp;" +
-                $(".attr-header .attr-header-title").eq(index).html() +
-                "=<b>" +
-                inputField.val()
-            ) + "</b>";
+            $("#search-status-bar").append( "&nbsp;>&nbsp;" +  $(".attr-header .attr-header-title").eq(index).html() + "=<b>" + inputField.val() + "</b>");
           }
           inputField.val("");
         });

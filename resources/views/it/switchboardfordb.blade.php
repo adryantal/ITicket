@@ -77,8 +77,8 @@
 
                     <div class="col-lg-5 border rounded p-3 ">
                         <h2>User Data Management Tool</h2>
-                        <!-- <a href="{{ URL::to('/modifyuser') }}"> -->
-                        <a href='#'>
+                        <a href="{{ URL::to('/modifyuser') }}">
+                       
                             <div class="square"> <i class="fa fa-database" style="font-size: 64px; color: rgb(133, 193, 250);"></i></div>
 
                         </a>

@@ -27,7 +27,7 @@ class ResolverController extends Controller
 
     //adott megoldócsop. alá tartozó userek megadott attr. szerinti szűrése
     public function filterUsersPerResolver(Request $request, $resolverID){
-        //megkeressük aza dott service-hez tart. kategóriákat
+        //megkeressük az adott service-hez tart. kategóriákat
                
             //szűrés
             $queryString = $request->query();
@@ -38,6 +38,14 @@ class ResolverController extends Controller
                 $results=User::where('resolver_id','=',$resolverID)->where($attribute, $expression, '%' . $value . '%')->orderBy($attribute)->get();
             }
             return $results;
+        }
+
+
+        public function loadResolvers()
+        {
+            $resolvers = Resolver::all(); 
+            return view('it.modifyuser', ['resolvers' => $resolvers]); 
+            
         }
 
 }

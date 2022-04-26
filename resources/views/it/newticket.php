@@ -87,8 +87,10 @@
           <div class="row-top">  
             <div><label for="assignmentGroup">Assignment group</label></div>
             <div> <input type="text" name="assignmentGroup" id="assignmentGroup" value="IT Helpdesk" readonly></div>           
-                <div><label for="assignedTo" >Assigned to</label></div>
-                <div> <input type="text" id="assignedTo" name="assignedTo" readonly>
+                <!-- <div><label for="assignedTo" >Assigned to</label></div>
+                <div> <input type="text" id="assignedTo" name="assignedTo" readonly> -->
+                <div><label for="creator" >Creator</label></div>
+                <div> <input type="text" id="creator" name="creator" value = "<?php echo auth()->user()->name ?>" readonly>
                 </div>
                 
           </div>

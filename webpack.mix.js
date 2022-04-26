@@ -28,5 +28,6 @@ mix.js('resources/js/app.js', 'public/js')
 .postCss('resources/css/modifyticket.css','public/it/css', [])
 .postCss('resources/css/newticket.css','public/it/css', [])
 .postCss('resources/css/newuser.css','public/it/css', [])
+.postCss('resources/css/modifyuser.css','public/it/css', [])
 .postCss('resources/css/login.css','public/it/css', [])
 .postCss('resources/css/charts.css','public/it/css', []);

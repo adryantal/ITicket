@@ -36,12 +36,18 @@ class TicketController extends Controller
             if($ticket->type=="Incident"){
                 $prefix='INC';
             };
-            //Carbon::resetToStringFormat();
+            
+            if($ticket->status==='New'){
+                $assignment_group_id=101;
+            }else{
+            $ticket->assigned_to=== null ?  $assignment_group_id= null : $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;
+            }
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => User::find($ticket->caller)->name, 
                 'subjperson_name' => User::find($ticket->subjperson)->name, 
-                'assigned_to_name' => $ticket->assigned_to === null ? '' : User::find($ticket->assigned_to)->name, 
+                'assigned_to_name' => $ticket->assigned_to === null ? "" : User::find($ticket->assigned_to)->name,
+                'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name,
                 'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
@@ -84,12 +90,18 @@ class TicketController extends Controller
             };
             if($ticket->type=="Incident"){
                 $prefix='INC';
-            };            
+            };   
+            if($ticket->status==='New'){
+                $assignment_group_id=101;
+            }else{
+            $ticket->assigned_to=== null ?  $assignment_group_id= null : $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;
+            }         
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => User::find($ticket->caller)->name, 
                 'subjperson_name' => User::find($ticket->subjperson)->name, 
                 'assigned_to_name' => $ticket->assigned_to=== null ? "" : User::find($ticket->assigned_to)->name, 
+                'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name,
                 'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
@@ -121,12 +133,18 @@ class TicketController extends Controller
             };
             if($ticket->type=="Incident"){
                 $prefix='INC';
-            };            
+            }; 
+            if($ticket->status==='New'){
+                $assignment_group_id=101;
+            }else{
+            $ticket->assigned_to=== null ?  $assignment_group_id= null : $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;
+            }           
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => User::find($ticket->caller)->name, 
                 'subjperson_name' => User::find($ticket->subjperson)->name, 
-                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'assigned_to_name' => User::find($ticket->assigned_to)->name,
+                'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name, 
                 'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
@@ -159,12 +177,18 @@ class TicketController extends Controller
             };
             if($ticket->type=="Incident"){
                 $prefix='INC';
-            };            
+            };     
+            if($ticket->status==='New'){
+                $assignment_group_id=101;
+            }else{
+            $ticket->assigned_to=== null ?  $assignment_group_id= null : $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;
+            }       
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => User::find($ticket->caller)->name, 
                 'subjperson_name' => User::find($ticket->subjperson)->name, 
                 'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name,
                 'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
@@ -202,12 +226,18 @@ class TicketController extends Controller
             };
             if($ticket->type=="Incident"){
                 $prefix='INC';
-            };            
+            };  
+            if($ticket->status==='New'){
+                $assignment_group_id=101;
+            }else{
+            $ticket->assigned_to=== null ?  $assignment_group_id= null : $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;
+            }          
             $data = array(
                 'id'=> $prefix.$ticket->id,
                 'caller_name' => User::find($ticket->caller)->name, 
                 'subjperson_name' => User::find($ticket->subjperson)->name, 
-                'assigned_to_name' => User::find($ticket->assigned_to)->name, 
+                'assigned_to_name' => User::find($ticket->assigned_to)->name,
+                'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name, 
                 'created_by_name'=>User::find($ticket->created_by)->name, 
                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
@@ -550,16 +580,17 @@ class TicketController extends Controller
      return response()->json ($ticket);
     }
 
-
-
 /*A megadott attribútumok értékei között keres*/
     public function filter(Request $request)    {
+       
+        $response = array();
         $queryString = $request->query();
         $results = Ticket::leftJoin('users AS subjperson_user', 'subjperson', '=', 'subjperson_user.id') //a tickets összekapcs. a users táblával a subjperson attr. keresztül
                          ->leftJoin('users AS caller_user', 'caller', '=', 'caller_user.id')
                          ->leftJoin('users AS created_by_user', 'created_by', '=', 'created_by_user.id')
                          ->leftJoin('users AS updated_by_user', 'updated_by', '=', 'updated_by_user.id')
                          ->leftJoin('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')
+                         ->leftJoin('resolvers AS res', 'res.id', '=', 'assigned_to_user.resolver_id') //ha 'assigned_to_user.resolver_id' null, nem tud továbbm.
                          ->leftJoin('categories AS CS', function($leftJoin)
                          {
                              $leftJoin->on('CS.id', '=', 'tickets.category')  //a CS tábla (Category-Sub) az alkategóriákat reprezentálja
@@ -569,12 +600,13 @@ class TicketController extends Controller
                              $leftJoin->on('CM.id', '=', 'CS.main_cat_id')       //a főkat. tábla összekapcs. az alkat. táblával, ahol a "főkategóriája" mező NULL
                                  ->whereNull('CM.main_cat_id');
                          })
-                          ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'created_by' ,'updated_by' ,'category','title' ,'type' ,'status' ,'created_on' ,'updated');
+                          ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'res.name','created_by' ,'updated_by' ,'category','title' ,'type' ,'status' ,'created_on' ,'updated');
 
         foreach ($queryString as $key => $value) {
             $explodedKey = explode('?', $key); //példa: key: 'id?like', expression: '101'; explode using separator '?'
             $attribute = $explodedKey[0];
             $expression = $explodedKey[1];
+
             switch ($attribute) {
                 case 'id':
                     $attribute = 'tickets.ticketnr'; //kivételesen itt a ticket number-ban keressen, ne az id-k között
@@ -615,13 +647,41 @@ class TicketController extends Controller
                 case 'service_name':
                     $attribute = 'CM.name';
                     break;
+                case 'assignment_group_name':
+                    $attribute = 'res.name';
+                    break;
 
                 default:;
             }
-            $results = $results->where($attribute, $expression, '%' . $value . '%');
+            
+
+            /////// workaround: ha IT Helpdesk-re keresnek rá - pontosan kell beírni
+            if ($attribute==='res.name' && $expression==="like" && (strtoupper($value)==='IT HELPDESK' || strtoupper($value)==='IT' || strtoupper($value)==='HELPDESK')){                                    
+                $addQuery = Ticket::where("status",'=','New')->leftJoin('users AS subjperson_user', 'subjperson', '=', 'subjperson_user.id') //a tickets összekapcs. a users táblával a subjperson attr. keresztül
+                ->leftJoin('users AS caller_user', 'caller', '=', 'caller_user.id')
+                ->leftJoin('users AS created_by_user', 'created_by', '=', 'created_by_user.id')
+                ->leftJoin('users AS updated_by_user', 'updated_by', '=', 'updated_by_user.id')
+                ->leftJoin('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')
+                ->leftJoin('resolvers AS res', 'res.id', '=', 'assigned_to_user.resolver_id') //ha 'assigned_to_user.resolver_id' null, nem tud továbbm.
+                ->leftJoin('categories AS CS', function($leftJoin)
+                {
+                    $leftJoin->on('CS.id', '=', 'tickets.category')  //a CS tábla (Category-Sub) az alkategóriákat reprezentálja
+                        ->whereNotNull('CS.main_cat_id' );
+                })
+               ->leftJoin('categories AS CM', function($leftJoin)        {  //a CM tábla (Category-Main) a főkategórákat reprezentálja
+                    $leftJoin->on('CM.id', '=', 'CS.main_cat_id')       //a főkat. tábla összekapcs. az alkat. táblával, ahol a "főkategóriája" mező NULL
+                        ->whereNull('CM.main_cat_id');
+                })
+                 ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'res.name','created_by' ,'updated_by' ,'category','title' ,'type' ,'status' ,'created_on' ,'updated'); 
+
+                 $results=$results->union($addQuery);                 
+               }                
+               $results = $results->where($attribute, $expression, '%' . $value . '%');                 
+               
         }
         $results = $results->get();
-        $response = array();
+        
+        
         foreach ($results as $ticket) {
             $updated_by = User::find($ticket->updated_by);
             $category = Category::find($ticket->category);
@@ -632,11 +692,17 @@ class TicketController extends Controller
             if ($ticket->type == "Incident") {
                 $prefix = 'INC';
             };
+            if($ticket->status==='New'){
+                $assignment_group_id=101;
+            }else{
+            $ticket->assigned_to=== null ?  $assignment_group_id= null : $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;
+            }  
             $data = array(
                 'id' => $prefix . $ticket->id,
                 'caller_name' => User::find($ticket->caller)->name,
                 'subjperson_name' => User::find($ticket->subjperson)->name,
                 'assigned_to_name' => $ticket->assigned_to == null ? '' : User::find($ticket->assigned_to)->name,
+                'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name, 
                 'created_by_name' => User::find($ticket->created_by)->name,
                 'updated_by_name' => $updated_by === null ? "" : $updated_by->name,
                 'title' => $ticket->title,
@@ -680,12 +746,14 @@ class TicketController extends Controller
   /*Az összes attr. értékei között keres*/
     public function generalSearch(Request $request)    {
         $searchTerm=$request->query('q');      
+        
         //alias nélkül nem működik, tehát pl.: "users AS subjperson_user"!!!
         $results = Ticket::leftJoin('users AS subjperson_user', 'subjperson', '=', 'subjperson_user.id') //a tickets összekapcs. a users táblával a subjperson attr. keresztül
                          ->leftJoin('users AS caller_user', 'caller', '=', 'caller_user.id')
                          ->leftJoin('users AS created_by_user', 'created_by', '=', 'created_by_user.id')
                          ->leftJoin('users AS updated_by_user', 'updated_by', '=', 'updated_by_user.id')
                          ->leftJoin('users AS assigned_to_user', 'assigned_to', '=', 'assigned_to_user.id')
+                         ->leftJoin('resolvers AS res', 'res.id', '=', 'assigned_to_user.resolver_id')
                          ->leftJoin('categories AS CS', function($leftJoin)
                          {
                              $leftJoin->on('CS.id', '=', 'tickets.category')  //a CS tábla (Category-Sub) az alkategóriákat reprezentálja
@@ -694,12 +762,13 @@ class TicketController extends Controller
                         ->leftJoin('categories AS CM', function($leftJoin)        {  //a CM tábla (Category-Main) a főkategórákat reprezentálja
                              $leftJoin->on('CM.id', '=', 'CS.main_cat_id')       //a főkat. tábla összekapcs. az alkat. táblával, ahol a "főkategóriája" mező NULL
                                  ->whereNull('CM.main_cat_id');
-                         })
-                          ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to' ,'created_by' ,'updated_by' ,'category'   ,'title' ,'type' ,'status' ,'created_on' ,'updated')
+                         })                         
+                                              
+                          ->select('tickets.id', 'caller' ,'subjperson' ,'assigned_to','res.name','created_by' ,'updated_by' ,'category'   ,'title' ,'type' ,'status' ,'created_on' ,'updated')                         
                           ->where('subjperson_user.name', 'LIKE', "%{$searchTerm}%") 
                           ->orWhere('caller_user.name', 'LIKE', "%{$searchTerm}%") 
                           ->orWhere('updated_by_user.name', 'LIKE', "%{$searchTerm}%") 
-                         ->orWhere('assigned_to_user.name', 'LIKE', "%{$searchTerm}%") 
+                          ->orWhere('assigned_to_user.name', 'LIKE', "%{$searchTerm}%") 
                           ->orWhere('updated_by_user.name', 'LIKE', "%{$searchTerm}%")     
                           ->orWhere('created_by_user.name', 'LIKE', "%{$searchTerm}%")    
                           ->orWhere('CS.name', 'LIKE', "%{$searchTerm}%")                                           
@@ -711,28 +780,32 @@ class TicketController extends Controller
                           ->orWhere('status', 'LIKE', "%{$searchTerm}%")
                           ->orWhere('type', 'LIKE', "%{$searchTerm}%")
                           ->orWhere('tickets.ticketnr', 'LIKE', "%{$searchTerm}%") //a ticket numberek között keressen, ne az id-k között!
-                        ->get();
+                          ->orWhere('res.name', 'LIKE', "%{$searchTerm}%")                                                                      
+                          ->get();
 
                         $response=array();
        
-                        foreach ($results as $ticket) {   
-                            
+                        foreach ($results as $ticket) {                            
                             $updated_by=User::find($ticket->updated_by);
                             $category=Category::find($ticket->category);
-                            $service=Category::where('id','=',$category->main_cat_id)->first();
-                            
+                            $service=Category::where('id','=',$category->main_cat_id)->first();                            
                             if($ticket->type=="Request"){
                                 $prefix='REQ';
                             };
                             if($ticket->type=="Incident"){
                                 $prefix='INC';
                             };
-                
+                            if($ticket->status==='New'){
+                                $assignment_group_id=101;
+                            }else{
+                            $ticket->assigned_to=== null ?  $assignment_group_id= null : $assignment_group_id=User::find($ticket->assigned_to)->resolver_id;
+                            }                
                             $data = array(
                                 'id'=> $prefix.$ticket->id,
                                 'caller_name' =>  User::find($ticket->caller)->name, 
                                 'subjperson_name' => User::find($ticket->subjperson)->name, 
-                                'assigned_to_name' => $ticket->assigned_to===null ?  '' :User::find($ticket->assigned_to)->name, 
+                                'assigned_to_name' => $ticket->assigned_to===null ?  '' :User::find($ticket->assigned_to)->name,
+                                'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name, 
                                 'created_by_name'=>User::find($ticket->created_by)->name, 
                                 'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
                                 'title' => $ticket->title,
@@ -745,7 +818,43 @@ class TicketController extends Controller
                                         
                                 );
                                 array_push($response,$data);          
-                            }                
+                            }    
+                            
+                               
+                            /////// workaround: ha "IT Helpdesk"-re keresnek rá (pontosan kell beírni!!!)
+                             if (strtoupper($searchTerm)==="IT HELPDESK" || strtoupper($searchTerm)==="IT" || strtoupper($searchTerm)==="HELPDESK"){                             
+                              $addQuery = Ticket::where('status','=','New')->get();                             
+                              foreach ($addQuery as $ticket) {                            
+                                $updated_by=User::find($ticket->updated_by);
+                                $category=Category::find($ticket->category);
+                                $service=Category::where('id','=',$category->main_cat_id)->first();                            
+                                if($ticket->type=="Request"){
+                                    $prefix='REQ';
+                                };
+                                if($ticket->type=="Incident"){
+                                    $prefix='INC';
+                                };                                
+                                $assignment_group_id=101;                                            
+                                $addData = array(
+                                    'id'=> $prefix.$ticket->id,
+                                    'caller_name' =>  User::find($ticket->caller)->name, 
+                                    'subjperson_name' => User::find($ticket->subjperson)->name, 
+                                    'assigned_to_name' => $ticket->assigned_to===null ?  '' :User::find($ticket->assigned_to)->name,
+                                    'assignment_group_name' =>   $assignment_group_id=== null ? "" : Resolver::find($assignment_group_id)->name, 
+                                    'created_by_name'=>User::find($ticket->created_by)->name, 
+                                    'updated_by_name'=>$updated_by === null ? "" : $updated_by->name,
+                                    'title' => $ticket->title,
+                                    'type' => $ticket->type,              
+                                    'category_name' => $category->name,
+                                    'service_name' => $service->name,
+                                    'status' => $ticket->status, 
+                                    'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
+                                    'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),                                           
+                                    );
+                                    array_push($response,$addData);                                             
+                                }  
+                             }
+                             ///////
                        
                         return response()->json($response);       
     }

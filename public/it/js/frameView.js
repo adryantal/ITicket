@@ -64,6 +64,10 @@ class FrameView {
   $("#logout-option").on("click",()=>{
     localStorage.clear();
   });
+  $("#switchboard-link").on("click",()=>{
+    localStorage.clear();
+  });
+
 
   this.popUpAlert.hide();  
 

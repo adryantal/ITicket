@@ -21,7 +21,7 @@ class RegisteredUserController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function loadResolvers()
     {
         $resolvers = Resolver::all(); 
         return view('auth.newuser', ['resolvers' => $resolvers]); 
@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        if ($request->department == 'IT' or $request->department == 'it') {
+        if (strtoupper($request->department) == 'IT') {
             $request->department='IT';           
         } else {
             $request->resolver = null;
@@ -71,8 +71,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        //Auth::login($user);
-        
+        //Auth::login($user);        
 
         return redirect(RouteServiceProvider::HOME);
     }
