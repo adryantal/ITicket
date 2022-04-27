@@ -34,10 +34,12 @@ class NewTicketView {
     this.setAutocompInputFields();
 
     //add attachments  
-    this.addAttachmentFileInput.on("change", (event) => {
+    this.addAttachmentFileInput.on("change", (event) => {    
       this.addAttachments(event);
       this.eventTrigger('transferAttachments',this.attachments);    
-    });   
+    });  
+    
+   
 
     //remove attachments
     this.attachmentList.on("click", ".attm-remove-btn", (event) => {
@@ -99,7 +101,7 @@ class NewTicketView {
             return false;
           } else {
             if (jQuery.inArray(fileName, this.attachments) == -1) {
-              this.attachments.push(fileName);
+              this.attachments.push(event.target.files[index]);
             } else {
               alert("Some of the selected files are already in the list!");
               return;
@@ -119,7 +121,7 @@ class NewTicketView {
         "<div id='attachment" +
           index +
           "'>&#128206 " +
-          element +
+          element.name +
           " <div class='attm-remove-btn'>x</div></div>"
       );
     });

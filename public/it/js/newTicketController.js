@@ -28,8 +28,10 @@ class NewTicketController {
     // Trigger HTML5 validity
     let reportValidity = form[0].reportValidity();    
     // Then submit if form is OK.
-    if(reportValidity){
-      addNewTicket();
+    //if(reportValidity){      
+    if(true){      
+      let data = new FormData(document.getElementsByTagName('form')[0]);
+      addNewTicket(data);
     }else{      
        evt.preventDefault();
        evt.stopPropagation();
@@ -37,7 +39,7 @@ class NewTicketController {
     }  
   });
   
-  function addNewTicket(){
+  function addNewTicket(data){
       /*insert value of the input fields to the Tickets table*/    
     let newTicketData = {             
       caller_name: nTicketView.callerField.val(),
@@ -55,8 +57,7 @@ class NewTicketController {
       updated_by_name: "",
       description: nTicketView.descriptionField.val(),
       contact_type: nTicketView.contactTypeField.val(),      
-      parent_ticket: nTicketView.parentTicketField.val(),
-      
+      parent_ticket: nTicketView.parentTicketField.val(),      
       attachments: attachmentsArray,
       
       //reading data from hidden input fields
@@ -69,7 +70,7 @@ class NewTicketController {
     };
     console.log(newTicketData); 
       
-    myAjax.postAjax(apiEndPointCreateTicket, newTicketData);  
+    myAjax.postAjaxForFileUpload(apiEndPointCreateTicket, data);//newTicketData);  
 
     
     

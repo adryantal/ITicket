@@ -62,7 +62,7 @@ Route::middleware(['auth', IsActiveUser::class])->group(function () {
         Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése  
         Route::put('/api/ticket/{id}', [TicketController::class, 'update']); //ticket updatelése a modify formon keresztül
 
-        Route::get('/api/ticket', [TicketController::class, 'it.newticket']); //új ticket rögzítése után 
+        Route::get('/api/ticket', function(){{ return redirect('/alltickets');}}); //új ticket rögzítése után 
 
         /*Útvonalak kategóriákra*/
         Route::get('/api/service/all', [CategoryController::class, 'getAllServices']);  //összes főkat.

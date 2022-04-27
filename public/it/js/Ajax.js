@@ -23,12 +23,32 @@ class MyAjax{
      }
 
 
+      /*POST - új adat felvitele az AB-ba API végponton keresztül*/
+      postAjax(apiEndPoint,newData) {
+        newData._token=this.token;
+           $.ajax({
+             headers: {'X-CSRF-TOKEN': this.token},
+             url: apiEndPoint,
+             enctype: 'multipart/form-data',
+             type: "POST",
+             data: newData,
+             success: function (result) {
+               console.log('POST success');
+             },             
+             
+           });
+         }
+
      /*POST - új adat felvitele az AB-ba API végponton keresztül*/
-     postAjax(apiEndPoint,newData) {
+     postAjaxForFileUpload(apiEndPoint,newData) {
      newData._token=this.token;
         $.ajax({
           headers: {'X-CSRF-TOKEN': this.token},
           url: apiEndPoint,
+          enctype: 'multipart/form-data',
+          processData: false,
+          contentType: false,
+          cache: false,
           type: "POST",
           data: newData,
           success: function (result) {
@@ -44,7 +64,7 @@ class MyAjax{
         requestData._token=this.token;
            $.ajax({
              headers: {'X-CSRF-TOKEN': this.token},
-             url: apiEndPoint,
+             url: apiEndPoint,            
              type: "POST",
              data: {data : requestData},
              success: function (data) {

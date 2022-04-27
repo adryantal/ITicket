@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
@@ -13,6 +12,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Resolver;
 use App\Models\Journal;
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 
 
@@ -542,6 +542,21 @@ class TicketController extends Controller
 
      /*Új ticket rögzítése, eltárolása AB-ben  */
     public function store(Request $request)    {
+        //($request->attachments);
+
+
+         //attachmentek kezelése
+
+         foreach ($request->file('attachments') as $attachment) {
+            $path = $attachment->store("attachments/100000");
+             $newAtt = new Attachment();
+             $newAtt->ticketid = 1000000;
+             $newAtt->filename = $attachment->getClientOriginalName(); 
+             $newAtt->save();         
+
+            
+        }
+        return
         $ticket = new Ticket();
         $ticket->subjperson = $request->subjperson_id;
         $ticket->caller = $request->caller_id;      
@@ -571,8 +586,13 @@ class TicketController extends Controller
        //ticket number mező kitöltése
         $newticket=Ticket::find($ticket->id);      
         Ticket::where('id', $newticket->id)->update(['ticketnr' => $prefix.$newticket->id]); //https://stackoverflow.com/questions/35279933/update-table-using-laravel-model
-        return Ticket::find($ticket->id); 
-    }
+         
+       
+
+        return Ticket::find($ticket->id);
+
+
+        }
 
     /*A bejelentkezett user által legutoljára rögzített ticket*/
     public function getLastTicketSubmittedByAuthUser(){   

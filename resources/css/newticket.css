@@ -121,7 +121,7 @@ select:focus {
     height: auto;
     top: 250px;
     left: calc(45% - 75px);
-    z-index: 15;
+    z-index: 1;
     border: 1px solid lightskyblue;
     box-shadow: 0 0 10px #7a9abd;
     background-color: rgba(186, 172, 221, 0.9);
