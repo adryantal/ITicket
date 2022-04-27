@@ -83,6 +83,7 @@ class UserController extends Controller
       {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'ad_id' => ['unique:users'],
             'phone_number' => ['required', 'string', 'max:20'],
             'department' => ['required', 'string', ],
             //'password' => [ 'nullable','min:8'],            
