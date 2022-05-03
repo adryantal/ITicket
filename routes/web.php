@@ -28,6 +28,8 @@ Route::get('/', function () {return redirect('/login');});
 Route::get('/login', function () { return view('auth.login');}); //login oldal
 Route::get('/logout', [LogoutController::class, 'perform']); //bejelentkezett user kijelentkeztetése
 Route::get('/notauthorized', function () {return view('it.notauthorized');});
+Route::get('/test/getajax', function () { return view('it.test.testGetAjax');});
+Route::get('/test/moduser', function () { return view('it.test.testModUser');});
 
 Route::middleware(['auth', IsActiveUser::class])->group(function () {
 
@@ -61,8 +63,7 @@ Route::middleware(['auth', IsActiveUser::class])->group(function () {
         Route::get('/api/ticket/all/unassigned', [TicketController::class, 'getUnassignedTickets']);//"New" státuszú-, illetve kezelő munkatárs nélküli ticketek kilistázása
         Route::post('/api/ticket', [TicketController::class, 'store']); //új ticket rögzítése  
         Route::put('/api/ticket/{id}', [TicketController::class, 'update']); //ticket updatelése a modify formon keresztül
-
-        Route::get('/api/ticket', [TicketController::class, 'it.newticket']); //új ticket rögzítése után 
+        Route::get('/api/ticket', function(){ return redirect('/newticket');}); //új ticket rögzítése után 
 
         /*Útvonalak kategóriákra*/
         Route::get('/api/service/all', [CategoryController::class, 'getAllServices']);  //összes főkat.
@@ -78,8 +79,8 @@ Route::middleware(['auth', IsActiveUser::class])->group(function () {
         Route::get('/api/service/all/filter', [CategoryController::class, 'filterServices']);  //alkategóriák szűrése megadott attr. alapján
 
         /*Útvonalak resolverekhez*/
-        Route::get('/api/resolver/{id}/users/filter', [ResolverController::class, 'filterUsersPerResolver']);
-        Route::get('/api/resolver/all/filter', [ResolverController::class, 'filter']);
+        Route::get('/api/resolver/{id}/users/filter', [ResolverController::class, 'filterUsersPerResolver']);  //adott megoldócsop. alá tartozó userek megadott attr. szerinti szűrése (csak aktív státuszúak)
+        Route::get('/api/resolver/all/filter', [ResolverController::class, 'filter']); //támogatói csapatok szűrése megadott attribútum alapján
 
         /*Útvonalak a csatolmányokhoz kapcsolódóan*/
         Route::get('/api/attachment/all', [AttachmentController::class, 'getAllAttachments']);  //összes csatolmány

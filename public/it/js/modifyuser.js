@@ -21,7 +21,7 @@ class ModifyUserController{
 
    this.setAutocompInputFields();
   
-   this.submitBtn.on("click",(evt)=>{
+   this.submitBtn.on("click",(evt)=>{   
     if(validateForm(evt)){
         let apiEndPointUser = 'api/user';
         let newData = {               
@@ -34,9 +34,10 @@ class ModifyUserController{
                 "resolver_id": this.resolverDropdown.val(),
             };
         myAjax.putAjax(apiEndPointUser,newData,this.idInputField.val());
+    
     }
 
-    $('.p-1').append('<div class="alert alert-primary"> User data successfully modified!</div>');
+   
     
    })
 
@@ -48,8 +49,7 @@ class ModifyUserController{
     // Then submit if form is OK.
     if (reportValidity) {         
         valid=true;
-    } else {
-        console.log("Valami nem OK")
+    } else {       
       evt.preventDefault();
       evt.stopPropagation();
       evt.stopImmediatePropagation();
@@ -58,12 +58,10 @@ class ModifyUserController{
   }
 
 
-  
-
-    }  
+    } 
 
      
- autoComp(selector, attributeName,apiEndPoint) {      
+ autoComp(selector, apiEndPoint) {      
     selector.autocomplete({
         source: function (request, response) {           
           $.ajax({
@@ -78,7 +76,7 @@ class ModifyUserController{
                 $.map(data, function (item) {
                   return {
                     label : item["id"],
-                    value: item[attributeName],
+                    value: item["name"],
                     ad_id : item['ad_id'],
                     phone_number : item['phone_number'],
                     department : item['department'],
@@ -96,7 +94,7 @@ class ModifyUserController{
           });
         },
         minlength: 3,        
-            select:  (e, u) =>{
+        select:  (e, u) =>{
                 //If no match is found when item is selected, clear the TextBox.
                 if (u.item.value == 'No results found.') {
                   $('input').val('');
@@ -108,7 +106,7 @@ class ModifyUserController{
                    this.loadAttributeValues(u.item); 
                 }                                    
             },
-            change: function (e, u) {        
+        change: function (e, u) {        
               if(!(u.item === null || u.item===undefined || u.item.value=='No results found.')){
                selector.val(u.item.value); // take from attribute and insert as value              
               }else{
@@ -116,23 +114,16 @@ class ModifyUserController{
               }
           }
       })
-      .data("uiAutocomplete")._renderItem = function (ul, item) {
-      //get position of the selector being clicked on  
-      let inputFieldPosition = selector.position();          
-        $(ul).addClass("ac-template");
-      //set position of the autocomplete based on the selector's position 
+      .data("uiAutocomplete")._renderItem = function (ul, item) {      
+        let inputFieldPosition = selector.position();          
+        $(ul).addClass("ac-template");      
         $(ul).css({
           top: inputFieldPosition.top + 20,
           left: inputFieldPosition.left,
           position: "absolute",
-        });   
-        const showNameAndID = ["name"]; //show both name and ID in autocomplete dropdown for these selectors
+        });    
         let html;       
-        if (jQuery.inArray(selector.attr("id"), showNameAndID) > -1) {
-             html = "<a>" + item.value + (item.label === "No results found." ? "" : " (" + item.label + ")") + "</a>";
-      } else {
-            html = "<a>" + item.value + "</a>";
-      }
+        html = "<a>" + item.value + (item.label === "No results found." ? "" : " (" + item.label + ")") + "</a>";    
         return $("<li></li>").data("item.autocomplete", item).append(html).appendTo(ul);
     }      
   }
@@ -140,11 +131,12 @@ class ModifyUserController{
   setAutocompInputFields(){    
     const apiEndPointUsers = "api/user/all/filter/excauth";  //all users except the one logged in       
     $(window).on( {     
-      keypress: (event) => {           
+      keydown: (event) => { 
+        $('.alert-primary').remove();          
        let selectorName = $(event.target).attr("id");             
       switch (selectorName) {        
         case "name":                         
-          this.autoComp($("#name"), "name", apiEndPointUsers);                           
+          this.autoComp($("#name"), apiEndPointUsers);                           
           break;                             
         default: ;        
       };           
@@ -153,6 +145,7 @@ class ModifyUserController{
   }
 
   loadAttributeValues(data){
+    this.nameInputField.val(data.value);
     this.idInputField.val(data.label);
     this.adIdInputField.val(data.ad_id);
     this.phoneNumberInputField.val(data.phone_number);

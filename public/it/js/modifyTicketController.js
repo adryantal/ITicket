@@ -1,4 +1,3 @@
-
  
 class ModifyTicketController {
   constructor() {
@@ -74,8 +73,8 @@ class ModifyTicketController {
     setStatusFieldBorder();  
   
     function loadAllTicketData(ticketNr){     
-      loadTicketData(ticketNr);     
-     // loadAttachments();    
+      loadTicketData(ticketNr);    
+       
     }
 
     function loadTicketData(ticketNr) {
@@ -83,8 +82,7 @@ class ModifyTicketController {
       /*LOAD BASIC DETAILS*/
       let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;
       //load ticket data from API endpoint     
-      $.getJSON(apiEndPointSelectedTicket, function(data) {
-      
+      $.getJSON(apiEndPointSelectedTicket, function(data) {      
         setTicketToInactive(data);
         mTicketView.ticketIDField.val(ticketNr);
         mTicketView.callerField.val(data.caller_name);
@@ -115,9 +113,7 @@ class ModifyTicketController {
         mTicketView.addHiddenInputField("service", data.service_id);
         mTicketView.addHiddenInputField("category", data.category_id);        
         loadComments(data.journals);
-        console.log('modified formba érkező adat: '+data.parent_ticket);
-     
-              
+        loadAttachments(data.attachments);              
       });
     }
 
@@ -143,18 +139,11 @@ class ModifyTicketController {
     }
 
     
-    function loadAttachments(){
+    function loadAttachments(data){
       //loading attachments
-      let apiEndPointAttachmentsPerTicket =
-        "http://localhost:3000/attachments?ticketid=" + ticketID;
-      myAjax.getAjax(
-        apiEndPointAttachmentsPerTicket,
-        mTicketView.existingAttachments,
-        function () {
-          mTicketView.existingAttachments.forEach((element, index) => {
-            mTicketView.attachments.push(element.filename);
-            mTicketView.displayAttachmentList();
-          });
+          data.forEach((element) => {
+            mTicketView.attachments.push(element.name);
+            mTicketView.displayAttachmentList();          
         }
       );  
     }
@@ -220,15 +209,13 @@ class ModifyTicketController {
         myAjax.postAjax(apiEndPointAttachments, newAttData);
       });
       attachmentsToBeAdded.splice(0, attachmentsToBeAdded, length);
+
       /*if any of the already existing attachments was marked for deletion, remove them from the Attachment table*/
       attachmentToBeRemoved.forEach((element) => {
         myAjax.deleteAjax(apiEndPointAttachments, element.id);
       });
       attachmentToBeRemoved.splice(0, attachmentToBeRemoved.length);
-      mTicketView.existingAttachments.splice(
-        0,
-        mTicketView.existingAttachments.length
-      );
+      mTicketView.existingAttachments.splice( 0, mTicketView.existingAttachments.length);
 
     }
     

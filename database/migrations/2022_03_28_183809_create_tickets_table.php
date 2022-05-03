@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();  
-            $table->string('ticketnr')->nullable();  //az AB-ben való létrejöttekor mindig NULL, majd a végleges érték store metódus végén íródik be, mikor már a ticket obj. létrejött       
+            $table->string('ticketnr',20)->nullable();  //az AB-ben való létrejöttekor mindig NULL, majd a végleges érték store metódus végén íródik be, mikor már a ticket obj. létrejött       
             $table->foreignId('caller')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); ///bejelentő
             $table->foreignId('subjperson')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //érintett
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade')->onUpdate('cascade'); //nyitotta
@@ -29,9 +29,9 @@ return new class extends Migration
             $table->tinyInteger('urgency'); //sürgősség
             $table->tinyInteger('priority'); //prioritás
             $table->tinyInteger('impact'); //súlyosság
-            $table->string('contact_type'); //bejelentési csatorna
-            $table->string('status'); //akt. állapot
-            $table->string('type');   //inc. v. req.                       
+            $table->string('contact_type',20); //bejelentési csatorna
+            $table->string('status',20); //akt. állapot
+            $table->string('type',15);   //inc. v. req.                       
             $table->dateTime('created_on', $precision = 0); //jegy létrejöttének dátuma
             $table->dateTime('updated', $precision = 0)->nullable(); //utolsó módosítás dátuma                     
             $table->timestamps();

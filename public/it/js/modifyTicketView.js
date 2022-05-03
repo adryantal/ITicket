@@ -30,8 +30,6 @@ class ModifyTicketView {
     this.commentTextArea = $("#comment");        
     this.serviceID="";
     this.assignmentGroupID="";
-
-
    
       
     //disable assignedTo and category fields
@@ -41,7 +39,6 @@ class ModifyTicketView {
     this.disableChildInputOnChange(this.serviceField,this.categoryField);
     this.disableChildInputOnChange(this.assignmentGroupField,this.assignedToField);
    
-
     
     restrictPageRefresh(); 
 
@@ -53,7 +50,7 @@ class ModifyTicketView {
     //add attachments  
     this.addAttachmentFileInput.on("change", (event) => {
       //update displayed attachment list
-      this.addAttachments(event);          
+      this.validateAttachments(event);          
       this.eventTrigger('modifyAttachments',this.attachments);             
     });   
 
@@ -70,13 +67,7 @@ class ModifyTicketView {
     //prepare comment drafts
     this.draftComment();
 
-
-
     function restrictPageRefresh() {      
-        // window.onbeforeunload = (e) => {          
-        //     return "Are you sure you would like to leave and lose all data entered?";
-        // };
-        //disable right mouse click
         $(window).bind("contextmenu", function (e) {
             return false;
         });
@@ -91,7 +82,6 @@ class ModifyTicketView {
         });
     }
   }
-
  
   eventTrigger(eventName, eventDetail) {
     let ev = new CustomEvent(eventName, {
@@ -99,7 +89,6 @@ class ModifyTicketView {
     });
     window.dispatchEvent(ev);
   }
-
 
   setRequiredInputFields(){    
     const requiredfields = [this.callerField, this.impactField, this.urgencyField,  this.priorityField, this.subjpersonField, 
@@ -112,7 +101,7 @@ class ModifyTicketView {
 
 
 
-  addAttachments(event) {    
+  validateAttachments(event) {    
       if (event.target.files.length <= 10) {
         for (let index = 0; index < event.target.files.length; index++) {
           let fileName = event.target.files[index].name;

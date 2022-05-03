@@ -257,8 +257,8 @@ input::placeholder {
   article {
     margin-top: 15px;
     /* position: relative; */
-
-   
+    padding: none;
+  
   }
 
  

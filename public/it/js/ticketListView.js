@@ -55,8 +55,9 @@ class TicketListItem {
       
 
         this.setData(this.data);
-        this.setPageResponsivity(768, 3); //under window width of 700px only the first 3 columns are visible
-        this.setPageResponsivity(285, 2); //under window width of 285px only the first 2 columns are 
+        this.setPageResponsivity(768, 4); //under window width of 768px only the first 4 columns are visible
+        this.setPageResponsivity(600, 3); //under window width of 600px only the first 3 columns are visible
+        this.setPageResponsivity(350, 2); //under window width of 350px only the first 2 columns are visible
         
         let counter=0;
     }
@@ -99,7 +100,7 @@ class TicketListItem {
                     }
                 });
             });
-            $("article").css("overflow-x", "hidden");
+            $("article").css("overflow-x", "hidden");           
         } else {
             //$("article").css("overflow-x", "scroll");
         }
@@ -119,7 +120,7 @@ class TicketFilter {
     this.filterBySingleAttribute();
     this.generalFilter();
   }
-
+  
   searchTrigger(eventName, eventDetail) {
     let ev = new CustomEvent(eventName, {
       detail: eventDetail,
@@ -155,7 +156,7 @@ class TicketFilter {
        let filterItemID=($(e.currentTarget).closest('.attr-filter').children('input').attr('id'));
        console.log(searchVal, filterItemID);
        if (searchVal == "") {         
-               this.searchTrigger("filterTicketData", fInputArray); //forwarding the array to the Controller for further  
+               this.searchTrigger("filterTicketData", fInputArray); //forwarding the array to the Controller for further processing 
                $("#search-status-bar").html("Filter | All tickets");        
        } else {
            //collect all POPUPATED filter input fields' IDs along with the values to an array
@@ -192,8 +193,6 @@ class TicketFilter {
     });
   
   }
-
-
 }
 
 
@@ -205,6 +204,7 @@ class Pagination {
     let numberOfTickets = ticketDataLine.length;
     //console.log(numberOfTickets);
     paginationBar.empty();
+    let totalPages;
 
     let limitPerPage;
       //set limit per page based on browser height --> refresh needed
@@ -212,8 +212,7 @@ class Pagination {
       $(window).on('resize', ()=>{        
         location.reload();
         countlimitPerPage();     
-        $(window).scrollLeft(0);
-        
+        $(window).scrollLeft(0);        
     });      
 
         if ($(".ticket-data-line").length == 1) { //when only the template instance of .ticket-data-line exists
@@ -226,11 +225,30 @@ class Pagination {
         {  pageIntervalBar.append("1-" + (limitPerPage ))}          
         }
 
+   initPaginationBar();    
+   goToPreviousPage();
+   goToSelectedPage();
+   nextPage();  
+
+    function countlimitPerPage(){      
+      let itemContainerHeight =  $("main").height() -  $("#attr-bar").height()- $("#search-status-bar").height();
+          limitPerPage = 0;        
+          $(".ticket-data-line").each(function () {          
+              if ( $(this).position().top + $(this).height() /*+ MARGIN*/ > itemContainerHeight) {          
+                  return;
+              } else {
+                  limitPerPage++;
+              }
+          });   
+        }  
+
+
+  function initPaginationBar(){
     paginationBar.append(
       "<li id='previous-page'><a href='javascript:void(0)' aria-label='Previous'><span aria-hidden=true>&laquo;</span></a></li>"
     ); $("#ticket-container .ticket-data-line:gt(" + (limitPerPage - 1) + ")"
     ).hide(); // Hide all items over page limits (e.g., 5th item, 6th item, etc.)
-    let totalPages = Math.ceil(numberOfTickets / limitPerPage); // Get number of pages
+     totalPages = Math.ceil(numberOfTickets / limitPerPage); // Get number of pages
     paginationBar.append( "<li class='current-page active'><a href='javascript:void(0)'>" +  1 +"</a></li>" ); // Add first page marker
     // Loop to insert page number for each sets of items equal to page limit (e.g., limit of 4 with 20 total items = insert 5 pages)
     for (let i = 2; i <= totalPages; i++) 
@@ -238,50 +256,32 @@ class Pagination {
     }
     // Add next button after all the page numbers
     paginationBar.append( "<li id='next-page'><a href='javascript:void(0)' aria-label='Next'><span aria-hidden=true>&raquo;</span></a></li>" );
-    
+  } 
 
-   goToSelectedPage();
-   nextPage();
-   
-
-    // Function to navigate to the previous page when users click on the previous-page id (previous page button)
-    $("#previous-page").on("click", function () {
-      let currentPage = $("#pagination-bar li.active").index(); // Identify the current active page
-      // Check to make sure that users is not on page 1 and attempting to navigating to a previous page
-      if (currentPage === 1) {
-        return false; // Return false (i.e., cannot navigate to a previous page because the current page is page 1)
-      } else {
-        currentPage--; // Decrement page by one
-        $("#footer-bar li").removeClass("active"); // Remove the 'activate' status class from the previous active page number
-        ticketDataLine.hide(); // Hide all items in the pagination loop
-        let grandTotal = limitPerPage * currentPage; // Get the total number of items up to the page that was selected
-        // Loop through total items, selecting a new set of items based on page number
-        for (let i = grandTotal - limitPerPage; i < grandTotal; i++) {
-          $("#ticket-container .ticket-data-line:eq(" + i + ")").show(); // Show items from the new page that was selected
-        }
-        $("#footer-bar li.current-page:eq(" + (currentPage - 1) + ")").addClass( "active" ); // Make new page number the 'active' page
+  function goToPreviousPage(){
+  // Function to navigate to the previous page when users click on the previous-page id (previous page button)
+  $("#previous-page").on("click", function () {
+    let currentPage = $("#pagination-bar li.active").index(); // Identify the current active page
+    // Check to make sure that users is not on page 1 and attempting to navigating to a previous page
+    if (currentPage === 1) {
+      return false; // Return false (i.e., cannot navigate to a previous page because the current page is page 1)
+    } else {
+      currentPage--; // Decrement page by one
+      $("#footer-bar li").removeClass("active"); // Remove the 'activate' status class from the previous active page number
+      ticketDataLine.hide(); // Hide all items in the pagination loop
+      let grandTotal = limitPerPage * currentPage; // Get the total number of items up to the page that was selected
+      // Loop through total items, selecting a new set of items based on page number
+      for (let i = grandTotal - limitPerPage; i < grandTotal; i++) {
+        $("#ticket-container .ticket-data-line:eq(" + i + ")").show(); // Show items from the new page that was selected
       }
-      pageIntervalBar.empty();
-      pageIntervalBar.append(
-        limitPerPage * currentPage - limitPerPage +  1 + "-" + limitPerPage * currentPage);
-    });
+      $("#footer-bar li.current-page:eq(" + (currentPage - 1) + ")").addClass( "active" ); // Make new page number the 'active' page
+    }
+    pageIntervalBar.empty();
+    pageIntervalBar.append(
+      limitPerPage * currentPage - limitPerPage +  1 + "-" + limitPerPage * currentPage);
+  });
 
-    function countlimitPerPage(){      
-      let itemContainerHeight =  $("main").height() -  $("#attr-bar").height()- $("#search-status-bar").height();
-          limitPerPage = 0;
-        
-          $(".ticket-data-line").each(function () {          
-              if ( $(this).position().top + $(this).height() /*+ MARGIN*/ > itemContainerHeight) {
-          
-                  return;
-              } else {
-                  limitPerPage++;
-              }
-          });   
-
-        }  
-
-
+  }
         
    function goToSelectedPage(){
     // Function that displays new items based on page number that was clicked

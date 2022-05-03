@@ -16,13 +16,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('ad_id')->unique()->unique();
-            $table->string('name');
-            $table->string('phone_number');
-            $table->string('email')->unique();
+            $table->string('ad_id',20)->unique()->unique();
+            $table->string('name',100);
+            $table->string('phone_number',20);
+            $table->string('email',35)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('department');
+            $table->string('department',40);
             $table->boolean('active')->default(true);
             $table->foreignId('resolver_id')->nullable()->constrained('resolvers')->onDelete('cascade')->onUpdate('cascade');            
             $table->rememberToken();

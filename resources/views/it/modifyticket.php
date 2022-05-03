@@ -60,7 +60,7 @@
             <div><label for="ticketID">Ticket ID</label></div>
             <div> <input type="other" name="ticketID" id="ticketID" readonly value="<?php echo $ticketnr  ?>"></div>
             <div><label for="status">Status</label></div>
-            <div> <select id="status">
+            <div> <select id="status" name="status">
                <option value="New" disabled>New</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Pending Customer">Pending Customer</option>
@@ -122,7 +122,7 @@
 
           <div class="row-top">
             <div><label for="contactType">Contact type</label></div>
-            <div> <select id="contactType">
+            <div> <select id="contactType" name="contactType">
                 <option value="Phone">Phone</option>
                 <option value="Email">Email</option>
                 <option value="Chat">Chat</option>
@@ -170,14 +170,14 @@
           <div id="row-last">
 
             <div id="attachment-container">
-              <button id="attachment-btn">Add/Remove attachment</button>
+              <button id="attachment-btn">Add attachment</button>
               <input type="file" id="attachment" name="attachments[]" multiple>
               <div id="attachment-list"></div>
             </div>
 
 
             <div id="newticketform-buttons">
-              <input type="button" name="submit" id="submit" value="Submit updates">
+              <input type="button" name="submit" id="submit" value="Submit changes">
 
             </div>
           </div>

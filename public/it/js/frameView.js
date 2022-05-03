@@ -155,9 +155,7 @@ loadPage(selector, index, url,note){
   navDropdownSetHeight(){
     let wHeight = $(window).height();
     
-    if(this.navDropdownList.height()>=wHeight){
-      console.log("ablak - "+wHeight)
-      console.log("nav dr - " + this.navDropdownList.height())
+    if(this.navDropdownList.height()>=wHeight){     
       this.navDropdownList.css("max-height",wHeight)
       this.navDropdownList.addClass('navdropd-setscrollbar');
     }else{

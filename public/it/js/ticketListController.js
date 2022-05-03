@@ -19,7 +19,6 @@ class TicketListController {
       array.forEach(function (data) {      
         let node = templateItem.clone().appendTo(parentItem); //
         const obj = new TicketListItem(node, data);
-
       });
       $("#pageinterval-bar").empty(); //in order to prevent duplication of the content of pageintervalbar when invoking a new instance of the Pagination class
       new Pagination();     

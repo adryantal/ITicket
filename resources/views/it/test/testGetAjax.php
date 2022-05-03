@@ -1,50 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>ITicket - All tickets</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\ticketlist.css" />
-  <link rel="icon" type="image/x-icon" href="/storage/logo_mini.PNG" />
-  <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
-  <script src="it\js\Ajax.js"></script>
-  <script src="it\js\frameView.js"></script>
-  <script src="it\js\ticketListController.js"></script>
-  <script src="it\js\ticketListView.js"></script>
-  <script src="it\js\ticketListMain.js"></script>
-  <meta name="csrf-token" content=<?php $token = csrf_token(); echo $token; ?>>
-
-
-</head>
+<meta charset="utf-8">
+<title>Testing ITicket - Listing tickets using GET Ajax call</title>
+<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.18.0.css">
 
 <body>
-  <main>
-    <?php include 'firstpart.php'; ?>
+  <div id="qunit"></div>
+  <div id="qunit-fixture">
 
     <article>
 
       <div id="search-status-bar">
         All tickets
       </div>
-
-      <div id="attr-bar">
-        <div class="attr-header"><img class="magnifier-attr-icon" src="<?php echo asset('storage/icons/magnifier.png') ?>" alt=""></div>
-
-      </div>
-
-      <div id="attr-filter-bar">
-        <div class="attr-filter"></div>
-
-
-      </div>
-
       <div id="ticket-container">
-
-
       </div>
 
       <div id="footer-bar">
@@ -52,11 +20,8 @@
         </div>
         <div id="pageinterval-bar">
         </div>
-
       </div>
-
     </article>
-
 
 
     <section class="template">
@@ -79,11 +44,26 @@
       </div>
     </section>
 
+<div id='qunit-testresult-display'></div>
+  </div>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\ticketlist.css" />
+  <script src="https://code.jquery.com/qunit/qunit-2.18.0.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <!-- JS used by the module to be tested -->
+  <script src="..\it\js\Ajax.js"></script>
+  <script src="..\it\js\frameView.js"></script>
+  <script src="..\it\js\ticketListController.js"></script>
+  <script src="..\it\js\ticketListView.js"></script>
+  <script src="..\it\js\ticketListMain.js"></script>
 
+  <script src="..\it\js\newTicketMain.js"></script>
+  <script src="..\it\js\newTicketController.js"></script>
+  <script src="..\it\js\newticketView.js"></script>
 
-    
+  <script src="..\it\js\test\functionality\testGetAjax.js"></script>
 
-  </main>
+  <meta name="csrf-token" content=<?php $token = csrf_token();
+                                  echo $token; ?>>
 </body>
-
-</html>

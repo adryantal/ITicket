@@ -1,6 +1,5 @@
 class NewTicketView {
-  constructor() {
-    this.attachments = [];    
+  constructor() {  
     this.ticketIDField = $("#ticketID");
     this.callerField = $("#caller");    
     this.impactField = $("#impact");
@@ -12,6 +11,7 @@ class NewTicketView {
     this.createdByField = $("#createdBy");
     this.serviceField = $("#service");
     this.categoryField = $("#category");
+    this.statusField = $("#status");
     this.assignmentGroupField = $("#assignmentGroup");
     this.contactTypeField = $("#contactType");
     this.descriptionField = $("#description");
@@ -30,26 +30,55 @@ class NewTicketView {
     });
 
     this.categoryField.attr('disabled', 'disabled'); 
-   this.setRequiredInputFields();
+    this.setRequiredInputFields();
     this.setAutocompInputFields();
 
-    //add attachments  
+    //attachment / file upload  
     this.addAttachmentFileInput.on("change", (event) => {
-      this.addAttachments(event);
-      this.eventTrigger('transferAttachments',this.attachments);    
-    });   
-
-    //remove attachments
-    this.attachmentList.on("click", ".attm-remove-btn", (event) => {
-      this.removeAttachment(event);
-      this.eventTrigger('transferAttachments',this.attachments);   
-    });  
+      for (let index = 0; index < $('#attachment')[0].files.length; index++) {   
+        this.validateFileToUpload(index);    
+      }     
+      this.displayAttachmentList();        
+    }); 
     
    //reset form
     this.resetForm(); 
-
   }
-
+  validateFileToUpload(index){
+          //validation of files to be uploaded
+          let sizeTooBig = false;
+          let unsupportedFormat = false;
+          if($('#attachment')[0].files[index].size > 1048576 ){
+            alert("At least one of the selected files is too big! (Max. file size is 1MB.)");
+            sizeTooBig=true;          
+         };
+         let fileName = $('#attachment')[0].files[index].name;
+         let fileExt = fileName.substring(fileName.lastIndexOf("."));
+         const allowedTypes = [
+          ".pdf",
+          ".jpeg",
+          ".jpg",
+          ".JPG",
+          ".png",
+          ".pdf",
+          ".doc",
+          ".docx",
+          ".xls",
+          ".xlsx",
+          ".ppt",
+          ".pptx",
+          ".txt",
+          ".zip",
+          ".msg",
+        ];    
+        if(jQuery.inArray(fileExt, allowedTypes) == -1) {
+          alert("Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg");
+          unsupportedFormat = true;        
+        }
+         if(sizeTooBig || unsupportedFormat){
+          $('#attachment')[0].value = "";
+         }
+  }
  
   eventTrigger(eventName, eventDetail) {
     let ev = new CustomEvent(eventName, {
@@ -58,99 +87,39 @@ class NewTicketView {
     window.dispatchEvent(ev);
   }
 
-
-  setRequiredInputFields(){
-    
+  setRequiredInputFields(){    
     const requiredfields = [this.callerField, this.impactField, this.urgencyField, 
       this.priorityField, this.subjpersonField, this.serviceField, this.categoryField, this.titleField, 
       this.descriptionField, this.contactTypeField, this.assignedToField]
     requiredfields.forEach(element => {
       element.attr("required",true);
-    });
-     
+    });     
   }
 
-  addAttachments(event) {    
-      if (event.target.files.length <= 10) {
-        for (let index = 0; index < event.target.files.length; index++) {
-          let fileName = event.target.files[index].name;
-          let fileExt = fileName.substring(fileName.lastIndexOf("."));
-          const allowedTypes = [
-            ".pdf",
-            ".jpeg",
-            ".jpg",
-            ".JPG",
-            ".png",
-            ".pdf",
-            ".doc",
-            ".docx",
-            ".xls",
-            ".xlsx",
-            ".ppt",
-            ".pptx",
-            ".txt",
-            ".zip",
-            ".msg",
-          ];
-          if (jQuery.inArray(fileExt, allowedTypes) == -1) {
-            alert(
-              "Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg"
-            );
-            return false;
-          } else {
-            if (jQuery.inArray(fileName, this.attachments) == -1) {
-              this.attachments.push(fileName);
-            } else {
-              alert("Some of the selected files are already in the list!");
-              return;
-            }
-          }
-        }
-        this.displayAttachmentList();
-      } else {
-        alert("Max. 10 files are allowed to be attached!");
-      }   
-  }
-
+  
   displayAttachmentList() {
     this.attachmentList.empty();
-    this.attachments.forEach((element, index) => {
+   for (let index = 0; index < $('#attachment')[0].files.length; index++) {    
       this.attachmentList.append(
-        "<div id='attachment" +
-          index +
-          "'>&#128206 " +
-          element +
-          " <div class='attm-remove-btn'>x</div></div>"
-      );
-    });
-  }
-
-  removeAttachment(event) {   
-      console.log(event.target);
-      let index = $(event.target).parent().closest("div").attr("id").slice(-1);
-      console.log(index);
-      this.attachments.splice(index, 1);
-      this.displayAttachmentList();    
-  }
-  
+        "<div id='attachment" +  index +  "'>&#128206 " +  $('#attachment')[0].files[index].name  );
+    }
+  }  
   
   resetForm(){
     this.ResetFormBtn.on("click",()=>{
-      this.resetAllFields();
-         
+      this.resetAllFields();         
     });  
   }
 
-
-   resetAllFields(){
-    this.attachments.splice(0, this.attachments.length);
+   resetAllFields(){ 
     this.displayAttachmentList();
     $("form input[type=text], form input[type=number], form textarea").val('');     
+    this.assignmentGroupField.val('IT Helpdesk');
+    this.statusField.val('New');
     $('form option').prop('selected', function() {
       return this.defaultSelected;
   });  
   }
-
     
   autoCompForTicketNrs(selector, attributeName,apiEndPoint) {       
     selector.autocomplete({
@@ -275,8 +244,7 @@ class NewTicketView {
           position: "absolute",
         });   
         const showNameAndID = ["caller", "subjperson", "assignedTo"]; //show both name and ID in autocomplete dropdown for these selectors
-        let html;   
-       
+        let html;       
         if (jQuery.inArray(selector.attr("id"), showNameAndID) > -1) {
              html = "<a>" + item.value + (item.label === "No results found." ? "" : " (" + item.label + ")") + "</a>";
       } else {
@@ -304,10 +272,7 @@ class NewTicketView {
   setAutocompInputFields(){    
     const apiEndPointUsers = "api/user/all/active/filter";  //active users only     
     const apiEndPointServices = "api/service/all/filter";  
-    const apiEndPointTickets = "api/ticket/all/searchtickets";   
-    
-    
-        
+    const apiEndPointTickets = "api/ticket/all/searchtickets";        
     $(window).on( {
       mouseenter: (event) => {           
        let selectorName = $(event.target).attr("id");          
@@ -332,8 +297,7 @@ class NewTicketView {
           this.autoCompForTicketNrs($("#parentTicket"), "ticketnr",apiEndPointTickets);         
           break;                         
         default: ;        
-      };  
-           
+      };            
     } , keyup:()=> {
         if(this.serviceField.val()==='') {  
           this.categoryField.val(''); 

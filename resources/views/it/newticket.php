@@ -54,7 +54,7 @@
             <div> <input type="text" id="service" name="service" >
             </div>
             <div><label for="category">Category</label></div>
-            <div> <input type="text" id="category" name="category " >
+            <div> <input type="text" id="category" name="category" >
             </div>   
               
           </div>
@@ -63,7 +63,7 @@
           <div class="row-top"> 
 
             <div><label for="type">Type</label></div>
-            <div> <select id="type">
+            <div> <select id="type" name="type">
                 <option value="Incident">Incident</option>
                 <option value="Request">Request</option>
               </select></div>
@@ -89,8 +89,8 @@
             <div> <input type="text" name="assignmentGroup" id="assignmentGroup" value="IT Helpdesk" readonly></div>           
                 <!-- <div><label for="assignedTo" >Assigned to</label></div>
                 <div> <input type="text" id="assignedTo" name="assignedTo" readonly> -->
-                <div><label for="creator" >Creator</label></div>
-                <div> <input type="text" id="creator" name="creator" value = "<?php echo auth()->user()->name ?>" readonly>
+                <div><label for="status" >Status</label></div>
+                <div> <input type="text" id="status" name="status" value = "New" readonly>
                 </div>
                 
           </div>
@@ -99,7 +99,7 @@
 
           <div class="row-top">  
             <div><label for="contactType">Contact type</label></div>
-            <div> <select id="contactType" >
+            <div> <select id="contactType" name="contactType">
                 <option value="Phone">Phone</option>
                 <option value="Email">Email</option>
                 <option value="Chat">Chat</option>

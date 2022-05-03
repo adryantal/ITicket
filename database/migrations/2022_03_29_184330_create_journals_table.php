@@ -21,12 +21,12 @@ return new class extends Migration
             $table->bigInteger('subjperson'); 
             $table->bigInteger('assignedto');  
             $table->bigInteger('category');       
-            $table->string('status');
+            $table->string('status',20); 
             $table->dateTime('updated');
             $table->tinyInteger('urgency'); 
             $table->tinyInteger('priority'); 
             $table->tinyInteger('impact');
-            $table->string('contact_type'); 
+            $table->string('contact_type',20); 
             $table->timestamps();
             $table->text('comment'); //nem nullable; minden módosításnál kötelező a komment         
            

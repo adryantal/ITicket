@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Resolver;
 use App\Models\Journal;
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 
 
@@ -328,10 +329,9 @@ class TicketController extends Controller
     }
 
     //adott tickethez tart. csatolmányok
-    public function getAttachmentsPerTicket($ticketid)
-    {
-        $ticket = Ticket::find($ticketid);
-        $attachments = $ticket->attachments;
+    public function getAttachmentsPerTicket($ticketid)    {
+        $ticket = Ticket::find($ticketid);       
+        $attachments = Attachment::where('ticketid','=',$ticket->id)->get();
         return $attachments;
     }
 
@@ -413,13 +413,10 @@ class TicketController extends Controller
         'created_on' =>  Carbon::create($ticket->created_on)->format('d-m-Y H:i:s'),   
         'updated' => Carbon::create($ticket->updated)->format('d-m-Y H:i:s'),        
         'timeleft' => $timeleft,
-        'timespent' => $timespent,                
+        'timespent' => $timespent,                       
         );    
       return redirect('/modifyticket')->with('data', $data);
    }
-
-
-
 
     //a modify ticket formba történő adatbetöltéshez
     public function dataforModifyTicketForm($ticketNr)
@@ -473,6 +470,20 @@ class TicketController extends Controller
         }
 
 
+        //kapcsolódó csatolmányok tömbbe történő mentése
+        $attachments = Attachment::where('ticketid', '=', $ticket->id)->get();
+        $attachmentArray = array();
+        foreach ($attachments as $attachment) {
+            $dataToPush = array(
+            'id' => $attachment->id,
+            'name' => $attachment->name,
+            'path' => $attachment->path,
+            'type' => $attachment->type
+            );
+            array_push($attachmentArray, $dataToPush);
+        }
+         
+
         $data = array(
             'id' => $ticket->id,
             'ticketnr' => $ticket->ticketnr,
@@ -505,6 +516,7 @@ class TicketController extends Controller
             'category_id' => $category->id,
             'service_id' => Category::find($category->main_cat_id)->id,
             'journals' => $journalsArray, //tömb!!!
+            'attachments' => $attachmentArray //tömb!!!
         );
 
         return $data;
@@ -541,14 +553,15 @@ class TicketController extends Controller
      */
 
      /*Új ticket rögzítése, eltárolása AB-ben  */
-    public function store(Request $request)    {
+    public function store(Request $request)    { 
+       //dd($request);
         $ticket = new Ticket();
-        $ticket->subjperson = $request->subjperson_id;
-        $ticket->caller = $request->caller_id;      
-        $ticket->contact_type = $request->contact_type;
+        $ticket->subjperson = $request->subjpersonID; //Frontend: hidden input!
+        $ticket->caller = $request->callerID;  //Frontend: hidden input!     
+        $ticket->contact_type = $request->contactType;
         $ticket->status = $request->status;
         $ticket->type = $request->type;     
-        $ticket->category = $request->category_id;
+        $ticket->category = $request->categoryID; //Frontend: hidden input!
         $ticket->created_on = Carbon::now()->format('Y-m-d H:i:s');        
         $ticket->updated_by = $request->updated_by_id;
         $ticket->created_by = Auth::user()->id; //a belogolt user
@@ -558,7 +571,7 @@ class TicketController extends Controller
         $ticket->priority = $request->priority;
         $ticket->urgency = $request->urgency;
         $ticket->impact = $request->impact;
-        $ticket->parent_ticket = $ticket->parent_ticket=== null ? null : substr("$request->parent_ticket",3);
+        $request->parentTicketID=== null ? $ticket->parent_ticket = null : $ticket->parent_ticket = $request->parentTicketID; //Frontend: hidden input!
         $ticket->updated=Carbon::now()->format('Y-m-d H:i:s');
        //sla && time left
         if($request->type =="Request"){           
@@ -567,10 +580,24 @@ class TicketController extends Controller
         if($request->type =="Incident"){          
             $prefix='INC';
               }
+          
         $ticket->save();
+
        //ticket number mező kitöltése
         $newticket=Ticket::find($ticket->id);      
         Ticket::where('id', $newticket->id)->update(['ticketnr' => $prefix.$newticket->id]); //https://stackoverflow.com/questions/35279933/update-table-using-laravel-model
+
+        //attachmentek kezelése
+        if(!($request->file('attachments')===null)){
+        foreach ($request->file('attachments') as $attachment) {            
+            $newAtt = new Attachment();
+            $newAtt->ticketid =  $newticket->id;
+            $newAtt->name = $attachment->getClientOriginalName();           
+            $newAtt->path = $attachment->storeAs($newticket->id, $attachment->getClientOriginalName(),"attachments"); // storage/app//attachments
+            $newAtt->type= $attachment->extension();
+            $newAtt->save();
+        }
+    }       
         return Ticket::find($ticket->id); 
     }
 
@@ -909,7 +936,11 @@ class TicketController extends Controller
         $ticket->priority =  $request->priority;
         $ticket->impact =  $request->impact;
       
-        if (($request->parent_ticket)!=null){ $ticket->parent_ticket =  $request->parent_ticket;}  
+        if (($request->parent_ticket)!=null)
+        { $ticket->parent_ticket =  $request->parent_ticket;}
+        else{
+            $ticket->parent_ticket = null;
+        }  
         $ticket->save();          
     }
 
