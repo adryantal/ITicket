@@ -32,11 +32,14 @@ class MyAjax {
             success: function (result) {
                 console.log("POST success");
             },
+            error:function (jqXHR){
+                let errors = $.parseJSON(jqXHR.responseText);
+                alert('Data could not be recorded because the following error has occcurred:' + errors.message);    
+            }
         });
     }
 
     /*POST - új adat felvitele az AB-ba API végponton keresztül + fájl feltöltése*/
-
     postAjaxWithFileUpload(apiEndPoint, newData, myCallback) {
         newData._token = this.token;        
         $.ajax({
@@ -52,6 +55,10 @@ class MyAjax {
                 console.log("POST success");
                 myCallback();
             },
+            error:function (jqXHR){
+                let errors = $.parseJSON(jqXHR.responseText);
+                alert('Data could not be recorded because the following error has occcurred:' + errors.message);    
+            }
         });
     }
 
@@ -66,6 +73,10 @@ class MyAjax {
             success: function (data) {
                 console.log("POST success");                
             },
+            error:function (jqXHR){
+                let errors = $.parseJSON(jqXHR.responseText);
+                alert('Data could not be recorded because the following error has occcurred:' + errors.message);    
+            }
         });
     }
 
@@ -78,13 +89,16 @@ class MyAjax {
             success: function (result) {
                 console.log("DEL success");
             },
+            error:function (jqXHR){
+                let errors = $.parseJSON(jqXHR.responseText);
+                alert('Deletion could not be completed because the following error has occcurred:' + errors.message);    
+            }
         });
     }
 
     /*PUT - adott id-jú adat módosítása az AB-ban API végponton keresztül*/
     putAjax(apiEndPoint, newData, id) {
         newData._token = this.token;
-
         $.ajax({
             headers: { "X-CSRF-TOKEN": this.token },
             url: apiEndPoint + "/" + id,
@@ -93,13 +107,10 @@ class MyAjax {
             success: function (result) {
                 console.log("PUT success");
                 alert('Successful data update!');
-            },
-            error: function (data) {
-                let errors = $.parseJSON(data.responseText);
-                // $.each(errors, function (key, value) {
-                //    alert(value);
-                // });
-                alert('Unsuccessful data update due to inappropriate data or bad format.');
+            },           
+            error:function (jqXHR){
+                let errors = $.parseJSON(jqXHR.responseText);
+                alert('Data update could not be completed because the following error has occcurred:' + errors.message);    
             }
         });
     }
