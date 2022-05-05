@@ -43,8 +43,7 @@ class ModifyTicketController {
         $("#comment-draft div").each(function(){
            $(this.remove());
         })
-        $("#comment-history").empty();
-        
+        $("#comment-history").empty();      
       }       
     }); 
     
@@ -86,7 +85,10 @@ class ModifyTicketController {
         mTicketView.addHiddenInputField("service", data.service_id);
         mTicketView.addHiddenInputField("category", data.category_id);
         loadAttachments(data.attachments);          
-        loadComments(data.journals);                     
+        loadComments(data.journals);  
+      
+        console.log('feltöltésre jelölt fájlok: '+$('#attachment')[0].files);
+        console.log('load ticket data completed')                   
       });
     }
 
@@ -200,18 +202,19 @@ class ModifyTicketController {
 
     function addNewAttachments(formData){
       console.log($('#attachment')[0].files)
-      myAjax.postAjaxWithFileUpload(apiEndPointAttachments,formData,()=>{        
+      myAjax.postAjaxWithFileUpload(apiEndPointAttachments,formData,()=>{ 
+        loadTicketData(ticketNr);   //callback function!!!! This is because we need to wait until all file uploads have been completed and then load the refreshed data.
       });
     }
 
-    function validateForm(){          
+    function validateForm(myCallback){          
       const form = $("form");
       // Trigger HTML5 validity
       let reportValidity = form[0].reportValidity();    
       // Then submit if form is OK.
       if(reportValidity){
         let formData = new FormData(document.getElementsByTagName('form')[0]); //only for file upload          
-        modifyNewTicket(formData);           
+        modifyNewTicket(formData,loadTicketData);                 
       }else{      
          evt.preventDefault();
          evt.stopPropagation();
@@ -220,10 +223,10 @@ class ModifyTicketController {
     }
 
     function modifyNewTicket(formData) {
-      updateBasicTicketData();
-      addNewAttachments(formData);
+      updateBasicTicketData();      
       removeSelectedAttachments();
-      insertNewComments();    
+      insertNewComments();  
+      addNewAttachments(formData); 
     }
 
     function setStatusFieldBorder(){

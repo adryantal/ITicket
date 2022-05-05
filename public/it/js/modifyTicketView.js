@@ -139,6 +139,7 @@ validateFileToUpload(index){
   
   displayAttachmentList() {
     this.attachmentList.empty(); 
+    this.attachmentList.append('<p><i>Files already added:</i></p>');
     //existing attachments
     this.existingAttachments.forEach((element, index) => {
       this.attachmentList.append( //create an attribute for the database id and filename in the tags
@@ -146,10 +147,11 @@ validateFileToUpload(index){
       );
     });
     //new attachments selected for upload;
+    this.attachmentList.append('<p><i>Files selected for upload:</i></p>');
     for (let index = 0; index < $('#attachment')[0].files.length; index++) {    
       this.attachmentList.append(
-        "<div id='newattachment" +  index +  "'>&#128206 " +  $('#attachment')[0].files[index].name  );
-    }
+        "<div id='newattachment" +  index +  "'>&#128206 " +  $('#attachment')[0].files[index].name);
+    }    
   }
 
   removeAttachment(event) {   
