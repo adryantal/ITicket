@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AttachmentController extends Controller
 {
@@ -72,7 +73,9 @@ class AttachmentController extends Controller
     public function removeAttachment(Request $request)  {       
        $array=json_decode($request->getContent(), true);
          foreach ($array as $key => $value) {
-             Attachment::find($value)->delete();
+            $path= Attachment::find($value)->path;           
+            Storage::disk('attachments')->delete($path); 
+                Attachment::find($value)->delete(); 
          }        
     }
 
