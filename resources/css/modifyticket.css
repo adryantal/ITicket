@@ -193,6 +193,15 @@ input::-webkit-file-upload-button:hover,
   grid-template-columns: 80% 20%;
 }
 
+#attachment-list a{
+  text-decoration: none;
+  color: rgb(104, 121, 128);
+}
+
+#attachment-list a:hover{
+  opacity: 0.8;
+}
+
 .ac-template {
   padding: 5px;
   border-radius: 3px;
@@ -303,6 +312,8 @@ form legend{
   border-radius: 2px;
   padding: 0px 8px ;
 }
+
+
 
 /*Responsivity*/
 

@@ -919,7 +919,8 @@ class TicketController extends Controller
      */
 
      /*Létező ticket módosítása, a módosítások mentése az AB-ben*/
-    public function update(Request $request, $id)    {        
+    public function update(Request $request, $id)    {  
+        
         $ticket = Ticket::find($id);                              
         $ticket->title = $request->title;
         $ticket->description = $request->description;
@@ -940,7 +941,7 @@ class TicketController extends Controller
         { $ticket->parent_ticket =  $request->parent_ticket;}
         else{
             $ticket->parent_ticket = null;
-        }  
+        }         
         $ticket->save();          
     }
 

@@ -87,7 +87,8 @@ Route::middleware(['auth', IsActiveUser::class])->group(function () {
         Route::get('/api/ticket/{id}/attachments', [TicketController::class, 'getAttachmentsPerTicket']); //adott tickethez tart. csatolmányok
         Route::get('/api/attachment/{id}/ticket', [AttachmentController::class, 'getTicketPerAttachment']); //adott csatolmány mely tickethez tart. 
         Route::get('/api/attachment/{id}', [AttachmentController::class, 'getAttachment']);//adott csatolmány megkeresése id alapján
-        Route::post('/api/attachment', [AttachmentController::class, 'store']); //új csatolmány rögzítése 
+        Route::put('/api/attachments', [AttachmentController::class, 'store']); //új csatolmányok rögzítése (csak a módosító formon keresztül)
+        Route::delete('/api/attachments', [AttachmentController::class, 'removeAttachment']);//csatolmányok törlése
 
         /*Útvonalak userekhez --> ez a felület majd csak a database-eseknek lesz engedélyezett*/
         Route::get('/api/user/all', [UserController::class, 'getAllUsers']);  //összes user

@@ -53,9 +53,27 @@ class AttachmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+
+     //új csatolmány feltöltése (a módosító formon keresztül)
+    public function store(Request $request)    {    
+        if(!($request->file('attachments')===null)){
+            foreach ($request->file('attachments') as $attachment) {            
+                $newAtt = new Attachment();
+                $newAtt->ticketid =  substr($request->ticketID,3);
+                $newAtt->name = $attachment->getClientOriginalName();           
+                $newAtt->path = $attachment->storeAs(substr($request->ticketID,3), $attachment->getClientOriginalName(),"attachments"); // storage/app//attachments
+                $newAtt->type= $attachment->extension();
+                $newAtt->save();
+            }
+        }
+    }
+
+//létező csatolmány törlése (a módosító formon keresztül)
+    public function removeAttachment(Request $request)  {       
+       $array=json_decode($request->getContent(), true);
+         foreach ($array as $key => $value) {
+             Attachment::find($value)->delete();
+         }        
     }
 
     /**

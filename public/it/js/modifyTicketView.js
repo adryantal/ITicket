@@ -1,6 +1,5 @@
 class ModifyTicketView {
-  constructor() {
-    this.attachments = [];  
+  constructor() {  
     this.existingAttachments = [];   
     this.ticketIDField = $("#ticketID");
     this.callerField = $("#caller");
@@ -43,22 +42,21 @@ class ModifyTicketView {
     restrictPageRefresh(); 
 
     this.setRequiredInputFields();
-    this.setAutocompInputFields();
-   
-   
+    this.setAutocompInputFields();   
+ 
 
-    //add attachments  
+    //add new attachments  
     this.addAttachmentFileInput.on("change", (event) => {
-      //update displayed attachment list
-      this.validateAttachments(event);          
-      this.eventTrigger('modifyAttachments',this.attachments);             
+      for (let index = 0; index < $('#attachment')[0].files.length; index++) {   
+        this.validateFileToUpload(index);    
+      }     
+      this.displayAttachmentList();                 
     });   
 
     //remove attachments
     this.attachmentList.on("click", ".attm-remove-btn", (event) => {
-      //update displayed list
-      this.removeAttachment(event);
-      this.eventTrigger('modifyAttachments',this.attachments);   
+      //update attachment display list
+      this.removeAttachment(event);    
     });  
 
    //hide comment template item
@@ -67,6 +65,7 @@ class ModifyTicketView {
     //prepare comment drafts
     this.draftComment();
 
+    
     function restrictPageRefresh() {      
         $(window).bind("contextmenu", function (e) {
             return false;
@@ -80,7 +79,7 @@ class ModifyTicketView {
             }        
           });        
         });
-    }
+    }  
   }
  
   eventTrigger(eventName, eventDetail) {
@@ -89,6 +88,8 @@ class ModifyTicketView {
     });
     window.dispatchEvent(ev);
   }
+
+
 
   setRequiredInputFields(){    
     const requiredfields = [this.callerField, this.impactField, this.urgencyField,  this.priorityField, this.subjpersonField, 
@@ -99,70 +100,68 @@ class ModifyTicketView {
      
   }
 
-
-
-  validateAttachments(event) {    
-      if (event.target.files.length <= 10) {
-        for (let index = 0; index < event.target.files.length; index++) {
-          let fileName = event.target.files[index].name;
-          let fileExt = fileName.substring(fileName.lastIndexOf("."));
-          const allowedTypes = [
-            ".pdf",".jpeg", ".jpg",".JPG", ".png",".PNG",".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".zip", ".msg", ];
-          if (jQuery.inArray(fileExt, allowedTypes) == -1) {
-              alert(
-                  "Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg"
-              );
-              return false;
-          } else {
-              if (jQuery.inArray(fileName, this.attachments) === -1) {
-                  this.attachments.push(fileName);
-                  //send the filename to the controller if it is not in the attachment display list
-                  this.eventTrigger("newFile", fileName);
-              } else {
-                  confirm(
-                      "Some of the selected files are already in the list!"
-                  );
-                  return false;
-              }
-          }
+validateFileToUpload(index){
+          //validation of files to be uploaded
+          let sizeTooBig = false;
+          let unsupportedFormat = false;
+          if($('#attachment')[0].files[index].size > 1048576 ){
+            alert("At least one of the selected files is too big! (Max. file size is 1MB.)");
+            sizeTooBig=true;          
+         };
+         let fileName = $('#attachment')[0].files[index].name;
+         let fileExt = fileName.substring(fileName.lastIndexOf("."));
+         const allowedTypes = [
+          ".pdf",
+          ".jpeg",
+          ".jpg",
+          ".JPG",
+          ".png",
+          ".pdf",
+          ".doc",
+          ".docx",
+          ".xls",
+          ".xlsx",
+          ".ppt",
+          ".pptx",
+          ".txt",
+          ".zip",
+          ".msg",
+        ];    
+        if(jQuery.inArray(fileExt, allowedTypes) == -1) {
+          alert("Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg");
+          unsupportedFormat = true;        
         }
-        this.displayAttachmentList();
-      } else {
-        alert("Max. 10 files are allowed to be attached!");
-      }   
+         if(sizeTooBig || unsupportedFormat){
+          $('#attachment')[0].value = "";
+         }
   }
 
+  
   displayAttachmentList() {
-    this.attachmentList.empty();
-    this.attachments.forEach((element, index) => {
-      this.attachmentList.append(
-        "<div id='attachment" +  index + "'>&#128206 " +  element + " <div class='attm-remove-btn'>x</div></div>"
+    this.attachmentList.empty(); 
+    //existing attachments
+    this.existingAttachments.forEach((element, index) => {
+      this.attachmentList.append( //create an attribute for the database id and filename in the tags
+        "<div id='attachment" +  index + "' dbid=" +  element.id + "'><a href='storage/attachments/"+element.path +"'>&#128206 " + element.name + "</a> <div class='attm-remove-btn'>x</div></div>"
       );
     });
+    //new attachments selected for upload;
+    for (let index = 0; index < $('#attachment')[0].files.length; index++) {    
+      this.attachmentList.append(
+        "<div id='newattachment" +  index +  "'>&#128206 " +  $('#attachment')[0].files[index].name  );
+    }
   }
 
   removeAttachment(event) {   
-      //identify index of attachment based on the id
-      let attIndex = $(event.target).parent().closest("div").attr("id").slice(-1);
-      //remove it from the attachment display list
-      this.attachments.splice(attIndex, 1);
-      //get the filename
-      let txt = $(event.target).parent().closest("div").text();
-      let filename = txt.substring(3, txt.length - 2);
-      //check if the selected file is amongst the already existing attachments
-      //if so, add forward details of the related object to the controller and remove it from this.existingAttachments
-      let i;
-      if (this.existingAttachments.length > 0) {
-          this.existingAttachments.forEach((element, index) => {
-              if (element.filename === filename) {
-                  i = index;
-                  this.eventTrigger("deleteExistingAttachment", element);
-              }
-          });
-          this.existingAttachments.splice(i, 1);
-      }  
-     //send filename to controller to check if the attachment to be removed is amongst the new attachments to be added;
-     this.eventTrigger("checkifNewAttachment",filename);       
+      //identify array index of the selected attachment, based on the tag id
+      let attID = $(event.target).parent().closest("div").attr("id");
+      let attIndex = attID.substring(10,attID.length);      
+      //remove it from the attachment display list based on the index
+      this.existingAttachments.splice(attIndex, 1);
+      //read the database id of the file from the tag      
+      let dbid = $(event.target).parent().closest("div").attr("dbid");
+      //forward the database id of the related object to the controller
+      this.eventTrigger("deleteExistingAttachment", dbid);           
      this.displayAttachmentList();    
   }
 
@@ -311,7 +310,7 @@ class ModifyTicketView {
           $("#comment-template .handling-team").text('| To save click on "Submit"');
           $("#comment-template .status-indication-bar").hide();
           let commentDescription = $("#comment").val();
-          if (!commentDescription == "") { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!and there are no drafts yet
+          if (!commentDescription == "") { 
               $("#comment-template .comment-item")
                   .clone()
                   .prependTo("#comment-draft");

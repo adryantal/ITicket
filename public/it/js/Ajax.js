@@ -31,17 +31,14 @@ class MyAjax {
             data: newData,
             success: function (result) {
                 console.log("POST success");
-            },
-            error:function (jqXHR){
-                let errors = $.parseJSON(jqXHR.responseText);
-                alert('Data could not be recorded because the following error has occcurred:' + errors.message);    
-            }
+            },            
         });
     }
 
     /*POST - új adat felvitele az AB-ba API végponton keresztül + fájl feltöltése*/
     postAjaxWithFileUpload(apiEndPoint, newData, myCallback) {
         newData._token = this.token;        
+      console.log(newData)
         $.ajax({
             headers: { "X-CSRF-TOKEN": this.token },
             url: apiEndPoint,
@@ -52,33 +49,40 @@ class MyAjax {
             type: "POST",
             data: newData,
             success: function (result) {
-                console.log("POST success");
+                console.log("POST with file upload success");
                 myCallback();
-            },
-            error:function (jqXHR){
-                let errors = $.parseJSON(jqXHR.responseText);
-                alert('Data could not be recorded because the following error has occcurred:' + errors.message);    
-            }
+            },           
         });
     }
 
-    /*POST - új adat felvitele tömbösen az AB-ba API végponton keresztül*/
+    /*POST - új adat felvitele az AB-ba API végponton keresztül, ahol a bemeneti adat objektumokból álló tömb*/
     postAjaxForArray(apiEndPoint, requestData) {
         requestData._token = this.token;
         $.ajax({
             headers: { "X-CSRF-TOKEN": this.token },
             url: apiEndPoint,
             type: "POST",
-            data: { data: requestData },
+            data: { data: requestData }, // --> JSON.parse(JSON.stringify(inputArray))
             success: function (data) {
                 console.log("POST success");                
-            },
-            error:function (jqXHR){
-                let errors = $.parseJSON(jqXHR.responseText);
-                alert('Data could not be recorded because the following error has occcurred:' + errors.message);    
-            }
+            },           
         });
     }
+
+
+        /*DELETE - tömbbe gyűjtött adatok törlése az AB-ból API végponton keresztül*/
+        deleteAjaxForArray(apiEndPoint, inputArray) {                    
+            $.ajax({
+                headers: { "X-CSRF-TOKEN": this.token },
+                url: apiEndPoint,
+                type: "DELETE",
+                data: JSON.stringify(inputArray),
+                success: function (result) {
+                    console.log("DEL success");
+                },                
+            });
+        }
+    
 
     /*DELETE - adott id-jú adat törlése az AB-ból API végponton keresztül*/
     deleteAjax(apiEndPoint, id) {
@@ -88,15 +92,11 @@ class MyAjax {
             type: "DELETE",
             success: function (result) {
                 console.log("DEL success");
-            },
-            error:function (jqXHR){
-                let errors = $.parseJSON(jqXHR.responseText);
-                alert('Deletion could not be completed because the following error has occcurred:' + errors.message);    
-            }
+            },            
         });
     }
 
-    /*PUT - adott id-jú adat módosítása az AB-ban API végponton keresztül*/
+    /*PUT - adott id-jú adat módosítása az AB-ban API végponton keresztül */
     putAjax(apiEndPoint, newData, id) {
         newData._token = this.token;
         $.ajax({
@@ -114,6 +114,10 @@ class MyAjax {
             }
         });
     }
+
+
+      
+    
 
     
 }

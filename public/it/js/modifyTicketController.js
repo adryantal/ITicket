@@ -5,44 +5,22 @@ class ModifyTicketController {
     const mTicketView = new ModifyTicketView();
     const token = $('meta[name="csrf-token"]').attr("content");
     const myAjax = new MyAjax(token);
-    let attachmentsArray = []; //attachments display list
-    let attachmentsToBeAdded = [];
     let attachmentToBeRemoved = [];   
     let commentsToBeInserted = [];   
-    let apiEndPointAttachments = "api/attachment/all";
+    let apiEndPointAttachments = "api/attachments";
     let apiendPointJournalNew = "api/journal/new";    
     const ticketNr = mTicketView.ticketIDField.val();  //get ticketNr
     const ticketID = getTicketIDByNumber(ticketNr);    
     let apiEndPointTicket = "api/ticket";
  
-    loadAllTicketData(ticketNr);
+    loadTicketData(ticketNr);
    
-    //if a new attachment is to be added, add the related object to the attachmentsToBeAdded array
-    $(window).on("newFile", (event) => {
-      attachmentsToBeAdded.push(event.detail);
-    });
-    //update attachment display list
-    $(window).on("modifyAttachments", (event) => {
-      attachmentsArray.splice(0, attachmentsArray.length);
-      event.detail.forEach((element) => {
-        attachmentsArray.push(element);
-      });
-    });
-    //if an already existing attachment needs to be deleted, add the related id to the deleteExistingAttachment array
+    //get the database id of the attachment to be removed and add it to the attachmentToBeRemoved array
     $(window).on("deleteExistingAttachment", (event) => {
       attachmentToBeRemoved.push(event.detail);
+      console.log(attachmentToBeRemoved)      
     });
-    //check if the attachment marked for deletion is in the attachmentsToBeAdded array; if so, remove it
-    $(window).on("checkifNewAttachment", (event) => {
-      let index;
-      if (!(jQuery.inArray(event.detail, attachmentsToBeAdded) == -1)) {
-        index = attachmentsToBeAdded.indexOf(event.detail);
-        attachmentsToBeAdded.splice(index, 1);        
-      }
-    });
-
-
-
+  
     //receive descriptions of new comments to be addeed
     $(window).on("newComments", (event) => {      
       commentsToBeInserted.push(event.detail);      
@@ -50,7 +28,7 @@ class ModifyTicketController {
 
 
     //validate ticket data and submit ticket data
-    $("#submit").on("click", (evt) => { 
+    $("#submit").on("click", (evt) => {      
       if(mTicketView.statusField.val()===null){
         mTicketView.statusField.css('border-color','crimson');
         modFframeView.displayAlert('Please select a status other than "New"!');  
@@ -66,24 +44,19 @@ class ModifyTicketController {
            $(this.remove());
         })
         $("#comment-history").empty();
-        loadAllTicketData(mTicketView.ticketIDField.val());
+        
       }       
     }); 
     
     setStatusFieldBorder();  
-  
-    function loadAllTicketData(ticketNr){     
-      loadTicketData(ticketNr);    
-       
-    }
+     
 
-    function loadTicketData(ticketNr) {
-    
+    function loadTicketData(ticketNr) {    
       /*LOAD BASIC DETAILS*/
-      let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;
+      let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;      
       //load ticket data from API endpoint     
       $.getJSON(apiEndPointSelectedTicket, function(data) {      
-        setTicketToInactive(data);
+        setTicketToInactive(data);        
         mTicketView.ticketIDField.val(ticketNr);
         mTicketView.callerField.val(data.caller_name);
         mTicketView.subjpersonField.val(data.subjperson_name);
@@ -111,9 +84,9 @@ class ModifyTicketController {
         mTicketView.addHiddenInputField("assignedTo", data.assigned_to_id);
         mTicketView.addHiddenInputField("assignmentGroup", data.assignment_group_id);
         mTicketView.addHiddenInputField("service", data.service_id);
-        mTicketView.addHiddenInputField("category", data.category_id);        
-        loadComments(data.journals);
-        loadAttachments(data.attachments);              
+        mTicketView.addHiddenInputField("category", data.category_id);
+        loadAttachments(data.attachments);          
+        loadComments(data.journals);                     
       });
     }
 
@@ -139,17 +112,15 @@ class ModifyTicketController {
     }
 
     
-    function loadAttachments(data){
-      //loading attachments
+    function loadAttachments(data){      
           data.forEach((element) => {
-            mTicketView.attachments.push(element.name);
-            mTicketView.displayAttachmentList();          
+            mTicketView.existingAttachments.push(element);                      
         }
       );  
+      mTicketView.displayAttachmentList();
     }
 
-    function loadComments(commentsArray){
-      console.log("kommentek töltése")
+    function loadComments(commentsArray){     
                //loading comments       
       const commentContainer = $("#comment-history");       
          commentsArray.forEach((element, index) => {                        
@@ -182,8 +153,7 @@ class ModifyTicketController {
         description: mTicketView.descriptionField.val(),
         contact_type: mTicketView.contactTypeField.val(),
         parent_ticket: mTicketView.parentTicketField.val().substring(3,mTicketView.parentTicketField.val().length),
-        //attachments: attachmentsArray
-
+        
         //reading data from hidden input fields
         caller_id: $("#callerID").val(),
         subjperson_id: $("#subjpersonID").val(),
@@ -191,32 +161,17 @@ class ModifyTicketController {
         category_id: $("#categoryID").val(),
         assigned_to_id: $("#assignedToID").val(),
         assignment_group_id: $("#assignmentGroupID").val(),
-      };
-      console.log('modified formról kimenő  adat: '+ mTicketView.parentTicketField.val().substring(3,mTicketView.parentTicketField.val().length));
+      };     
      
-      myAjax.putAjax(apiEndPointTicket,modifiedTicketData,ticketID);
+      myAjax.putAjax(apiEndPointTicket,modifiedTicketData,ticketID);     
+      mTicketView.existingAttachments.splice(0,mTicketView.existingAttachments.length);
     }
 
-    function updateAttachments(){
-      /*UPDATE ATTACHMENTS*/
-      /*insert new attachments to the Attachments table*/      
-      attachmentsToBeAdded.forEach((element) => {
-        let newAttData = {
-          
-          ticketid: mTicketView.ticketIDField.val(),
-          filename: element,
-        };
-        myAjax.postAjax(apiEndPointAttachments, newAttData);
-      });
-      attachmentsToBeAdded.splice(0, attachmentsToBeAdded, length);
-
-      /*if any of the already existing attachments was marked for deletion, remove them from the Attachment table*/
-      attachmentToBeRemoved.forEach((element) => {
-        myAjax.deleteAjax(apiEndPointAttachments, element.id);
-      });
+    function removeSelectedAttachments(){     
+      /*if any of the already existing attachments have been marked for deletion, remove them from the Attachment table*/      
+        myAjax.deleteAjaxForArray(apiEndPointAttachments, attachmentToBeRemoved);      
       attachmentToBeRemoved.splice(0, attachmentToBeRemoved.length);
       mTicketView.existingAttachments.splice( 0, mTicketView.existingAttachments.length);
-
     }
     
     function insertNewComments(){
@@ -243,40 +198,43 @@ class ModifyTicketController {
       commentsToBeInserted.splice(0, commentsToBeInserted.length);
     }
 
+    function addNewAttachments(formData){
+      console.log($('#attachment')[0].files)
+      myAjax.postAjaxWithFileUpload(apiEndPointAttachments,formData,()=>{        
+      });
+    }
 
     function validateForm(){          
       const form = $("form");
       // Trigger HTML5 validity
-      let reportValidity = form[0].reportValidity();
+      let reportValidity = form[0].reportValidity();    
       // Then submit if form is OK.
-      if (reportValidity) {       
-        modifyNewTicket();
-      } else {
-        evt.preventDefault();
-        evt.stopPropagation();
-        evt.stopImmediatePropagation();
-      }
+      if(reportValidity){
+        let formData = new FormData(document.getElementsByTagName('form')[0]); //only for file upload          
+        modifyNewTicket(formData);           
+      }else{      
+         evt.preventDefault();
+         evt.stopPropagation();
+         evt.stopImmediatePropagation();     
+      }  
     }
 
-
-    function modifyNewTicket() {
+    function modifyNewTicket(formData) {
       updateBasicTicketData();
-     // updateAttachments();
+      addNewAttachments(formData);
+      removeSelectedAttachments();
       insertNewComments();    
     }
-
 
     function setStatusFieldBorder(){
       mTicketView.statusField.on("change",function(){
         mTicketView.statusField.css('border-color','rgb(125, 163, 163, 0.7)');
       });
-    }
-  
+    }  
 
     function getTicketIDByNumber(ticketNr){
       return ticketNr.substring(3,ticketNr.length);    
     }
-
 
   }
 
