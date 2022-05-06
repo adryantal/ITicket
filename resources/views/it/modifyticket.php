@@ -58,7 +58,7 @@
 
           <div class="row-top">
             <div><label for="ticketID">Ticket ID</label></div>
-            <div> <input type="other" name="ticketID" id="ticketID" readonly value="<?php echo $ticketnr  ?>"></div>
+            <div> <input type="other" name="ticketID" id="ticketID" readonly ></div>
             <div><label for="status">Status</label></div>
             <div> <select id="status" name="status">
                <option value="New" disabled>New</option>
@@ -134,16 +134,16 @@
           </div>
           <div class="row-top">
             <div><label for="createdBy">Created by</label></div>
-            <div> <input type="other" name="createdBy" id="createdBy" readonly value="<?php echo $created_by_name  ?>"></div>
+            <div> <input type="other" name="createdBy" id="createdBy" readonly ></div>
 
             <div><label for="lastUpdatedBy">Last modified by</label></div>
-            <div> <input type="other" name="lastUpdatedBy" id="lastUpdatedBy" readonly value="<?php echo $updated_by_name  ?>"></div>
+            <div> <input type="other" name="lastUpdatedBy" id="lastUpdatedBy" readonly ></div>
           </div>
           <div class="row-top">
             <div><label for="createdOn">Created on</label></div>
-            <div> <input type="other" name="createdOn" id="createdOn" readonly value="<?php echo $created_on  ?>"></div>
+            <div> <input type="other" name="createdOn" id="createdOn" readonly ></div>
             <div><label for="LastUpdatedOn">Last updated on</label></div>
-            <div> <input type="other" name="lastUpdatedOn" id="lastUpdatedOn" readonly value="<?php echo $updated  ?>"></div>
+            <div> <input type="other" name="lastUpdatedOn" id="lastUpdatedOn" ></div>
 
           </div>
 

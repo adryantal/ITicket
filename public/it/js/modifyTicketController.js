@@ -8,12 +8,10 @@ class ModifyTicketController {
     let attachmentToBeRemoved = [];   
     let commentsToBeInserted = [];   
     let apiEndPointAttachments = "api/attachments";
-    let apiendPointJournalNew = "api/journal/new";    
-    const ticketNr = mTicketView.ticketIDField.val();  //get ticketNr
-    const ticketID = getTicketIDByNumber(ticketNr);    
+    let apiendPointJournalNew = "api/journal/new";   
     let apiEndPointTicket = "api/ticket";
  
-    loadTicketData(ticketNr);
+    loadTicketData();
    
     //get the database id of the attachment to be removed and add it to the attachmentToBeRemoved array
     $(window).on("deleteExistingAttachment", (event) => {
@@ -44,19 +42,18 @@ class ModifyTicketController {
            $(this.remove());
         })
         $("#comment-history").empty();      
-      }       
+      }  
+         
     }); 
     
     setStatusFieldBorder();  
      
-
-    function loadTicketData(ticketNr) {    
-      /*LOAD BASIC DETAILS*/
-      let apiEndPointSelectedTicket = "api/ticket/get/"+ticketNr;      
-      //load ticket data from API endpoint     
-      $.getJSON(apiEndPointSelectedTicket, function(data) {      
+    
+    function loadTicketData() {  
+      //load ticket data from localStorage
+       const data= JSON.parse(localStorage.getItem('ticket'));                  
         setTicketToInactive(data);        
-        mTicketView.ticketIDField.val(ticketNr);
+        mTicketView.ticketIDField.val(data.ticketnr);
         mTicketView.callerField.val(data.caller_name);
         mTicketView.subjpersonField.val(data.subjperson_name);
         mTicketView.serviceField.val(data.service_name);
@@ -76,6 +73,9 @@ class ModifyTicketController {
         mTicketView.lastUpdatedOn.val(data.updated);
         mTicketView.parentTicketField.val(data.parent_ticketnr);       
         mTicketView.timeSpentField.val(data.timespent);
+        mTicketView.createdByField.val(data.created_by_name);
+        mTicketView.lastUpdatedBy.val(data.updated_by_name);
+        
         checkTimeLeft(data);
         //creating hidden input fields for the IDs
         mTicketView.addHiddenInputField("caller", data.caller_id); 
@@ -88,8 +88,8 @@ class ModifyTicketController {
         loadComments(data.journals);  
       
         console.log('feltöltésre jelölt fájlok: '+$('#attachment')[0].files);
-        console.log('load ticket data completed')                   
-      });
+        console.log('load ticket data completed')                         
+     
     }
 
     //in case the ticket is in Closed status, disable all input fields on the form
@@ -137,8 +137,8 @@ class ModifyTicketController {
     function updateBasicTicketData() {
       /*insert value of the input fields to the Tickets table*/     
       let modifiedTicketData = {
-        id: ticketID,
-        ticketnr: ticketNr,
+        id: getTicketIDByNumber(mTicketView.ticketIDField.val()),
+        ticketnr: mTicketView.ticketIDField.val(),
         caller_name: mTicketView.callerField.val(),
         subjperson_name: mTicketView.subjpersonField.val(),
         title: mTicketView.titleField.val(),
@@ -165,7 +165,7 @@ class ModifyTicketController {
         assignment_group_id: $("#assignmentGroupID").val(),
       };     
      
-      myAjax.putAjax(apiEndPointTicket,modifiedTicketData,ticketID);     
+      myAjax.putAjax(apiEndPointTicket,modifiedTicketData,getTicketIDByNumber(mTicketView.ticketIDField.val()));     
       mTicketView.existingAttachments.splice(0,mTicketView.existingAttachments.length);
     }
 
@@ -182,7 +182,7 @@ class ModifyTicketController {
        commentsToBeInserted.forEach((element) => {
            let newCommentData = {
                description: element,
-               ticketid: ticketID,
+               ticketid: getTicketIDByNumber(mTicketView.ticketIDField.val()),
                caller_id: $("#callerID").val(),
                subjperson_id: $("#subjpersonID").val(),
                service_id: $("#serviceID").val(),
@@ -203,18 +203,20 @@ class ModifyTicketController {
     function addNewAttachments(formData){
       console.log($('#attachment')[0].files)
       myAjax.postAjaxWithFileUpload(apiEndPointAttachments,formData,()=>{ 
-        loadTicketData(ticketNr);   //callback function!!!! This is because we need to wait until all file uploads have been completed and then load the refreshed data.
+        getFreshTicketData(loadTicketData); 
+           //Both getFreshTicketData and loadTicketData are callback functions!!!! 
+          // This is because we need to wait until all file uploads have been completed and then load the refreshed data.
       });
     }
 
-    function validateForm(myCallback){          
+    function validateForm(){          
       const form = $("form");
       // Trigger HTML5 validity
       let reportValidity = form[0].reportValidity();    
       // Then submit if form is OK.
       if(reportValidity){
         let formData = new FormData(document.getElementsByTagName('form')[0]); //only for file upload          
-        modifyNewTicket(formData,loadTicketData);                 
+        modifyNewTicket(formData);                 
       }else{      
          evt.preventDefault();
          evt.stopPropagation();
@@ -238,6 +240,15 @@ class ModifyTicketController {
     function getTicketIDByNumber(ticketNr){
       return ticketNr.substring(3,ticketNr.length);    
     }
+
+    function getFreshTicketData(callback){
+      localStorage.clear();     
+       $.getJSON('api/ticket/get/'+mTicketView.ticketIDField.val(), function(data) {
+          localStorage.setItem('ticket', JSON.stringify(data));
+          callback();
+          });
+       
+  }
 
   }
 

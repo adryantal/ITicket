@@ -32,16 +32,14 @@ class ModifyTicketView {
     this.serviceID="";
     this.assignmentGroupID="";
    
-      
+   
     //disable assignedTo and category fields
     this.categoryField.attr('disabled', 'disabled'); 
     this.assignedToField.attr('disabled', 'disabled');
     //controlling the status of the below 2 fields
     this.disableChildInputOnChange(this.serviceField,this.categoryField);
-    this.disableChildInputOnChange(this.assignmentGroupField,this.assignedToField);
+    this.disableChildInputOnChange(this.assignmentGroupField,this.assignedToField);    
    
-    
-    restrictPageRefresh(); 
 
     this.setRequiredInputFields();
     this.setAutocompInputFields();   
@@ -65,23 +63,8 @@ class ModifyTicketView {
     $("#comment-template").hide();
 
     //prepare comment drafts
-    this.draftComment();
-
-    
-    function restrictPageRefresh() {      
-        $(window).bind("contextmenu", function (e) {
-            return false;
-        });
-        //disable F5
-        $(document).ready(function() {
-          $(window).keydown(function(event){        
-            if(event.keyCode == 116) {        
-              event.preventDefault();        
-              return false;        
-            }        
-          });        
-        });
-    }  
+    this.draftComment();    
+ 
   }
  
   eventTrigger(eventName, eventDetail) {

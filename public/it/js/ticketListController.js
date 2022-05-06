@@ -8,7 +8,7 @@ class TicketListController {
     myAjax.getAjax(apiTickets, ticketDataArray, ticketList);
     new TicketListHeader();
 
-    this.selectedTicketNr ="";
+
 
     /*DISPLAY TICKET LIST */
     function ticketList(array) {
@@ -27,11 +27,14 @@ class TicketListController {
        
     /*CLICK ON TICKET NR. AND GET REDIRECTED TO THE MODIFY PAGE*/
        $("#ticket-container").on("click",'.ticket-data .ticketID a',(e)=>{      
-        const ticketNr = $(e.target).text();  
-        console.log(ticketNr) 
+        const ticketNr = $(e.target).text();      
        //over to the modify page     
-         window.location.href="/modifyticket/"+ticketNr;  
-         this.selectedTicketNr=ticketNr;         
+         window.location.href="/modifyticket/"+ticketNr;        
+         //save ticket object data to the localStorage   
+         localStorage.removeItem('ticket');    
+        $.getJSON('api/ticket/get/'+ticketNr, function(data) {
+        localStorage.setItem('ticket', JSON.stringify(data));
+        });
       })
 
 

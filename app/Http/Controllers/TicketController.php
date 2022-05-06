@@ -18,9 +18,7 @@ use Illuminate\Http\Request;
 use function PHPUnit\Framework\isNull;
 
 class TicketController extends Controller
-{
-  
-    //összes ticket
+{   //összes ticket
     public function getAllTickets()
         {
        $response=array();
@@ -413,6 +411,7 @@ class TicketController extends Controller
         'timeleft' => $timeleft,
         'timespent' => $timespent,                       
         );    
+        //adat küldése session-ön keresztül
       return redirect('/modifyticket')->with('data', $data);
    }
 
