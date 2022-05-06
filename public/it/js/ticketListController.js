@@ -31,8 +31,7 @@ class TicketListController {
         console.log(ticketNr) 
        //over to the modify page     
          window.location.href="/modifyticket/"+ticketNr;  
-         this.selectedTicketNr=ticketNr;
-         
+         this.selectedTicketNr=ticketNr;         
       })
 
 
@@ -61,11 +60,8 @@ class TicketListController {
   
     });
 
-
-       
      
-    /*ATTRIBUTE HEADER - sorting tickets by attributes*/    
-
+    /*ATTRIBUTE HEADER - sorting tickets by attributes*/ 
     let asc=true;
     $(window).on("sortByAttribute", (event) => {
       let attribute = event.detail;  

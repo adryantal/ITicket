@@ -171,8 +171,9 @@
 
             <div id="attachment-container">
               <button id="attachment-btn">Add attachment</button>
-              <input type="file" id="attachment" name="attachments[]" multiple>
-              <div id="attachment-list"></div>
+              <input type="file" id="attachment" name="attachments[]" multiple>              
+              <div id="existing-attachments"></div>
+              <div id="draft-attachments"></div>
             </div>
 
 

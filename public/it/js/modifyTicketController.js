@@ -18,7 +18,7 @@ class ModifyTicketController {
     //get the database id of the attachment to be removed and add it to the attachmentToBeRemoved array
     $(window).on("deleteExistingAttachment", (event) => {
       attachmentToBeRemoved.push(event.detail);
-      console.log(attachmentToBeRemoved)      
+      console.log('to be removed:' + attachmentToBeRemoved)      
     });
   
     //receive descriptions of new comments to be addeed

@@ -23,7 +23,9 @@ class ModifyTicketView {
     this.timeSpentField = $('#timeSpent');
     this.lastUpdatedOn = $("#lastUpdatedOn");
     this.lastUpdatedBy = $("#lastUpdatedBy");
-    this.attachmentList = $("#attachment-list");
+    this.attachmentContainer = $('#attachment-container');
+    this.attachmentList = $("#existing-attachments");
+    this.draftAttachmentList = $("#draft-attachments");
     this.addAttachmentFileInput = $("#attachment"); 
     this.postCommentBtn = $("#comment-btn").children('input'); 
     this.commentTextArea = $("#comment");        
@@ -50,7 +52,7 @@ class ModifyTicketView {
       for (let index = 0; index < $('#attachment')[0].files.length; index++) {   
         this.validateFileToUpload(index);    
       }     
-      this.displayAttachmentList();                 
+      this.displayDraftAttachments();                 
     });   
 
     //remove attachments
@@ -88,7 +90,6 @@ class ModifyTicketView {
     });
     window.dispatchEvent(ev);
   }
-
 
 
   setRequiredInputFields(){    
@@ -136,22 +137,24 @@ validateFileToUpload(index){
          }
   }
 
-  
+  //display existing attachments
   displayAttachmentList() {
     this.attachmentList.empty(); 
-    this.attachmentList.append('<p><i>Files already added:</i></p>');
-    //existing attachments
+    this.draftAttachmentList.empty();       
     this.existingAttachments.forEach((element, index) => {
       this.attachmentList.append( //create an attribute for the database id and filename in the tags
         "<div id='attachment" +  index + "' dbid=" +  element.id + "'><a href='storage/attachments/"+element.path +"'>&#128206 " + element.name + "</a> <div class='attm-remove-btn'>x</div></div>"
       );
     });
-    //new attachments selected for upload;
-    this.attachmentList.append('<p><i>Files selected for upload:</i></p>');
-    for (let index = 0; index < $('#attachment')[0].files.length; index++) {    
-      this.attachmentList.append(
-        "<div id='newattachment" +  index +  "'>&#128206 " +  $('#attachment')[0].files[index].name);
-    }    
+    
+  }
+ //display new attachments selected for upload
+  displayDraftAttachments(){    
+    this.draftAttachmentList.empty();    
+      for (let index = 0; index < $('#attachment')[0].files.length; index++) {    
+        this.draftAttachmentList.append(
+          "<div id='newattachment" +  index +  "'>&#128206 " +  $('#attachment')[0].files[index].name);
+      }
   }
 
   removeAttachment(event) {   
@@ -165,6 +168,7 @@ validateFileToUpload(index){
       //forward the database id of the related object to the controller
       this.eventTrigger("deleteExistingAttachment", dbid);           
      this.displayAttachmentList();    
+     this.displayDraftAttachments(); 
   }
 
   autoCompForTicketNrs(selector, attributeName,apiEndPoint) {       
