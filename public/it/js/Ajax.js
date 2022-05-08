@@ -106,18 +106,18 @@ class MyAjax {
             data: newData,
             success: function (result) {
                 console.log("PUT success");
-                alert('Successful data update!');
+                $('#alerts').removeClass('error');                    
+                $('#alerts').addClass('info');
+                $('#alerts').show();
+                $('form #ajax-messages').text('Successful data update!');                
             },           
             error:function (jqXHR){
-                let errors = $.parseJSON(jqXHR.responseText);
-                alert('Data update could not be completed because the following error has occcurred:' + errors.message);    
+                let errors = $.parseJSON(jqXHR.responseText);   
+                $('#alerts').removeClass('info');             
+                $('#alerts').addClass('error');
+                $('#alerts').show();
+                $('form #ajax-messages').text('Data update could not be completed because the following error has occcurred:<br>' + errors.message);    
             }
         });
-    }
-
-
-      
-    
-
-    
+    }    
 }

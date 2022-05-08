@@ -17,7 +17,16 @@ class ModifyUserController{
    this.activeInputField = $('#active'); 
    this.passwordInputField = $('#password');
    this.resolverDropdown = $("#resolver"); 
-   this.submitBtn = $("#btn-submit");    
+   this.submitBtn = $("#btn-submit");  
+   this.ajaxAlertBox = $('#alerts');
+   this.alertCloseBtn = $('#alert-close-btn a');
+   
+
+     //handle displaying of AJAX alert messages
+     this.ajaxAlertBox.hide();
+     this.alertCloseBtn.on('click',()=>{
+       this.ajaxAlertBox.hide();     
+     })
 
    this.setAutocompInputFields();
   

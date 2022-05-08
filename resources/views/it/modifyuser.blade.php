@@ -142,6 +142,8 @@
 
                                     <input type="button" id='btn-submit' value="SUBMIT">
                                     </div>
+
+                                    <div id='alerts'><div id='ajax-messages'></div><div id="alert-close-btn"><a>x</a></div></div>
                                 </form>
 
                                

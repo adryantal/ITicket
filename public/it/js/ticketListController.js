@@ -9,7 +9,6 @@ class TicketListController {
     new TicketListHeader();
 
 
-
     /*DISPLAY TICKET LIST */
     function ticketList(array) {
       const parentItem = $("#ticket-container");
@@ -46,7 +45,6 @@ class TicketListController {
     });
 
     /*FILTER BAR - filtering tickets by attributes*/
-
     new TicketFilter();
     $(window).on("filterTicketData", (event) => { 
       let filterInputValueChain = "filter?";

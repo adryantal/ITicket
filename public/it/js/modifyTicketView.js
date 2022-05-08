@@ -31,7 +31,14 @@ class ModifyTicketView {
     this.commentTextArea = $("#comment");        
     this.serviceID="";
     this.assignmentGroupID="";
-   
+    this.ajaxAlertBox = $('#alerts');
+    this.alertCloseBtn = $('#alert-close-btn a');
+       
+    //handle displaying of AJAX alert messages
+    this.ajaxAlertBox.hide();
+    this.alertCloseBtn.on('click',()=>{
+      this.ajaxAlertBox.hide();     
+    })
    
     //disable assignedTo and category fields
     this.categoryField.attr('disabled', 'disabled'); 
@@ -55,7 +62,7 @@ class ModifyTicketView {
 
     //remove attachments
     this.attachmentList.on("click", ".attm-remove-btn", (event) => {
-      //update attachment display list
+    //update attachment display list
       this.removeAttachment(event);    
     });  
 
@@ -63,8 +70,7 @@ class ModifyTicketView {
     $("#comment-template").hide();
 
     //prepare comment drafts
-    this.draftComment();    
- 
+    this.draftComment();  
   }
  
   eventTrigger(eventName, eventDetail) {
@@ -378,9 +384,10 @@ validateFileToUpload(index){
     parentSelector.on("input", ()=> {
       childSelector.val(''); 
       childSelector.attr('disabled', 'disabled'); 
-    });
-  
+    });  
    }
+
+
 }
 
 

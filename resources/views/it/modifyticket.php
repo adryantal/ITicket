@@ -6,8 +6,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>ITicket - Modify ticket</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-
   <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\frame.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="\..\it\css\modifyticket.css" />
   <link rel="icon" type="image/x-icon" href="/storage/logo_mini.PNG" /> 
@@ -23,29 +21,7 @@
 
 <body>
   <main>
-    <?php include 'firstpart.php';
-    $ticket= session()->get('data');
-    
-    if (!isset($ticket)) {
-      $ticketnr=null;
-      $created_by_name=null;  
-      $created_on= null;
-      $updated_by_name=null;
-      $updated=null;    
-      $timespent=null;
-      $timeleft=null;
-    }
-    else{
-      $ticketnr= $ticket['ticketnr'];
-      $created_by_name= $ticket['created_by_name'];
-      $created_on= $ticket['created_on'];  
-      $updated_by_name= $ticket['updated_by_name'];
-      $updated= $ticket['updated'];   
-      $timespent= $ticket['timespent'];
-      $timeleft= $ticket['timeleft'];
-    }    
-     ?>
-   
+    <?php include 'firstpart.php'; ?>   
 
     <article>
 
@@ -55,6 +31,8 @@
 
         <form action="" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_method" value="PUT">
+
+        <div id='alerts'><div id='ajax-messages'></div><div id="alert-close-btn"><a>x</a></div></div>
 
           <div class="row-top">
             <div><label for="ticketID">Ticket ID</label></div>
