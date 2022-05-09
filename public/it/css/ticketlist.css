@@ -244,12 +244,14 @@ input::placeholder {
 @media screen and (max-width: 768px) {
     article {
         margin-top: 15px;
-        /* position: relative; */
-        padding: none;
+    
+     overflow-y: scroll;
+               
     }
+    
 
     #footer-bar {
-        position: static;
+      
     }
 }
 

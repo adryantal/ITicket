@@ -26,14 +26,14 @@ class TicketListController {
        
     /*CLICK ON TICKET NR. AND GET REDIRECTED TO THE MODIFY PAGE*/
        $("#ticket-container").on("click",'.ticket-data .ticketID a',(e)=>{      
-        const ticketNr = $(e.target).text();      
-       //over to the modify page     
-         window.location.href="/modifyticket/"+ticketNr;        
+        const ticketNr = $(e.target).text();               
          //save ticket object data to the localStorage   
          localStorage.removeItem('ticket');    
         $.getJSON('api/ticket/get/'+ticketNr, function(data) {
-        localStorage.setItem('ticket', JSON.stringify(data));
-        });
+          //over to the modify page  
+        localStorage.setItem('ticket', JSON.stringify(data));  
+        window.location.href="/modifyticket/"+ticketNr;      
+        });        
       })
 
 

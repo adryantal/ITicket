@@ -208,22 +208,26 @@ class Pagination {
 
     let limitPerPage;
       //set limit per page based on browser height --> refresh needed
-   
+
       $(window).on('resize', ()=>{        
         location.reload();
         countlimitPerPage();     
         $(window).scrollLeft(0);        
     });      
 
-        if ($(".ticket-data-line").length == 1) { //when only the template instance of .ticket-data-line exists
+
+        if ($(".ticket-data-line").length == 1) {
+            //when only the template instance of .ticket-data-line exists
             pageIntervalBar.append("0");
         } else {
-            countlimitPerPage();         
-            if( limitPerPage>numberOfTickets)
-          { pageIntervalBar.append("1-" + (limitPerPage-1 )); 
-        }else
-        {  pageIntervalBar.append("1-" + (limitPerPage ))}          
+            countlimitPerPage();
+            if (limitPerPage > numberOfTickets) {
+                pageIntervalBar.append("1-" + (limitPerPage - 1));
+            } else {
+                pageIntervalBar.append("1-" + limitPerPage);
+            }
         }
+      
 
    initPaginationBar();    
    goToPreviousPage();
