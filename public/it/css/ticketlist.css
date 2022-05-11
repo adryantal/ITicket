@@ -243,9 +243,8 @@ input::placeholder {
 
 @media screen and (max-width: 768px) {
     article {
-        margin-top: 15px;
-    
-     overflow-y: scroll;
+        margin-top: 15px;    
+     
                
     }
     

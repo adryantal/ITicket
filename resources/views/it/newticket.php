@@ -37,6 +37,8 @@
 
         <form action="" method="POST" enctype="multipart/form-data"> 
 
+        <div id='alerts'><div id='ajax-messages'></div><div id="alert-close-btn"><a>x</a></div></div>
+
           <div class="row-top"> 
             <div><label for="caller">Caller</label></div>
             <div> <input type="text" id="caller" name="caller" >
@@ -123,7 +125,7 @@
          <div id="row-last">
 
           <div id="attachment-container">           
-            <button id="attachment-btn" >Add attachment</button>
+          <label id="attachment-btn" for ='attachment' class="custom-file-input"></label>
             <input type="file" id="attachment" name="attachments[]" multiple >
             <div id="attachment-list"></div>
           </div>

@@ -155,7 +155,7 @@ class TicketFilter {
        let searchVal=$(e.currentTarget).closest('.attr-filter').children('input').val();
        let filterItemID=($(e.currentTarget).closest('.attr-filter').children('input').attr('id'));
        console.log(searchVal, filterItemID);
-       if (searchVal == "") {         
+       if (searchVal === "") {         
                this.searchTrigger("filterTicketData", fInputArray); //forwarding the array to the Controller for further processing 
                $("#search-status-bar").html("Filter | All tickets");        
        } else {
@@ -215,7 +215,7 @@ class Pagination {
         $(window).scrollLeft(0);        
     });      
 
-
+    //if($(window).innerWidth() >= 850) { //do not apply pagination on (mobile) devices with max-width of 850px
         if ($(".ticket-data-line").length == 1) {
             //when only the template instance of .ticket-data-line exists
             pageIntervalBar.append("0");
@@ -227,12 +227,15 @@ class Pagination {
                 pageIntervalBar.append("1-" + limitPerPage);
             }
         }
-      
+      // }else{
+      //   $('#footer-bar').empty();
+      // }
 
    initPaginationBar();    
    goToPreviousPage();
    goToSelectedPage();
    nextPage();  
+   checkDevice();
 
     function countlimitPerPage(){      
       let itemContainerHeight =  $("main").height() -  $("#attr-bar").height()- $("#search-status-bar").height();
@@ -244,7 +247,7 @@ class Pagination {
                   limitPerPage++;
               }
           });   
-        }  
+        }    
 
 
   function initPaginationBar(){
@@ -343,6 +346,17 @@ class Pagination {
             pageIntervalBar.append( limitPerPage * currentPage - limitPerPage +  1 + "-" + limitPerPage * currentPage);
         }
     });
+  }
+
+  function checkDevice(){  //if the device is mobile, some settings need to be applied to reach full responsivity
+    const detectDeviceType = () =>
+    /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    ? 'Mobile'
+    : 'Desktop';    
+    console.log(detectDeviceType())
+      if(detectDeviceType()==='Mobile'){
+        $('article').css('padding-bottom','115px');
+   }
   }
 
   }

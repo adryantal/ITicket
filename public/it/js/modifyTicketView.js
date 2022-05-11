@@ -34,7 +34,7 @@ class ModifyTicketView {
     this.ajaxAlertBox = $('#alerts');
     this.alertCloseBtn = $('#alert-close-btn a');
        
-    //handle displaying of AJAX alert messages
+    //handle displaying of custom (AJAX) alert messages
     this.ajaxAlertBox.hide();
     this.alertCloseBtn.on('click',()=>{
       this.ajaxAlertBox.hide();     
@@ -50,14 +50,28 @@ class ModifyTicketView {
 
     this.setRequiredInputFields();
     this.setAutocompInputFields();   
+
+
+    
+    this.statusField.on('change',()=>{
+      if(!(this.statusField.val()==="New")){
+        this.hideAlert();    
+      }
+    })
+   
  
 
     //add new attachments  
     this.addAttachmentFileInput.on("change", (event) => {
+      if ($("#attachment")[0].files.length > 10) {
+        this.displayAlert("You can upload maximum 10 files!");
+    } else {
+      this.hideAlert();
       for (let index = 0; index < $('#attachment')[0].files.length; index++) {   
         this.validateFileToUpload(index);    
       }     
-      this.displayDraftAttachments();                 
+      this.displayDraftAttachments(); 
+    }                
     });   
 
     //remove attachments
@@ -95,7 +109,7 @@ validateFileToUpload(index){
           let sizeTooBig = false;
           let unsupportedFormat = false;
           if($('#attachment')[0].files[index].size > 1048576 ){
-            alert("At least one of the selected files is too big! (Max. file size is 1MB.)");
+            this.displayAlert("At least one of the selected files is too big! (Max. file size is 1MB.)");
             sizeTooBig=true;          
          };
          let fileName = $('#attachment')[0].files[index].name;
@@ -118,7 +132,7 @@ validateFileToUpload(index){
           ".msg",
         ];    
         if(jQuery.inArray(fileExt, allowedTypes) == -1) {
-          alert("Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg");
+          this.displayAlert("Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg");
           unsupportedFormat = true;        
         }
          if(sizeTooBig || unsupportedFormat){
@@ -299,6 +313,7 @@ validateFileToUpload(index){
   draftComment(){
       //post a comment (only at frontend level)
       this.postCommentBtn.on("click", () => {
+          this.hideAlert();
           $("#comments-empty").hide();
           $("#comment-template .comment-timestamp").text(""); // ide lehetne egy date now? úgyse szúródik be AB-be...
           $("#comment-template .comment-creator").text(" Draft comment");
@@ -318,9 +333,10 @@ validateFileToUpload(index){
               $("#comment").val("");
           } else {
             if($("#comment-draft .comment-item").length===0){
-              alert("Empty comment field!"); ///////////
+              this.displayAlert("Empty comment field!"); ///////////
             }
-          }
+          }  
+              
       });
   }
 
@@ -378,13 +394,27 @@ validateFileToUpload(index){
     }
     });
   }
-
    
    disableChildInputOnChange(parentSelector,childSelector){
     parentSelector.on("input", ()=> {
       childSelector.val(''); 
       childSelector.attr('disabled', 'disabled'); 
     });  
+   }
+
+
+   displayAlert(message){
+    $('#alerts').removeClass('info');             
+    $('#alerts').addClass('error');
+    $('#alerts').show();
+    $('form #ajax-messages').text(message); 
+   }
+
+   hideAlert(){
+    $('#alerts').removeClass('error');   
+    $('#alerts').removeClass('info');  
+    $('#alerts').hide();
+    $('form #ajax-messages').text('');
    }
 
 

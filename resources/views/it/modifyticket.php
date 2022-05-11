@@ -148,7 +148,7 @@
           <div id="row-last">
 
             <div id="attachment-container">
-              <button id="attachment-btn">Add attachment</button>
+              <label id="attachment-btn" for ='attachment' class="custom-file-input"></label>
               <input type="file" id="attachment" name="attachments[]" multiple>              
               <div id="existing-attachments"></div>
               <div id="draft-attachments"></div>

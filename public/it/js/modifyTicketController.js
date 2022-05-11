@@ -26,29 +26,29 @@ class ModifyTicketController {
 
 
     //validate ticket data and submit ticket data
-    $("#submit").on("click", (evt) => {      
+    $("#submit").on("click", (evt) => {       
       if(mTicketView.statusField.val()===null){
-        mTicketView.statusField.css('border-color','crimson');
-        modFframeView.displayAlert('Please select a status other than "New"!');  
+        mTicketView.statusField.css('border-color','crimson');     
+       mTicketView.displayAlert('Please select a status other than "New"!');
        } else 
        if($("#comment-draft").children('div').length<1){
-        modFframeView.displayAlert('Please insert a comment for the modification!');           
+        mTicketView.displayAlert('Please insert a comment for the modification!');                 
       }else if(mTicketView.assignedToField.val()===''){
-        modFframeView.displayAlert('You cannot update a case if it is unassigned. Please make sure it is assigned to you or a colleague. Thank you.');       
+        mTicketView.displayAlert('You cannot update a case if it is unassigned. Please make sure it is assigned to you or a colleague. Thank you.');       
       }
-      else{
-        validateForm();
+      else{            
+        validateForm();         
         $("#comment-draft div").each(function(){
            $(this.remove());
         })
-        $("#comment-history").empty();      
+        $("#comment-history").empty();
       }  
          
     }); 
     
-    setStatusFieldBorder();  
-     
-    
+    setStatusFieldBorder();   
+ 
+
     function loadTicketData() {  
       //load ticket data from localStorage
        const data= JSON.parse(localStorage.getItem('ticket'));                  
@@ -215,6 +215,7 @@ class ModifyTicketController {
       let reportValidity = form[0].reportValidity();    
       // Then submit if form is OK.
       if(reportValidity){
+        mTicketView.hideAlert();  
         let formData = new FormData(document.getElementsByTagName('form')[0]); //only for file upload          
         modifyNewTicket(formData);                 
       }else{      

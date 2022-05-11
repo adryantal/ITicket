@@ -42,6 +42,7 @@ class NewTicketController {
       $("#ticket-number").text(data.ticketnr);
       nTicketView.submissionConfirmationWindow.show();      
   });
+  //!!!it would make more sense to use the nTicketView.displayAlert method...
 }
  
 }

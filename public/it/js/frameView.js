@@ -114,8 +114,7 @@ loadPage(selector, index, url,note){
     if ( !$(event.target).hasClass("h-icon") && this.navDropdownList.is(":visible") ) {
       this.navDropdownList.hide();
     }
-    if ($(event.target).hasClass("h-icon")) { 
-      console.log('kattintottam') 
+    if ($(event.target).hasClass("h-icon")) {      
       if (this.navDropdownList.is(":visible")) { this.navDropdownList.hide();
         return;
       }

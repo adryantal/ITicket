@@ -22,9 +22,17 @@ class NewTicketView {
     this.ResetFormBtn = $("#reset");    
     this.submissionConfirmationWindow=$('#submission-confirmation');
     this.confirmationCloseBtn=$("#confirmation-close-btn");
-    this.serviceID="";
+    this.alertBox = $('#alerts')
+    this.alertCloseBtn = $('#alert-close-btn a');
+    this.serviceID="";    
 
-    this.submissionConfirmationWindow.hide(); 
+     //handle displaying of custom alert messages
+    this.alertBox.hide();
+    this.alertCloseBtn.on('click',()=>{
+      this.alertBox.hide();     
+    })
+
+    this.submissionConfirmationWindow.hide();  
     this.confirmationCloseBtn.on("click",()=>{
       this.submissionConfirmationWindow.hide()
     });
@@ -35,10 +43,15 @@ class NewTicketView {
 
     //attachment / file upload  
     this.addAttachmentFileInput.on("change", (event) => {
-      for (let index = 0; index < $('#attachment')[0].files.length; index++) {   
-        this.validateFileToUpload(index);    
-      }     
-      this.displayAttachmentList();        
+      if ($("#attachment")[0].files.length > 10) {
+         this.displayAlert("You can upload maximum 10 files!");
+     } else {  
+        this.hideAlert();        
+        for (let index = 0; index < $('#attachment')[0].files.length; index++) {   
+            this.validateFileToUpload(index);    
+        }     
+      this.displayAttachmentList(); 
+    }        
     }); 
     
    //reset form
@@ -49,7 +62,7 @@ class NewTicketView {
           let sizeTooBig = false;
           let unsupportedFormat = false;
           if($('#attachment')[0].files[index].size > 1048576 ){
-            alert("At least one of the selected files is too big! (Max. file size is 1MB.)");
+            this.displayAlert("At least one of the selected files is too big! (Max. file size is 1MB.)");
             sizeTooBig=true;          
          };
          let fileName = $('#attachment')[0].files[index].name;
@@ -72,7 +85,7 @@ class NewTicketView {
           ".msg",
         ];    
         if(jQuery.inArray(fileExt, allowedTypes) == -1) {
-          alert("Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg");
+          this.displayAlert("Unsupported file format! Permitted file formats are: .jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip, .msg");
           unsupportedFormat = true;        
         }
          if(sizeTooBig || unsupportedFormat){
@@ -307,4 +320,18 @@ class NewTicketView {
     });
 
   }
+
+  displayAlert(message){
+    $('#alerts').removeClass('info');             
+    $('#alerts').addClass('error');
+    $('#alerts').show();
+    $('form #ajax-messages').text(message); 
+   }
+
+   hideAlert(){
+    $('#alerts').removeClass('error');   
+    $('#alerts').removeClass('info');  
+    $('#alerts').hide();
+    $('form #ajax-messages').text('');
+   }
 }
