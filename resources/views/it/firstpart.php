@@ -41,7 +41,7 @@
   
    <div class="prdropdown-content">
    <div id="username" res-group-id="'.auth()->user()->resolver_id .'">'. auth()->user()->name .'</div>
-     <a href="#">Profile</a>
+     <a href="user/'.auth()->user()->id .'/profile">Profile</a>
      <a href="#" id="switchboard-link"  >Switchboard</a>
      <a href="/logout" id="logout-option">Logout</a>        
    </div>

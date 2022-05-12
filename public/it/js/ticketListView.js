@@ -215,7 +215,7 @@ class Pagination {
         $(window).scrollLeft(0);        
     });      
 
-    //if($(window).innerWidth() >= 850) { //do not apply pagination on (mobile) devices with max-width of 850px
+    
         if ($(".ticket-data-line").length == 1) {
             //when only the template instance of .ticket-data-line exists
             pageIntervalBar.append("0");
@@ -227,9 +227,7 @@ class Pagination {
                 pageIntervalBar.append("1-" + limitPerPage);
             }
         }
-      // }else{
-      //   $('#footer-bar').empty();
-      // }
+    
 
    initPaginationBar();    
    goToPreviousPage();

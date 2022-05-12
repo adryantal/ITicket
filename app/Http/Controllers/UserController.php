@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Resolver;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -116,7 +117,13 @@ class UserController extends Controller
       }
   
   
+    public function getProfileInfo($userId){
+        $user = User::find($userId);
+        ( $user->resolver_id != null) ? $resolver = Resolver::find($user->resolver_id) : $resolver='';
+       
+        return view('it.profile', ['user' => $user], ['resolver' => $resolver]); 
 
+    }
      
 
 

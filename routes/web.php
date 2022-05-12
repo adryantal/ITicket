@@ -40,7 +40,8 @@ Route::middleware(['auth', IsActiveUser::class])->group(function () {
         Route::get('/newticket',  function () {return view('it.newticket');}); //új ticket rögzítése - form
         Route::get('/modifyticket',  function () {return view('it.modifyticket');})->name('modifyticket'); // ticket módosítása - form
         Route::get('/api/ticket/new/number', [TicketController::class, 'getLastTicketSubmittedByAuthUser']); //sikeres rögz. után a ticketszám/ticketadatok lekérése
-        Route::get('/teamcharts',  function () {return view('it.teamcharts');}); //chartok    
+        Route::get('/teamcharts',  function () {return view('it.teamcharts');}); //chartok     
+        Route::get('/user/{id}/profile', [UserController::class, 'getProfileInfo']);  //adott user profilinfója  
 
         /*Útvonalak chartokhoz*/
         Route::get('api/charts/team/tickets/open',  [TicketController::class, 'openTicketsTeam']); //a bejelentkezett user csapata által kezelt, nyitott jegyek száma személyenként

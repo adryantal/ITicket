@@ -136,10 +136,9 @@ input::-webkit-file-upload-button {
     font-weight: bold;
 }
 
-#attachment-btn:hover,
+
 #comment-btn input:hover,
 #newticketform-buttons input:hover,
-input::-webkit-file-upload-button:hover,
 #attachment:hover {
     border: 2px solid lightslategray;
     box-shadow: 0 1px 3px #4370a0;
@@ -157,9 +156,9 @@ input::-webkit-file-upload-button:hover,
     opacity: 0;
     border: 1px solid transparent;
     color: transparent;
-    width: 184px;
+    width: 142px;
     position: relative;
-    z-index: 3; /*file input type should be above the button (#attachment-btn), so that it will be the target of the click event*/
+    z-index: 3; /*file input type should be above the label (#attachment-btn), so that it will be the target of the click event*/
 }
 
 #panel-top {
@@ -167,11 +166,11 @@ input::-webkit-file-upload-button:hover,
 }
 
 #attachment-btn {
-    text-align: center;
-    width: 125px;
+    text-align: center;   
     width: fit-content;
     display: block;
     position: absolute;
+    border-radius: 8px;
     z-index: 2;
 }
 
@@ -191,7 +190,8 @@ input::-webkit-file-upload-button:hover,
     padding: 8px 20px;
     border-radius: 8px;
    font-size: 12px;
-    font-weight: bold;     
+    font-weight: bold;   
+    
   }
   
 
