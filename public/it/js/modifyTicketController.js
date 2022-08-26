@@ -254,7 +254,7 @@ class ModifyTicketController {
   }
 
 
-  //if page is refreshed then the up-to-date data will be displayed 
+  //if page is refreshed then the up-to-date data will be downloaded and displayed 
     if (sessionStorage.getItem("is_reloaded")) getFreshTicketData(loadTicketData);
     sessionStorage.setItem("is_reloaded", true);
   }
