@@ -114,7 +114,8 @@ class ModifyTicketController {
     }
 
     
-    function loadAttachments(data){      
+    function loadAttachments(data){ 
+      mTicketView.existingAttachments.splice(0,mTicketView.existingAttachments.length);     
           data.forEach((element) => {
             mTicketView.existingAttachments.push(element);                      
         }
@@ -124,7 +125,8 @@ class ModifyTicketController {
 
     function loadComments(commentsArray){     
                //loading comments       
-      const commentContainer = $("#comment-history");       
+      const commentContainer = $("#comment-history");  
+      commentContainer.empty();     
          commentsArray.forEach((element, index) => {                        
            new CommentItem(commentContainer,element);                  
          });         
@@ -201,7 +203,7 @@ class ModifyTicketController {
     }
 
     function addNewAttachments(formData){
-      console.log($('#attachment')[0].files)
+      //console.log($('#attachment')[0].files)
       myAjax.postAjaxWithFileUpload(apiEndPointAttachments,formData,()=>{ 
         getFreshTicketData(loadTicketData); 
            //Both getFreshTicketData and loadTicketData are callback functions!!!! 
@@ -251,6 +253,10 @@ class ModifyTicketController {
        
   }
 
+
+  //if page is refreshed then the up-to-date data will be downloaded and displayed 
+    if (sessionStorage.getItem("is_reloaded")) getFreshTicketData(loadTicketData);
+    sessionStorage.setItem("is_reloaded", true);
   }
 
 }
