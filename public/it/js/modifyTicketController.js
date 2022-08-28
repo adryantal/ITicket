@@ -51,7 +51,7 @@ class ModifyTicketController {
 
     function loadTicketData() {  
       //load ticket data from localStorage
-       const data= JSON.parse(localStorage.getItem('ticket'));                  
+       const data= JSON.parse(localStorage.getItem('ticket')); //the ticket clicked on in the ticket list                 
         setTicketToInactive(data);        
         mTicketView.ticketIDField.val(data.ticketnr);
         mTicketView.callerField.val(data.caller_name);

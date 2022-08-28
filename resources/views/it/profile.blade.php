@@ -13,9 +13,6 @@
     <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
     <link href="\..\it\css\profile.css" rel="stylesheet">
 
-    
-
-
 </head>
 
 <body>
@@ -34,52 +31,49 @@
 
 
 
-                    <div class="logo text-center">
-                        <div id="gap"></div>
-                        <img src="<?php echo asset('storage/logo_mid_transparent.png') ?>" alt="LogoMid">
-                    </div>
+            <div class="logo text-center">
+                <div id="gap"></div>
+                <img src="<?php echo asset('storage/logo_mid_transparent.png') ?>" alt="LogoMid">
+            </div>
 
 
-                    <div class="m-6 text-center text-lg ">
-                    <i class='fas fa-user-circle' style='font-size:60px;color:rgb(133, 193, 250,0.6)'></i>
-                    </div>
-                  
+            <div class="m-6 text-center text-lg ">
+                <i class='fas fa-user-circle' style='font-size:60px;color:rgb(133, 193, 250,0.6)'></i>
+            </div>
 
-                    <div class="p-1">
-                    <table class="table">
-                    <thead>     </thead>
+
+            <div class="p-1">
+                <table class="table">
+                    <thead> </thead>
                     <tbody>
-                        <tr class="table-active">                       
-                        <th scope="row" >Name</th>
-                        <td  >{{ $user->name }}</td>                        
+                        <tr class="table-active">
+                            <th scope="row">Name</th>
+                            <td>{{ $user->name }}</td>
                         </tr>
-                        <tr >                       
-                        <th scope="row" >Active Directory ID</th>
-                        <td >{{ $user->ad_id }}</td>                        
+                        <tr>
+                            <th scope="row">Active Directory ID</th>
+                            <td>{{ $user->ad_id }}</td>
                         </tr>
-                        <tr class="table-active">                       
-                        <th scope="row" >Department</th>
-                        <td >{{ $user->department }}</td>                        
+                        <tr class="table-active">
+                            <th scope="row">Department</th>
+                            <td>{{ $user->department }}</td>
                         </tr>
-                        <tr >                       
-                        <th scope="row" >E-mail</th>
-                        <td >{{ $user->email }}</td>                        
+                        <tr>
+                            <th scope="row">E-mail</th>
+                            <td>{{ $user->email }}</td>
                         </tr>
-                        <tr class="table-active">                       
-                        <th scope="row" >Phone number</th>
-                        <td >{{ $user->phone_number }}</td>                        
+                        <tr class="table-active">
+                            <th scope="row">Phone number</th>
+                            <td>{{ $user->phone_number }}</td>
                         </tr>
-                        <tr >                       
-                        <th scope="row" >*Resolver (*if deparment is IT)</th>
-                        <td >{{ $resolver->name }}</td>                        
+                        <tr>
+                            <th scope="row">*Resolver (*if deparment is IT)</th>
+                            <td>{{ $resolver->name }}</td>
                         </tr>
                     </tbody>
-                    </table>
+                </table>
 
-                    </div>                  
-
-
-
+            </div>
             <div id='previous' class=" text-center "> <a href="javascript:history.back()">Previous page</a></div>
 
         </article>

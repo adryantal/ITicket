@@ -55,7 +55,7 @@ class AttachmentController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     //új csatolmány feltöltése (a módosító formon keresztül)
+     //új csatolmányok feltöltése (a módosító formon keresztül)
     public function store(Request $request)    {    
         if(!($request->file('attachments')===null)){
             foreach ($request->file('attachments') as $attachment) {            
@@ -69,13 +69,13 @@ class AttachmentController extends Controller
         }
     }
 
-//létező csatolmány törlése (a módosító formon keresztül)
+//létező csatolmányok törlése (a módosító formon keresztül)
     public function removeAttachment(Request $request)  {       
        $array=json_decode($request->getContent(), true);
          foreach ($array as $key => $value) {
-            $path= Attachment::find($value)->path;           
-            Storage::disk('attachments')->delete($path); 
-                Attachment::find($value)->delete(); 
+            $path= Attachment::find($value)->path;     //eltárolom az akt. attachmenthez tartozó path-t      
+            Storage::disk('attachments')->delete($path); //a path alapján törlöm a fájlt a diskről (vagyis a Storage-ből)
+                Attachment::find($value)->delete(); //törlöm az adatbázisból
          }        
     }
 

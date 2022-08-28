@@ -64,7 +64,7 @@ class Ticket extends Model
       //adott tickethez tart. naplóbejegyzések
       public function journal()
       {
-          return $this->belongsTo(Journal::class);
+          return $this->hasMany(Journal::class);
       }
      
      //rekurzív kapcsolat -->$this->hasMany(Class,parentID,childID)
@@ -74,7 +74,7 @@ class Ticket extends Model
         return $this->hasMany(Ticket::class,'parent_ticket','id');
     }
 
-    //a child tickethez tart. fő ticketet adja vissza:
+    //a child tickethez (id) tart. fő ticketet (parent_ticket) adja vissza:
     public function majorTicket()
     {
         return $this->belongsTo(Ticket::class,'parent_ticket','id'); 

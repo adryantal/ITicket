@@ -590,7 +590,7 @@ class TicketController extends Controller
             $newAtt = new Attachment();
             $newAtt->ticketid =  $newticket->id;
             $newAtt->name = $attachment->getClientOriginalName();           
-            $newAtt->path = $attachment->storeAs($newticket->id, $attachment->getClientOriginalName(),"attachments"); // storage/app//attachments
+            $newAtt->path = $attachment->storeAs($newticket->id, $attachment->getClientOriginalName(),"attachments"); // storage/app/attachments/ticketid alatt tárolódik
             $newAtt->type= $attachment->extension();
             $newAtt->save();
         }

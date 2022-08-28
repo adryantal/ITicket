@@ -148,8 +148,7 @@ validateFileToUpload(index){
       this.attachmentList.append( //create an attribute for the database id and filename in the tags
         "<div id='attachment" +  index + "' dbid=" +  element.id + "'><a href='storage/attachments/"+element.path +"'>&#128206 " + element.name + "</a> <div class='attm-remove-btn'>x</div></div>"
       );
-    });
-    
+    });    
   }
  //display new attachments selected for upload
   displayDraftAttachments(){    
@@ -245,7 +244,7 @@ validateFileToUpload(index){
             data: {
               name_like : request.term,    //a query expression-t sajnos nem lehetet változón keresztül átadni-- >emiatt elengedhetetlen a "kódduplikáció"         
             },
-            success: function (data) {
+            success: function (data) {  
               if (data.length > 0) {             
               response(
                 $.map(data, function (item) {
